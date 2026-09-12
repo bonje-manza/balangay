@@ -164,7 +164,8 @@ export function parseCSV(csvContent: string): string[][] {
 
 /**
  * Cleans monetary strings by stripping currency symbols, comma separators, and spaces.
- * Handles accounting negatives: (1,250.00) -> { value: 1250, isNegative: true }.
+ * Accurately detects negative indicators whether positioned before, after, or around
+ * currency symbols or numeric digits (e.g. -500, -₱500, ₱ -500, PHP -500, (₱500), ₱ (500), 500-).
  */
 function parseCurrencyString(raw: string): { value: number; isNegative: boolean } {
   if (!raw) return { value: NaN, isNegative: false };
@@ -172,22 +173,26 @@ function parseCurrencyString(raw: string): { value: number; isNegative: boolean 
   let trimmed = raw.trim();
   let isNegative = false;
 
-  if (/^\((.*)\)$/.test(trimmed)) {
+  // Check for accounting parentheses e.g. (500), (₱ 500), ₱ (500)
+  if (/\(.*\)/.test(trimmed)) {
     isNegative = true;
-    trimmed = trimmed.replace(/^\(|\)$/g, '').trim();
-  } else if (trimmed.startsWith('-')) {
-    isNegative = true;
-    trimmed = trimmed.replace(/^-/, '').trim();
-  } else if (trimmed.endsWith('-')) {
-    isNegative = true;
-    trimmed = trimmed.replace(/-$/, '').trim();
+    trimmed = trimmed.replace(/[()]/g, '').trim();
   }
+
+  // Check for minus sign anywhere in the input
+  if (trimmed.includes('-')) {
+    isNegative = true;
+    trimmed = trimmed.replace(/-/g, '').trim();
+  }
+
+  // Strip explicit plus signs
+  trimmed = trimmed.replace(/\+/g, '').trim();
 
   // Remove currency signs (₱, $, PHP), commas, and spaces
   trimmed = trimmed.replace(/[₱$]|\bPHP\b|\bphp\b|,|\s/gi, '');
   const num = parseFloat(trimmed);
 
-  return { value: num, isNegative };
+  return { value: Math.abs(num), isNegative };
 }
 
 /**
@@ -377,7 +382,7 @@ export async function importTransactionsFromCSV(
           type = 'expense';
         }
       } else {
-        type = isNegative ? 'expense' : 'expense';
+        type = isNegative ? 'expense' : 'income';
       }
     }
 
@@ -395,10 +400,20 @@ export async function importTransactionsFromCSV(
     let toAccountId: string | undefined = undefined;
     if (rawDest) {
       const matched = accountMapByName.get(rawDest.toLowerCase());
-      toAccountId = matched || rawDest;
-      if (type !== 'income') {
-        type = 'transfer';
+      if (matched) {
+        toAccountId = matched;
+        if (type !== 'income') {
+          type = 'transfer';
+        }
+      } else {
+        if (type === 'transfer') {
+          errors.push(`Row ${rowNum}: Destination account "${rawDest}" does not exist`);
+          continue;
+        }
       }
+    } else if (type === 'transfer') {
+      errors.push(`Row ${rowNum}: Transfer transaction missing destination account`);
+      continue;
     }
 
     // 4. Category

@@ -440,5 +440,81 @@ not-a-date,expense,200.00
       expect(t3?.accountId).toBe('acc-bpi');
       expect(t3?.toAccountId).toBe('acc-gcash');
     });
+
+    it('correctly resolves type as income for positive amounts and expense for negative amounts when Type column is absent', async () => {
+      const signedCSV = `Date,Description,Amount
+2026-09-15,Freelance Client Payment,8500.00
+2026-09-16,Supermarket Grocery,-2150.75`;
+
+      const result = await importTransactionsFromCSV(signedCSV, {
+        defaultAccountId: 'acc-gcash',
+      });
+
+      expect(result.imported).toBe(2);
+      expect(result.errors).toHaveLength(0);
+
+      const txs = await db.transactions.toArray();
+      const incomeTx = txs.find((t) => t.date === '2026-09-15');
+      const expenseTx = txs.find((t) => t.date === '2026-09-16');
+
+      expect(incomeTx?.type).toBe('income');
+      expect(incomeTx?.amount).toBe(8500);
+
+      expect(expenseTx?.type).toBe('expense');
+      expect(expenseTx?.amount).toBe(2150.75);
+    });
+
+    it('accurately parses negative signs placed after or before currency symbols (e.g. ₱ -500.00, PHP -1,200.50, -₱750.00)', async () => {
+      const formattedCurrencyCSV = `Date,Description,Amount
+2026-09-17,Negative with space after symbol,"₱ -500.00"
+2026-09-18,PHP prefix negative,"PHP -1,200.50"
+2026-09-19,Negative before symbol,"-₱750.00"
+2026-09-20,Accounting with symbol,"₱ (450.00)"`;
+
+      const result = await importTransactionsFromCSV(formattedCurrencyCSV, {
+        defaultAccountId: 'acc-gcash',
+      });
+
+      expect(result.imported).toBe(4);
+      expect(result.errors).toHaveLength(0);
+
+      const txs = await db.transactions.toArray();
+      const tx1 = txs.find((t) => t.date === '2026-09-17');
+      const tx2 = txs.find((t) => t.date === '2026-09-18');
+      const tx3 = txs.find((t) => t.date === '2026-09-19');
+      const tx4 = txs.find((t) => t.date === '2026-09-20');
+
+      expect(tx1?.amount).toBe(500);
+      expect(tx1?.type).toBe('expense');
+
+      expect(tx2?.amount).toBe(1200.5);
+      expect(tx2?.type).toBe('expense');
+
+      expect(tx3?.amount).toBe(750);
+      expect(tx3?.type).toBe('expense');
+
+      expect(tx4?.amount).toBe(450);
+      expect(tx4?.type).toBe('expense');
+    });
+
+    it('rejects transfer transactions with unresolvable destination accounts and records informative errors', async () => {
+      const invalidTransferCSV = `Date,Type,Amount,Account,Destination Account
+2026-09-21,transfer,1000.00,GCash,NonExistentDestinationBank
+2026-09-22,transfer,500.00,GCash,BPI Savings`;
+
+      const result = await importTransactionsFromCSV(invalidTransferCSV, {
+        defaultAccountId: 'acc-gcash',
+      });
+
+      // Only valid transfer should be imported
+      expect(result.imported).toBe(1);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]).toMatch(/destination account.*not found|does not exist/i);
+
+      const txs = await db.transactions.toArray();
+      expect(txs).toHaveLength(1);
+      expect(txs[0].date).toBe('2026-09-22');
+      expect(txs[0].toAccountId).toBe('acc-bpi');
+    });
   });
 });
