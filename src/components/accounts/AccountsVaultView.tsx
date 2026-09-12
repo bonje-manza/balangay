@@ -117,7 +117,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
             Accounts Vault
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
-            Manage your physical cash, Philippine e-wallets, and bank accounts offline with live balances.
+            All your Philippine wallets and bank accounts, with live running balances.
           </p>
         </div>
 

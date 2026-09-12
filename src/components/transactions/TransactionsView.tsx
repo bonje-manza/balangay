@@ -232,7 +232,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
             Transactions Ledger
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
-            Complete offline transaction history with multi-account filtering and CSV export.
+            All your recorded entries, searchable and filterable. Export to CSV any time.
           </p>
         </div>
 

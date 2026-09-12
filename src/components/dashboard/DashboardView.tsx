@@ -80,7 +80,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#111111] tracking-tight">
-              Kumusta! Here's your financial wellness overview.
+              Kumusta, here's what's happening with your money.
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
@@ -125,8 +125,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <Starburst className="w-6 h-6 text-[#111111]" fill="#FFED9E" stroke="#111111" />
               </div>
             }
-            title="Ready to start your financial journey?"
-            subtitle="Your offline ledger is clean and ready"
+            title="Ready to record your first transaction?"
+            subtitle="Your offline ledger is clean and ready."
             className="shadow-[4px_4px_0px_0px_#111111]"
           >
             <div className="max-w-2xl mt-2 space-y-4">

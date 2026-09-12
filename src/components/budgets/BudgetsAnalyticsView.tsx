@@ -161,7 +161,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
             Budgets & Spending Analytics
           </h1>
           <p className="text-xs sm:text-sm font-medium text-stone-600 mt-1">
-            Monitor monthly limits, track progress, and analyze category distributions.
+            See where your money goes each month and adjust your category limits.
           </p>
         </div>
 

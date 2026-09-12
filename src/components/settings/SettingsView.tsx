@@ -192,7 +192,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             Settings & Vault Tools
           </h1>
           <p className="text-xs sm:text-sm font-medium text-stone-600 mt-1">
-            Privacy controls, offline backups, bank imports, and vault management.
+            PIN protection, offline backups, and CSV bank imports, all on-device.
           </p>
         </div>
 
