@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trash2, Check, AlertCircle } from 'lucide-react';
 import type { Category } from '../../domain/types';
 import { db } from '../../storage/db';
-import { roundMoney } from '../../domain/money';
+import { roundMoney, formatPHP } from '../../domain/money';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 
@@ -150,7 +150,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name} {cat.budgetLimit ? `(Current: ₱${cat.budgetLimit})` : ''}
+                  {cat.name} {cat.budgetLimit ? `(Current: ${formatPHP(cat.budgetLimit)})` : ''}
                 </option>
               ))}
             </select>
@@ -249,7 +249,6 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
               size="sm"
               isLoading={isSubmitting}
               icon={<Check className="w-4 h-4" />}
-              onClick={handleSave}
               data-testid="save-budget-btn"
             >
               Save Budget
