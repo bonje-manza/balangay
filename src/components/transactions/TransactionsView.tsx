@@ -58,9 +58,7 @@ export function getDateGroupTitle(dateStr: string): string {
 }
 
 /**
- * TransactionsView: Full ledger view featuring Soft Neo-brutalism aesthetics,
- * multi-criteria live filtering, date-grouped list items, summary metrics,
- * quick RFC-compliant CSV export, and accessible transaction creation/editing modals.
+ * Ledger view with date-grouped transactions, filtering, and CSV export.
  */
 export const TransactionsView: React.FC<TransactionsViewProps> = ({
   className = '',
@@ -232,7 +230,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
             Transactions Ledger
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
-            Complete offline transaction history with multi-account filtering and CSV export.
+            All your recorded entries, searchable and filterable. Export to CSV any time.
           </p>
         </div>
 
@@ -271,11 +269,11 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
       {/* Summary Bar */}
       <div
         data-testid="ledger-summary-bar"
-        className="bg-[#FFFDF9] border-2 border-[#111111] rounded-2xl p-4 sm:p-5 shadow-[3px_3px_0px_0px_#111111] flex flex-wrap items-center justify-between gap-4"
+        className="bg-[#FFFDF9] border border-stone-800/15 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4"
       >
         <div className="flex items-center gap-6 flex-wrap">
           <div>
-            <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block">
               Filtered Records
             </span>
             <p
@@ -290,7 +288,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
           <div className="hidden sm:block h-8 w-[1px] bg-stone-800/15" />
 
           <div>
-            <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block">
               Net Flow
             </span>
             <AmountDisplay
@@ -304,9 +302,9 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
         </div>
 
         {/* Detailed Breakdown Pill */}
-        <div className="text-xs font-semibold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl border border-stone-800/15">
+        <div className="text-xs font-semibold text-stone-700 bg-stone-100 px-3 py-1.5 rounded-xl border border-stone-800/15">
           <span className="text-[#124224] font-bold">+{formatPHP(totalIncome)}</span>
-          <span className="mx-2 text-stone-400">•</span>
+          <span className="mx-2 text-stone-500">•</span>
           <span className="text-[#9E2A3B] font-bold">-{formatPHP(totalExpense)}</span>
         </div>
       </div>
@@ -315,9 +313,9 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
       {filteredTransactions.length === 0 ? (
         <div
           data-testid="empty-state"
-          className="text-center py-12 px-4 bg-white/70 rounded-3xl border-2 border-stone-800/15 shadow-[3px_3px_0px_0px_#111111] space-y-3"
+          className="text-center py-12 px-4 bg-[#FFFDF9] rounded-3xl border border-stone-800/15 shadow-sm space-y-3"
         >
-          <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center mx-auto shadow-[1px_1px_0px_0px_#111111]">
+          <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center mx-auto shadow-sm">
             <FileSpreadsheet className="w-6 h-6 text-[#111111]" />
           </div>
           <div>
@@ -326,7 +324,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
                 ? 'No transactions found matching filters'
                 : 'No transactions recorded yet'}
             </h3>
-            <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+            <p className="text-xs text-stone-600 mt-1 max-w-sm mx-auto">
               {isFilterActive
                 ? 'Try adjusting your search term, changing transaction type, or clearing active filters.'
                 : 'Click "+ Add" to create your first transaction and start tracking your finances.'}
@@ -364,7 +362,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
                     {group.label}
                   </h2>
                 </div>
-                <span className="text-[11px] font-semibold text-stone-500">
+                <span className="text-[11px] font-semibold text-stone-600">
                   {group.items.length} {group.items.length === 1 ? 'item' : 'items'}
                 </span>
               </div>

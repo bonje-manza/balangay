@@ -198,7 +198,7 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
               }}
               className={`flex-1 py-1.5 text-xs font-bold rounded-xl transition-all ${
                 currentMode === 'remove'
-                  ? 'bg-white text-rose-700 shadow-[1px_1px_0px_0px_#111111]'
+                  ? 'bg-white text-rose-700 shadow-sm'
                   : 'text-stone-600 hover:text-rose-700'
               }`}
             >
@@ -207,11 +207,17 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
           </div>
         )}
 
+        {/* Offline Vault Security Warning Notice */}
+        <div className="p-3 bg-butter/40 border border-stone-800/15 rounded-2xl flex items-start gap-2.5 text-xs text-stone-800 font-medium">
+          <ShieldAlert className="w-4 h-4 text-[#124224] flex-shrink-0 mt-0.5" />
+          <span>Balangay is 100% offline. If forgotten, your vault cannot be recovered without a local JSON backup file. Keep regular backups in Settings.</span>
+        </div>
+
         {/* Error Feedback */}
         {errorMessage && (
           <div
             data-testid="pin-error-message"
-            className="p-3 bg-[#F2C0CA]/30 border-2 border-[#111111] rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-[2px_2px_0px_0px_#111111]"
+            className="p-3 bg-[#F2C0CA]/30 border border-rose-300 rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-sm"
           >
             <XCircle className="w-4 h-4 text-rose-700 flex-shrink-0 mt-0.5" />
             <span className="leading-snug">{errorMessage}</span>
@@ -241,7 +247,7 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
                   setCurrentPin(e.target.value);
                   setErrorMessage(null);
                 }}
-                className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] tracking-widest"
+                className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-stone-800/20 text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent tracking-widest"
               />
             </div>
           </div>
@@ -270,7 +276,7 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
                   setNewPin(e.target.value);
                   setErrorMessage(null);
                 }}
-                className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] tracking-widest"
+                className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-stone-800/20 text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent tracking-widest"
               />
             </div>
 
@@ -294,7 +300,7 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
                   setConfirmPin(e.target.value);
                   setErrorMessage(null);
                 }}
-                className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] tracking-widest"
+                className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-stone-800/20 text-lg font-mono font-bold text-[#111111] placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent tracking-widest"
               />
             </div>
           </>

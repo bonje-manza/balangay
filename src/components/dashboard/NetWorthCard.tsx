@@ -33,8 +33,12 @@ export const NetWorthCard: React.FC<NetWorthCardProps> = ({
     <BentoCard
       variant={variant}
       sticker={
-        <div className="w-10 h-10 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
-          <SparkleStar className="w-5 h-5 text-[#111111]" fill="#FFED9E" stroke="#111111" />
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm ${
+          isDark
+            ? 'bg-stone-900 border-stone-800 text-stone-200'
+            : 'bg-[#FFED9E] border-stone-800/15 text-[#111111]'
+        }`}>
+          <SparkleStar className="w-4 h-4" />
         </div>
       }
       title="Total Net Worth"
@@ -44,7 +48,7 @@ export const NetWorthCard: React.FC<NetWorthCardProps> = ({
           Real-time
         </StickerBadge>
       }
-      className={`shadow-[4px_4px_0px_0px_#111111] ${className}`}
+      className={className}
       data-testid="net-worth-card"
     >
       {/* Hero Amount Display */}
@@ -96,7 +100,7 @@ export const NetWorthCard: React.FC<NetWorthCardProps> = ({
                 >
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-7 h-7 rounded-xl flex items-center justify-center text-[#111111] border border-stone-800/20 flex-shrink-0 shadow-[1px_1px_0px_0px_#000000]"
+                      className="w-7 h-7 rounded-xl flex items-center justify-center text-[#111111] border border-stone-800/20 flex-shrink-0 shadow-sm"
                       style={{ backgroundColor: account.color || '#FFED9E' }}
                     >
                       {renderAccountIcon(account.icon, 'w-3.5 h-3.5')}

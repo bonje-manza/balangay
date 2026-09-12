@@ -97,7 +97,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
   return (
     <div
       data-testid="transaction-filter-bar"
-      className={`bg-[#FFFDF9] border-2 border-[#111111] rounded-3xl p-4 sm:p-5 shadow-[4px_4px_0px_0px_#111111] space-y-3 sm:space-y-4 ${className}`}
+      className={`bg-[#FFFDF9] border border-stone-800/15 rounded-3xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4 ${className}`}
     >
       {/* Top Row: Search Bar & Clear Filters */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -112,7 +112,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
             value={filters.search}
             onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
             placeholder="Search notes, tags, or categories..."
-            className="w-full pl-10 pr-10 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-sm text-[#111111] placeholder:text-stone-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#124224] transition-all shadow-[2px_2px_0px_0px_#111111]"
+            className="w-full pl-10 pr-10 py-2.5 bg-white rounded-2xl border border-stone-800/20 text-sm text-[#111111] placeholder:text-stone-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent transition-all shadow-sm"
           />
           {filters.search && (
             <button
@@ -141,8 +141,8 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
         )}
       </div>
 
-      {/* Bottom Row: Type Pills + Account & Category Selects */}
-      <div className="flex flex-wrap items-center gap-2.5 pt-1">
+      {/* Bottom Row: Type Pills + Account & Category Selects + Date Range */}
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3 pt-1">
         {/* Type Pills */}
         <div
           role="group"
@@ -159,8 +159,8 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
                 onClick={() => handleTypeChange(opt.value)}
                 className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 ${
                   isSelected
-                    ? 'bg-[#111111] text-[#F7F2E8] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#124224]'
-                    : 'bg-white text-stone-700 border border-stone-800/25 hover:bg-stone-100 hover:border-stone-800/40 shadow-[1px_1px_0px_0px_#111111]'
+                    ? 'bg-[#111111] text-[#F7F2E8] border border-[#111111] shadow-sm'
+                    : 'bg-white text-stone-700 border border-stone-800/15 hover:bg-stone-50 hover:border-stone-800/30'
                 }`}
               >
                 {opt.label}
@@ -170,71 +170,74 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
         </div>
 
         {/* Separator */}
-        <div className="hidden sm:block h-6 w-[1px] bg-stone-800/20 mx-1" />
+        <div className="hidden lg:block h-6 w-[1px] bg-stone-800/20 mx-1" />
 
-        {/* Account Filter Select */}
-        <div className="flex items-center gap-1.5 flex-1 sm:flex-initial min-w-[140px]">
-          <select
-            data-testid="filter-account-select"
-            aria-label="Filter by account"
-            value={filters.accountId || 'all'}
-            onChange={(e) => onFilterChange({ ...filters, accountId: e.target.value })}
-            className="w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border border-stone-800/30 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
-          >
-            <option value="all">All Accounts</option>
-            {accounts.map((acc) => (
-              <option key={acc.id} value={acc.id}>
-                {acc.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Category Filter Select (only relevant for all, expense, or income) */}
-        {filters.type !== 'transfer' && (
-          <div className="flex items-center gap-1.5 flex-1 sm:flex-initial min-w-[140px]">
+        {/* Dropdown Filters & Date Range Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-2.5 flex-1">
+          {/* Account Filter Select */}
+          <div className="w-full lg:w-auto">
             <select
-              data-testid="filter-category-select"
-              aria-label="Filter by category"
-              value={filters.categoryId || 'all'}
-              onChange={(e) => onFilterChange({ ...filters, categoryId: e.target.value })}
-              className="w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border border-stone-800/30 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
+              data-testid="filter-account-select"
+              aria-label="Filter by account"
+              value={filters.accountId || 'all'}
+              onChange={(e) => onFilterChange({ ...filters, accountId: e.target.value })}
+              className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-semibold bg-white text-stone-800 rounded-xl border border-stone-800/20 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm cursor-pointer"
             >
-              <option value="all">All Categories</option>
-              {availableCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
+              <option value="all">All Accounts</option>
+              {accounts.map((acc) => (
+                <option key={acc.id} value={acc.id}>
+                  {acc.name}
                 </option>
               ))}
             </select>
           </div>
-        )}
 
-        {/* Date Range Inputs */}
-        <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-stone-800/30 shadow-[1px_1px_0px_0px_#111111]">
-            <Calendar className="w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
-            <input
-              type="date"
-              data-testid="filter-start-date"
-              aria-label="Filter start date"
-              value={filters.startDate || ''}
-              onChange={(e) =>
-                onFilterChange({ ...filters, startDate: e.target.value || undefined })
-              }
-              className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer"
-            />
-            <span className="text-xs text-stone-400 font-bold px-0.5">to</span>
-            <input
-              type="date"
-              data-testid="filter-end-date"
-              aria-label="Filter end date"
-              value={filters.endDate || ''}
-              onChange={(e) =>
-                onFilterChange({ ...filters, endDate: e.target.value || undefined })
-              }
-              className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer"
-            />
+          {/* Category Filter Select (only relevant for all, expense, or income) */}
+          {filters.type !== 'transfer' && (
+            <div className="w-full lg:w-auto">
+              <select
+                data-testid="filter-category-select"
+                aria-label="Filter by category"
+                value={filters.categoryId || 'all'}
+                onChange={(e) => onFilterChange({ ...filters, categoryId: e.target.value })}
+                className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-semibold bg-white text-stone-800 rounded-xl border border-stone-800/20 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm cursor-pointer"
+              >
+                <option value="all">All Categories</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Date Range Inputs */}
+          <div className="w-full sm:col-span-2 lg:col-span-1 lg:w-auto">
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-stone-800/20 shadow-sm w-full lg:w-auto">
+              <Calendar className="w-3.5 h-3.5 text-stone-600 flex-shrink-0" />
+              <input
+                type="date"
+                data-testid="filter-start-date"
+                aria-label="Filter start date"
+                value={filters.startDate || ''}
+                onChange={(e) =>
+                  onFilterChange({ ...filters, startDate: e.target.value || undefined })
+                }
+                className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer flex-1 sm:flex-initial"
+              />
+              <span className="text-xs text-stone-600 font-bold px-0.5">to</span>
+              <input
+                type="date"
+                data-testid="filter-end-date"
+                aria-label="Filter end date"
+                value={filters.endDate || ''}
+                onChange={(e) =>
+                  onFilterChange({ ...filters, endDate: e.target.value || undefined })
+                }
+                className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer flex-1 sm:flex-initial"
+              />
+            </div>
           </div>
         </div>
       </div>

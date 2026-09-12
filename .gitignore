@@ -6,3 +6,4 @@ dist-ssr
 .vscode
 .DS_Store
 coverage
+.vite/

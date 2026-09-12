@@ -22,6 +22,7 @@ export interface SecurityContextValue {
   removePin: (currentPin: string) => Promise<boolean>;
   lock: () => void;
   setAutoLockMinutes: (minutes: number) => Promise<void>;
+  reloadSecurity?: () => Promise<void>;
 }
 
 export const SecurityContext = createContext<SecurityContextValue | null>(null);
@@ -159,6 +160,17 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     setAutoLockMinutesState(sanitized);
   }, []);
 
+  const reloadSecurity = useCallback(async (): Promise<void> => {
+    const settings = await getUserSettings();
+    const pinConfigured = Boolean(
+      settings.pinEnabled && settings.pinHash && settings.pinHash.trim().length > 0
+    );
+    pinHashRef.current = pinConfigured ? settings.pinHash : undefined;
+    setIsPinSet(pinConfigured);
+    setAutoLockMinutesState(settings.autoLockMinutes ?? 0);
+    setIsLocked(pinConfigured);
+  }, []);
+
   // Inactivity monitoring effect
   useEffect(() => {
     if (isLocked || !isPinSet || autoLockMinutes <= 0) {
@@ -208,6 +220,7 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
       removePin,
       lock,
       setAutoLockMinutes,
+      reloadSecurity,
     }),
     [
       isLocked,
@@ -219,6 +232,7 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
       removePin,
       lock,
       setAutoLockMinutes,
+      reloadSecurity,
     ]
   );
 

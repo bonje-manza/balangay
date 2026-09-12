@@ -26,19 +26,19 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#111111] text-[#F7F2E8] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#124224] hover:shadow-[1px_1px_0px_0px_#124224]',
+    'bg-[#111111] text-[#F7F2E8] border border-stone-900 shadow-sm hover:bg-stone-900 active:shadow-none',
   forest:
-    'bg-[#124224] text-[#F7F2E8] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-[#124224] text-[#F7F2E8] border border-[#0d301a] shadow-sm hover:bg-[#0e351d] active:shadow-none',
   butter:
-    'bg-[#FFED9E] text-[#111111] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-[#FFED9E] text-[#111111] border border-amber-300/60 shadow-sm hover:bg-[#ffe67c]',
   blossom:
-    'bg-[#F2C0CA] text-[#111111] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-[#F2C0CA] text-[#111111] border border-rose-300/60 shadow-sm hover:bg-[#edb0bd]',
   pistachio:
-    'bg-[#DAE097] text-[#111111] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-[#DAE097] text-[#111111] border border-stone-400/40 shadow-sm hover:bg-[#d0d786]',
   sky:
-    'bg-[#A6CFF2] text-[#111111] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-[#A6CFF2] text-[#111111] border border-sky-300/60 shadow-sm hover:bg-[#92c3ed]',
   outline:
-    'bg-transparent text-[#111111] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#111111] hover:shadow-[1px_1px_0px_0px_#111111]',
+    'bg-transparent text-[#111111] border border-stone-800/30 hover:bg-stone-100/60 shadow-sm',
   ghost:
     'bg-transparent text-[#111111] border border-transparent hover:bg-stone-200/50 shadow-none',
 };

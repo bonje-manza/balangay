@@ -49,7 +49,7 @@ export const CategoryBudgetCard: React.FC<CategoryBudgetCardProps> = ({
       return (
         <StickerBadge
           variant="blossom"
-          rotation="right"
+          rotation="none"
           icon={<AlertTriangle className="w-3 h-3 text-[#9E2A3B]" />}
           data-testid={`budget-badge-over-${category.id}`}
         >
@@ -62,7 +62,7 @@ export const CategoryBudgetCard: React.FC<CategoryBudgetCardProps> = ({
       return (
         <StickerBadge
           variant="butter"
-          rotation="tilt-left"
+          rotation="none"
           icon={<AlertCircle className="w-3 h-3 text-[#111111]" />}
           data-testid={`budget-badge-warning-${category.id}`}
         >
@@ -74,7 +74,7 @@ export const CategoryBudgetCard: React.FC<CategoryBudgetCardProps> = ({
     return (
       <StickerBadge
         variant="pistachio"
-        rotation="flat"
+        rotation="none"
         data-testid={`budget-badge-safe-${category.id}`}
       >
         On Track
@@ -87,7 +87,7 @@ export const CategoryBudgetCard: React.FC<CategoryBudgetCardProps> = ({
       variant="oat"
       sticker={
         <div
-          className="w-10 h-10 rounded-2xl border border-stone-800/20 flex items-center justify-center flex-shrink-0 shadow-[1px_1px_0px_0px_#111111]"
+          className="w-10 h-10 rounded-2xl border border-stone-800/15 flex items-center justify-center flex-shrink-0 shadow-sm"
           style={{ backgroundColor: category.color || '#FFED9E' }}
         >
           {renderCategoryIcon(category.icon, 'w-5 h-5 text-[#111111]')}
@@ -95,7 +95,7 @@ export const CategoryBudgetCard: React.FC<CategoryBudgetCardProps> = ({
       }
       title={category.name}
       action={renderStatusBadge()}
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={`shadow-sm ${className}`}
       data-testid={`category-budget-card-${category.id}`}
     >
       <div className="space-y-3.5 mt-2">

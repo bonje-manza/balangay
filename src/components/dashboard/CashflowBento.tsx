@@ -31,8 +31,8 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-10 h-10 rounded-2xl bg-[#DAE097] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
-          <ArrowDownLeft className="w-5 h-5 text-[#124224]" />
+        <div className="w-9 h-9 rounded-xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
+          <ArrowDownLeft className="w-4 h-4 text-[#124224]" />
         </div>
       }
       title="Monthly Cashflow"
@@ -49,14 +49,14 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
           />
         </div>
       }
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={className}
       data-testid="cashflow-bento"
     >
       {/* 2-Column Split: Pistachio Income vs Blossom Expense */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-3">
         {/* Income Card */}
         <div
-          className="bg-[#DAE097] border-2 border-stone-800/20 rounded-2xl p-4 shadow-[2px_2px_0px_0px_#111111] flex flex-col justify-between"
+          className="bg-[#DAE097] border border-stone-800/15 rounded-2xl p-4 flex flex-col justify-between"
           data-testid="cashflow-income-card"
         >
           <div className="flex items-center justify-between mb-1">
@@ -83,7 +83,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
 
         {/* Expense Card */}
         <div
-          className="bg-[#F2C0CA] border-2 border-stone-800/20 rounded-2xl p-4 shadow-[2px_2px_0px_0px_#111111] flex flex-col justify-between"
+          className="bg-[#F2C0CA] border border-stone-800/15 rounded-2xl p-4 flex flex-col justify-between"
           data-testid="cashflow-expense-card"
         >
           <div className="flex items-center justify-between mb-1">
@@ -112,8 +112,8 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
       {/* Ratio / Comparison Footer */}
       <div className="mt-4 pt-3.5 border-t border-stone-800/10">
         {!hasCashflow ? (
-          <div className="flex items-center gap-2 text-xs font-medium text-stone-500 italic py-1">
-            <Scale className="w-4 h-4 text-stone-400" />
+          <div className="flex items-center gap-2 text-xs font-medium text-stone-600 italic py-1">
+            <Scale className="w-4 h-4 text-stone-500" />
             <span>No cashflow recorded yet for this period.</span>
           </div>
         ) : income > 0 ? (
@@ -133,7 +133,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
                   {savingsRate}%
                 </span>
               </span>
-              <span className="text-stone-500 font-medium text-[11px]">
+              <span className="text-stone-600 font-medium text-[11px]">
                 {expenseRatio}% spent
               </span>
             </div>

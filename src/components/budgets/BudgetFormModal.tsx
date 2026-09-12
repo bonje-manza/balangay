@@ -136,7 +136,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
         <div className="space-y-1.5">
           <label
             htmlFor="budget-category-select"
-            className="block text-xs font-bold uppercase tracking-wider text-stone-700"
+            className="block text-xs font-bold text-stone-800"
           >
             Category
           </label>
@@ -146,7 +146,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
               data-testid="budget-category-select"
               value={categoryId}
               onChange={handleCategoryChange}
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F2E8] border-2 border-stone-800 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111] cursor-pointer shadow-[2px_2px_0px_0px_#111111]"
+              className="select-custom-chevron w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F2E8] border-2 border-stone-800 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111] cursor-pointer shadow-[2px_2px_0px_0px_#111111]"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -161,7 +161,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
         <div className="space-y-1.5">
           <label
             htmlFor="budget-limit-input"
-            className="block text-xs font-bold uppercase tracking-wider text-stone-700"
+            className="block text-xs font-bold text-stone-800"
           >
             Monthly Budget Cap (PHP)
           </label>
@@ -188,7 +188,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
 
         {/* Quick Amount Presets */}
         <div className="space-y-1.5">
-          <span className="block text-[11px] font-semibold text-stone-500">
+          <span className="block text-[11px] font-semibold text-stone-600">
             Quick Presets
           </span>
           <div className="flex flex-wrap gap-1.5">

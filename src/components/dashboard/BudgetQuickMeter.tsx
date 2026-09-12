@@ -50,7 +50,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
       return (
         <StickerBadge
           variant="blossom"
-          rotation="right"
+          rotation="none"
           icon={<AlertCircle className="w-3 h-3 text-[#9E2A3B]" />}
           data-testid="budget-badge-over"
         >
@@ -63,7 +63,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
       return (
         <StickerBadge
           variant="butter"
-          rotation="tilt-left"
+          rotation="none"
           icon={<AlertCircle className="w-3 h-3 text-[#111111]" />}
           data-testid="budget-badge-warning"
         >
@@ -75,7 +75,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
     return (
       <StickerBadge
         variant="pistachio"
-        rotation="flat"
+        rotation="none"
         data-testid="budget-badge-safe"
       >
         On Track
@@ -87,19 +87,19 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-10 h-10 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
-          <PieChart className="w-5 h-5 text-[#111111]" />
+        <div className="w-9 h-9 rounded-xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
+          <PieChart className="w-4 h-4 text-[#111111]" />
         </div>
       }
       title="Budget Health"
       subtitle="Monthly category limits"
       action={renderStatusBadge()}
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={className}
       data-testid="budget-quick-meter"
     >
       {budgeted.length === 0 ? (
         <div className="py-6 text-center">
-          <p className="text-xs text-stone-500 italic">
+          <p className="text-xs text-stone-600 italic">
             No category budgets set yet. Set limits in the Budgets tab to track your spending.
           </p>
         </div>
@@ -146,7 +146,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
                     >
                       {Math.round(percent)}%
                     </span>
-                    <span className="text-[11px] font-medium text-stone-500">
+                    <span className="text-[11px] font-medium text-stone-600">
                       {isOverBudget ? (
                         <span className="text-[#9E2A3B] font-semibold">
                           +{formatPHP(Math.abs(remaining))} over
@@ -174,7 +174,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
                 </div>
 
                 {/* Bottom caption: Spent of Limit */}
-                <div className="flex items-center justify-between text-[11px] text-stone-500 font-medium">
+                <div className="flex items-center justify-between text-[11px] text-stone-600 font-medium">
                   <span>
                     Spent:{' '}
                     <strong className="text-stone-800 font-mono font-semibold">

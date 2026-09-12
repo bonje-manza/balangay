@@ -213,7 +213,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
         {errorMessage && (
           <div
             data-testid="backup-error-message"
-            className="p-3.5 bg-[#F2C0CA]/30 border-2 border-[#111111] rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-[2px_2px_0px_0px_#111111]"
+            className="p-3.5 bg-[#F2C0CA]/30 border border-rose-300 rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-sm"
           >
             <XCircle className="w-4 h-4 text-rose-700 flex-shrink-0 mt-0.5" />
             <span className="leading-snug">{errorMessage}</span>
@@ -224,9 +224,9 @@ export const BackupModal: React.FC<BackupModalProps> = ({
         {parsedEnvelope && !restoreSuccess && (
           <div
             data-testid="backup-preview-summary"
-            className="p-4 bg-[#FFED9E]/40 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] space-y-3"
+            className="p-4 bg-[#FFED9E]/30 border border-amber-400/40 rounded-2xl shadow-sm space-y-3"
           >
-            <div className="flex items-center gap-2 pb-2 border-b border-[#111111]/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-stone-800/15">
               <Database className="w-4 h-4 text-dark-forest" />
               <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
                 Backup Contents Preview
@@ -289,9 +289,9 @@ export const BackupModal: React.FC<BackupModalProps> = ({
         {restoreSuccess && (
           <div
             data-testid="backup-success-banner"
-            className="p-5 bg-[#DAE097]/40 border-2 border-[#111111] rounded-2xl shadow-[3px_3px_0px_0px_#111111] space-y-3 text-center"
+            className="p-5 bg-[#DAE097]/40 border border-[#124224]/30 rounded-2xl shadow-sm space-y-3 text-center"
           >
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-[#DAE097] border-2 border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_#111111]">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <CheckCircle2 className="w-6 h-6 text-dark-forest" />
             </div>
             <div>

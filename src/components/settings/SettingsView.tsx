@@ -184,7 +184,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   };
 
   return (
-    <div className={`min-h-screen bg-[#F7F2E8] p-4 sm:p-8 space-y-6 pb-28 ${className}`}>
+    <div className={`min-h-full bg-[#F7F2E8] p-4 sm:p-8 space-y-6 ${className}`}>
       {/* View Header */}
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b-2 border-dark-anchor/10 pb-5">
         <div>
@@ -192,7 +192,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             Settings & Vault Tools
           </h1>
           <p className="text-xs sm:text-sm font-medium text-stone-600 mt-1">
-            Privacy controls, offline backups, bank imports, and vault management.
+            PIN protection, offline backups, and CSV bank imports, all on-device.
           </p>
         </div>
 
@@ -212,7 +212,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-9 h-9 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Globe className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -229,7 +229,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   Philippine Peso (PHP)
                 </span>
               </div>
-              <span className="text-xl font-mono font-black text-dark-forest px-3 py-1 bg-[#DAE097]/40 rounded-xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+              <span className="text-xl font-mono font-black text-dark-forest px-3 py-1 bg-[#DAE097]/40 rounded-xl border border-stone-800/15 shadow-sm">
                 ₱
               </span>
             </div>
@@ -262,7 +262,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#F2C0CA] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-9 h-9 rounded-2xl bg-[#F2C0CA] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Shield className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -347,7 +347,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 data-testid="autolock-select"
                 value={security.autoLockMinutes}
                 onChange={(e) => security.setAutoLockMinutes(Number(e.target.value))}
-                className="px-3 py-1.5 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron px-3 py-1.5 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               >
                 <option value="0">Off (Never)</option>
                 <option value="1">1 minute</option>
@@ -363,7 +363,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#A6CFF2] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-9 h-9 rounded-2xl bg-[#A6CFF2] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Download className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -423,7 +423,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#DAE097] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-9 h-9 rounded-2xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Sparkles className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -435,7 +435,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {demoLoadedBanner && (
               <div
                 data-testid="demo-loaded-banner"
-                className="p-3 bg-[#DAE097]/40 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] flex items-center gap-2 text-xs font-bold text-dark-forest"
+                className="p-3 bg-[#DAE097]/40 border border-[#124224]/30 rounded-2xl shadow-sm flex items-center gap-2 text-xs font-bold text-dark-forest"
               >
                 <CheckCircle2 className="w-4 h-4 text-dark-forest flex-shrink-0" />
                 <span>18 realistic Philippine sample transactions loaded successfully!</span>
@@ -445,7 +445,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {resetSuccessBanner && (
               <div
                 data-testid="reset-success-banner"
-                className="p-3 bg-stone-100 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] flex items-center gap-2 text-xs font-bold text-stone-800"
+                className="p-3 bg-stone-100 border border-stone-800/20 rounded-2xl shadow-sm flex items-center gap-2 text-xs font-bold text-stone-800"
               >
                 <CheckCircle2 className="w-4 h-4 text-stone-700 flex-shrink-0" />
                 <span>Vault reset complete. Database is clean and ready for fresh setup.</span>
@@ -476,7 +476,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             ) : (
               <div
                 data-testid="confirm-load-demo-prompt"
-                className="p-4 bg-[#FFED9E]/40 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] space-y-2.5"
+                className="p-4 bg-[#FFED9E]/30 border border-amber-800/20 rounded-2xl shadow-sm space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-bold text-[#111111]">
                   <AlertTriangle className="w-4 h-4 text-amber-700 flex-shrink-0" />
@@ -535,7 +535,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {resetStep === 1 && (
               <div
                 data-testid="reset-step1-prompt"
-                className="p-4 bg-[#F2C0CA]/30 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] space-y-2.5"
+                className="p-4 bg-[#F2C0CA]/30 border border-rose-800/20 rounded-2xl shadow-sm space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-bold text-rose-900">
                   <AlertTriangle className="w-4 h-4 text-rose-700 flex-shrink-0" />
@@ -567,7 +567,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {resetStep === 2 && (
               <div
                 data-testid="reset-step2-prompt"
-                className="p-4 bg-rose-100 border-2 border-rose-800 rounded-2xl shadow-[3px_3px_0px_0px_#991b1b] space-y-2.5 animate-pulse"
+                className="p-4 bg-rose-100/80 border border-rose-400 rounded-2xl shadow-sm space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-extrabold text-rose-950">
                   <AlertTriangle className="w-4 h-4 text-rose-800 flex-shrink-0" />
@@ -588,7 +588,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <Button
                     variant="primary"
                     size="sm"
-                    className="bg-rose-800 hover:bg-rose-900 text-white border-2 border-rose-950 shadow-none"
+                    className="bg-rose-800 hover:bg-rose-900 text-white border border-rose-950 shadow-sm"
                     data-testid="confirm-reset-final-btn"
                     isLoading={isResetting}
                     onClick={handleConfirmResetFinal}

@@ -29,7 +29,7 @@ export const SparkleStar: React.FC<StickerIconProps> = ({
     className={className}
     {...props}
   >
-    <path d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z" />
+    <polygon points="12,2 14.8,9.2 22,12 14.8,14.8 12,22 9.2,14.8 2,12 9.2,9.2" />
   </svg>
 );
 

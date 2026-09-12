@@ -85,7 +85,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   return (
     <div
       data-testid={`account-card-${account.id}`}
-      className={`bg-[#FFFDF9] rounded-3xl border-2 border-[#111111] p-5 shadow-[4px_4px_0px_0px_#111111] flex flex-col justify-between transition-transform hover:-translate-y-0.5 relative overflow-hidden ${className}`}
+      className={`bg-[#FFFDF9] rounded-3xl border border-stone-800/15 p-5 shadow-sm flex flex-col justify-between transition-all hover:shadow relative overflow-hidden ${className}`}
     >
       {/* Top Section: Icon, Name & Type Badge */}
       <div>
@@ -94,7 +94,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
             {/* Account Icon */}
             <div
               data-testid={`account-icon-${account.id}`}
-              className={`w-11 h-11 rounded-2xl border-2 border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_#111111] flex-shrink-0 ${
+              className={`w-11 h-11 rounded-2xl border border-stone-800/15 flex items-center justify-center shadow-sm flex-shrink-0 ${
                 isDarkColor ? 'text-[#F7F2E8]' : 'text-[#111111]'
               }`}
               style={{ backgroundColor: account.color }}
@@ -122,7 +122,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
 
         {/* Middle Section: Running Balance */}
         <div className="my-3 pt-2">
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block mb-0.5">
+          <span className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-0.5">
             Current Balance
           </span>
           <AmountDisplay
@@ -136,7 +136,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         {/* Initial Balance Note */}
         <div
           data-testid={`account-initial-balance-${account.id}`}
-          className="text-xs text-stone-500 font-medium mb-4"
+          className="text-xs text-stone-600 font-medium mb-4"
         >
           <span>Initial: </span>
           <span className="font-mono font-semibold text-stone-700">

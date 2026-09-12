@@ -11,7 +11,6 @@ import {
 } from '../../domain/calculations';
 import { Button } from '../ui/Button';
 import { BentoCard } from '../ui/BentoCard';
-import { Starburst } from '../ui/StickerIcons';
 import { NetWorthCard } from './NetWorthCard';
 import { CashflowBento } from './CashflowBento';
 import { BudgetQuickMeter } from './BudgetQuickMeter';
@@ -26,9 +25,7 @@ export interface DashboardViewProps {
 }
 
 /**
- * DashboardView: Main Bento Hub dashboard view featuring live Net Worth calculation,
- * monthly Cashflow breakdown (Income vs Expense), Category Budget meters, and Recent Activity
- * using Dexie reactive live queries (useLiveQuery).
+ * Main dashboard view showing net worth, monthly cashflow, category budgets, and recent activity.
  */
 export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateTab,
@@ -80,7 +77,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#111111] tracking-tight">
-              Kumusta! Here's your financial wellness overview.
+              Kumusta, here's what's happening with your money.
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
@@ -121,13 +118,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <BentoCard
             variant="butter"
             sticker={
-              <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border-2 border-stone-800 flex items-center justify-center shadow-[2px_2px_0px_0px_#111111]">
-                <Starburst className="w-6 h-6 text-[#111111]" fill="#FFED9E" stroke="#111111" />
+              <div className="w-10 h-10 rounded-xl bg-amber-200/70 border border-amber-400/40 flex items-center justify-center shadow-sm">
+                <Database className="w-5 h-5 text-amber-900" />
               </div>
             }
-            title="Ready to start your financial journey?"
-            subtitle="Your offline ledger is clean and ready"
-            className="shadow-[4px_4px_0px_0px_#111111]"
+            title="Ready to record your first transaction?"
+            subtitle="Your offline ledger is clean and ready."
+            className="border-amber-300/40"
           >
             <div className="max-w-2xl mt-2 space-y-4">
               <p className="text-sm sm:text-base text-stone-800 font-normal leading-relaxed">
@@ -184,15 +181,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           />
 
           {/* Row 2: 2-Column Bento Grid (Cashflow & Budget Meter) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+            <div className="md:col-span-1 lg:col-span-7">
               <CashflowBento
                 cashflow={cashflow}
                 monthName={monthName}
               />
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="md:col-span-1 lg:col-span-5">
               <BudgetQuickMeter
                 categories={categories}
                 spending={spending}
