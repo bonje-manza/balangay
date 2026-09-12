@@ -101,7 +101,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
       variant="oat"
       title="Spending Breakdown"
       subtitle={monthName ? `Expenses for ${monthName}` : 'Monthly expense distribution'}
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={`shadow-sm ${className}`}
       data-testid="spending-breakdown-card"
     >
       {isEmpty ? (
@@ -109,7 +109,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
           className="py-10 px-4 text-center flex flex-col items-center justify-center space-y-3"
           data-testid="spending-chart-empty"
         >
-          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border-2 border-stone-800 flex items-center justify-center shadow-[2px_2px_0px_0px_#111111]">
+          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
             <PieChartIcon className="w-7 h-7 text-[#111111]" />
           </div>
           <h4 className="font-serif font-bold text-base sm:text-lg text-[#111111]">
@@ -202,7 +202,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
                   role="listitem"
                   className={`flex items-center justify-between p-2.5 rounded-2xl border transition-all cursor-pointer ${
                     isHovered
-                      ? 'bg-stone-100 border-stone-800 shadow-[1px_1px_0px_0px_#111111]'
+                      ? 'bg-stone-100 border-stone-800/40 shadow-sm'
                       : 'bg-stone-50/70 border-stone-800/10 hover:border-stone-800/30'
                   }`}
                   onMouseEnter={() => setHoveredCategoryId(item.category.id)}

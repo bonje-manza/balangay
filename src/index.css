@@ -15,6 +15,26 @@ body {
   min-height: 100vh;
 }
 
+::selection {
+  background-color: #FFED9E;
+  color: #111111;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(17, 17, 17, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 17, 17, 0.3);
+}
+
 @keyframes shake {
   0%, 100% {
     transform: translateX(0);

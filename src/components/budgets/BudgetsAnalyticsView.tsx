@@ -172,7 +172,6 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
             icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
             onClick={handleOpenNewBudget}
             data-testid="quick-set-budget-btn"
-            className="shadow-[3px_3px_0px_0px_#111111]"
           >
             Set Budget
           </Button>
@@ -180,7 +179,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
       </header>
 
       {/* Month/Year Navigator Bar */}
-      <div className="flex items-center justify-between bg-[#FFFDF9] rounded-2xl border-2 border-stone-800 px-3.5 py-2 shadow-[3px_3px_0px_0px_#111111]">
+      <div className="flex items-center justify-between bg-[#FFFDF9] rounded-2xl border border-stone-800/15 px-3.5 py-2 shadow-sm">
         <div className="flex items-center gap-1.5">
           <button
             type="button"
@@ -229,7 +228,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-10 h-10 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-10 h-10 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
               <TrendingDown className="w-5 h-5 text-[#111111]" />
             </div>
           }
@@ -240,7 +239,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
               overallProgress.isOverBudget ? (
                 <StickerBadge
                   variant="blossom"
-                  rotation="right"
+                  rotation="none"
                   icon={<AlertTriangle className="w-3 h-3 text-[#9E2A3B]" />}
                   data-testid="hero-badge-over"
                 >
@@ -249,7 +248,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
               ) : overallProgress.isWarning ? (
                 <StickerBadge
                   variant="butter"
-                  rotation="tilt-left"
+                  rotation="none"
                   icon={<AlertCircle className="w-3 h-3 text-[#111111]" />}
                   data-testid="hero-badge-warning"
                 >
@@ -258,7 +257,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
               ) : (
                 <StickerBadge
                   variant="pistachio"
-                  rotation="flat"
+                  rotation="none"
                   data-testid="hero-badge-safe"
                 >
                   On Track
@@ -266,7 +265,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
               )
             ) : null
           }
-          className="shadow-[4px_4px_0px_0px_#111111]"
+          className="shadow-sm"
         >
           {totalBudgeted === 0 ? (
             <div className="py-6 text-center space-y-2" data-testid="no-budgets-hero">
@@ -286,7 +285,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
             <div className="space-y-4 my-2">
               {/* Stat Counters Grid */}
               <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1 pb-2">
-                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-sm">
                   <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Total Budgeted
                   </span>
@@ -298,7 +297,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
                   </span>
                 </div>
 
-                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-sm">
                   <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Total Spent
                   </span>
@@ -310,7 +309,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
                   </span>
                 </div>
 
-                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-sm">
                   <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Remaining
                   </span>
@@ -401,11 +400,11 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
         {budgetedCategories.length === 0 ? (
           <BentoCard
             variant="oat"
-            className="py-10 text-center shadow-[3px_3px_0px_0px_#111111]"
+            className="py-10 text-center shadow-sm"
             data-testid="no-budgets-empty"
           >
             <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
-              <div className="w-14 h-14 rounded-2xl bg-[#DAE097] border-2 border-stone-800 flex items-center justify-center shadow-[2px_2px_0px_0px_#111111]">
+              <div className="w-14 h-14 rounded-2xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
                 <PieChartIcon className="w-7 h-7 text-[#111111]" />
               </div>
               <h3 className="font-serif font-bold text-lg text-[#111111]">

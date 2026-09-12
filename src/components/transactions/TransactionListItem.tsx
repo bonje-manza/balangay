@@ -103,13 +103,13 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       data-testid={`transaction-item-${transaction.id}`}
-      className={`group bg-[#FFFDF9] hover:bg-[#FFFBF2] text-[#111111] border border-stone-800/15 rounded-2xl p-3.5 sm:p-4 shadow-[2px_2px_0px_0px_#111111] hover:shadow-[3px_3px_0px_0px_#111111] transition-all flex items-center justify-between gap-3 cursor-pointer select-none active:translate-y-0.5 ${className}`}
+      className={`group bg-[#FFFDF9] hover:bg-[#FFFBF2] text-[#111111] border border-stone-800/15 rounded-2xl p-3.5 sm:p-4 shadow-sm hover:shadow transition-all flex items-center justify-between gap-3 cursor-pointer select-none active:translate-y-0.5 ${className}`}
     >
       {/* Left: Pastel circle icon + Title + Account Badge + Mood + Tags */}
       <div className="flex items-center gap-3 min-w-0">
         {/* Category / Transfer Icon in pastel circle */}
         <div
-          className="w-10 h-10 rounded-full border border-stone-800/20 flex items-center justify-center flex-shrink-0 shadow-[1px_1px_0px_0px_#111111]"
+          className="w-10 h-10 rounded-full border border-stone-800/15 flex items-center justify-center flex-shrink-0 shadow-sm"
           style={{ backgroundColor: iconBg }}
           data-testid={`tx-icon-${transaction.id}`}
         >
@@ -132,7 +132,7 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
             {/* Mood Tag Chip */}
             {transaction.mood && (
               <span
-                className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-stone-800/20 text-[#111111] shadow-[1px_1px_0px_0px_#111111]"
+                className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-stone-800/15 text-[#111111] shadow-none"
                 style={{ backgroundColor: getMoodPillColor(transaction.mood) }}
                 data-testid={`tx-mood-${transaction.id}`}
               >

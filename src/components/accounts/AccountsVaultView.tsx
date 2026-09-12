@@ -149,10 +149,10 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
       <section>
         <div
           data-testid="vault-summary-card"
-          className="bg-[#FFFDF9] border-2 border-[#111111] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#111111] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          className="bg-[#FFFDF9] border border-stone-800/15 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#DAE097] border-2 border-[#111111] flex items-center justify-center shadow-[2px_2px_0px_0px_#111111] flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm flex-shrink-0">
               <Wallet className="w-6 h-6 text-[#111111]" />
             </div>
             <div>
@@ -196,8 +196,8 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
               onClick={() => setActiveFilter(opt.type)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer select-none active:translate-y-0.5 border ${
                 isSelected
-                  ? 'bg-[#111111] text-[#F7F2E8] border-[#111111] shadow-[2px_2px_0px_0px_#124224]'
-                  : 'bg-[#FFFDF9] text-stone-700 hover:bg-stone-100 border-stone-800/20 shadow-[1px_1px_0px_0px_#111111]'
+                  ? 'bg-[#111111] text-[#F7F2E8] border-[#111111] shadow-sm'
+                  : 'bg-[#FFFDF9] text-stone-700 hover:bg-stone-100 border-stone-800/20'
               }`}
             >
               {opt.label}
@@ -210,9 +210,9 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
       {filteredAccounts.length === 0 ? (
         <section
           data-testid="accounts-vault-empty-state"
-          className="text-center py-14 px-6 bg-white/70 rounded-3xl border-2 border-stone-800/15 shadow-[4px_4px_0px_0px_#111111] space-y-4"
+          className="text-center py-14 px-6 bg-[#FFFDF9] rounded-3xl border border-stone-800/15 shadow-sm space-y-4"
         >
-          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border-2 border-[#111111] flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#111111]">
+          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center mx-auto shadow-sm">
             <Wallet className="w-7 h-7 text-[#111111]" />
           </div>
 

@@ -259,8 +259,8 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 onClick={() => handleTypeChange(tabType)}
                 className={`py-2 text-xs font-bold capitalize rounded-xl transition-all select-none cursor-pointer ${
                   isSelected
-                    ? 'bg-[#111111] text-[#F7F2E8] shadow-[2px_2px_0px_0px_#124224] border border-[#111111]'
-                    : 'bg-white/80 text-stone-700 hover:bg-white hover:text-stone-900 border border-transparent'
+                    ? 'bg-[#111111] text-[#F7F2E8] shadow-sm'
+                    : 'bg-white/80 text-stone-700 hover:bg-white hover:text-stone-900 border border-stone-200'
                 }`}
               >
                 {tabType}
@@ -295,7 +295,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                   });
                 }
               }}
-              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-xl border border-stone-800/20 text-lg font-bold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm"
             />
           </div>
           {errors.amount && (
@@ -326,7 +326,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                     });
                   }
                 }}
-                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               >
                 {accounts.map((acc) => (
                   <option key={acc.id} value={acc.id}>
@@ -354,7 +354,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                     });
                   }
                 }}
-                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               >
                 {accounts.map((acc) => (
                   <option key={acc.id} value={acc.id}>
@@ -385,7 +385,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 data-testid="transaction-account-select"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
-                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               >
                 {accounts.map((acc) => (
                   <option key={acc.id} value={acc.id}>
@@ -412,7 +412,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                     });
                   }
                 }}
-                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               >
                 <option value="">Select a category</option>
                 {availableCategories.map((cat) => (
@@ -455,7 +455,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 data-testid="transaction-date-input"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               />
             </div>
 
@@ -470,7 +470,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 data-testid="transaction-notes-input"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="w-full px-3.5 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               />
             </div>
 
@@ -485,7 +485,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 data-testid="transaction-tags-input"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="w-full px-3.5 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               />
             </div>
 
@@ -503,10 +503,10 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                       type="button"
                       data-testid={`mood-pill-${m.toLowerCase()}`}
                       onClick={() => setMood(isSelected ? '' : m)}
-                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/25 ${
+                      className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/20 ${
                         isSelected
-                          ? 'shadow-[2px_2px_0px_0px_#111111] scale-105'
-                          : 'opacity-70 hover:opacity-100 shadow-[1px_1px_0px_0px_#111111]'
+                          ? 'shadow-sm scale-105 font-bold'
+                          : 'opacity-70 hover:opacity-100'
                       }`}
                       style={{ backgroundColor: getMoodPillColor(m) }}
                     >

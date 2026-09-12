@@ -150,7 +150,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className={`relative z-10 w-full ${maxWidth} bg-[#FFFDF9] text-[#111111] rounded-3xl border-2 border-[#111111] shadow-[6px_6px_0px_0px_#111111] p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-150 ${className}`}
+        className={`relative z-10 w-full ${maxWidth} bg-[#FFFDF9] text-[#111111] rounded-3xl border border-stone-800/20 shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-150 ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

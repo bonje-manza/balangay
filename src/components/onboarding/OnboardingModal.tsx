@@ -7,10 +7,11 @@ import {
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
+  ShieldCheck,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { StickerBadge } from '../ui/StickerBadge';
-import { SparkleStar, Starburst } from '../ui/StickerIcons';
+import { SparkleStar } from '../ui/StickerIcons';
 import {
   PHILIPPINE_STARTER_ACCOUNTS,
   seedDefaultCategories,
@@ -151,30 +152,26 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
       />
 
       {/* Bento Dialog Box on Oat Milk Canvas */}
-      <div className="relative z-10 w-full max-w-2xl bg-[#F7F2E8] text-[#111111] rounded-3xl border-2 border-[#111111] shadow-[6px_6px_0px_0px_#111111] p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+      <div className="relative z-10 w-full max-w-2xl bg-[#F7F2E8] text-[#111111] rounded-3xl border border-stone-800/20 shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
         {step === 1 ? (
           /* ========================================================== */
           /* STEP 1: Welcome & Currency Confirmation + Demo Trigger      */
           /* ========================================================== */
           <div>
-            {/* Playful Stickers & Badges Header */}
+            {/* Trust Badges Header */}
             <div className="flex items-center justify-between gap-3 mb-4">
               <div className="flex flex-wrap items-center gap-2">
                 <StickerBadge
                   variant="butter"
-                  rotation="tilt-left"
-                  icon={<SparkleStar size={14} className="text-[#111111] fill-[#111111]" />}
+                  rotation="none"
                 >
                   Offline & Private
                 </StickerBadge>
-                <StickerBadge variant="pistachio" rotation="tilt-right">
+                <StickerBadge variant="pistachio" rotation="none">
                   100% Local-First
                 </StickerBadge>
               </div>
-              <Starburst
-                size={28}
-                className="text-[#FFED9E] fill-[#FFED9E] stroke-[#111111] stroke-[1.5] flex-shrink-0"
-              />
+              <ShieldCheck className="w-5 h-5 text-stone-700 flex-shrink-0" />
             </div>
 
             {/* Headline in Fraunces serif */}
@@ -220,7 +217,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             {/* Two Action Pathways */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Path A: One-Click Demo Mode */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-[#FFFDF9] border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] flex flex-col justify-between">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#FFFDF9] border border-stone-800/20 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
@@ -252,7 +249,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Path B: Custom Setup */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-[#FFFDF9] border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] flex flex-col justify-between">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#FFFDF9] border border-stone-800/20 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
@@ -326,10 +323,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                 return (
                   <div
                     key={acc.id}
-                    className={`p-3.5 rounded-2xl border-2 border-[#111111] transition-all flex flex-col justify-between gap-2.5 ${
+                    className={`p-3.5 rounded-2xl border transition-all flex flex-col justify-between gap-2.5 ${
                       isSelected
-                        ? 'bg-[#FFFDF9] shadow-[3px_3px_0px_0px_#111111]'
-                        : 'bg-stone-200/50 opacity-60 border-dashed shadow-none'
+                        ? 'bg-[#FFFDF9] border-stone-800/20 shadow-sm'
+                        : 'bg-stone-200/50 opacity-60 border-stone-800/15 border-dashed shadow-none'
                     }`}
                   >
                     {/* Top Row: Checkbox, Icon, Name */}
@@ -341,10 +338,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                         checked={isSelected}
                         onChange={() => toggleAccount(acc.id)}
                         disabled={Boolean(loadingAction)}
-                        className="w-4 h-4 rounded border-2 border-[#111111] text-[#124224] focus:ring-0 cursor-pointer"
+                        className="w-4 h-4 rounded border border-stone-400 text-[#124224] focus:ring-0 cursor-pointer"
                       />
                       <div
-                        className="w-8 h-8 rounded-xl border border-[#111111] flex items-center justify-center flex-shrink-0"
+                        className="w-8 h-8 rounded-xl border border-stone-800/15 flex items-center justify-center flex-shrink-0 shadow-sm"
                         style={{ backgroundColor: acc.color }}
                       >
                         {renderAccountIcon(acc.icon, 'w-4 h-4 text-[#111111]')}
@@ -363,7 +360,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     </div>
 
                     {/* Bottom Row: Balance Input */}
-                    <div className="flex items-center gap-2 bg-[#F7F2E8] border border-[#111111] rounded-xl px-2.5 py-1.5">
+                    <div className="flex items-center gap-2 bg-[#F7F2E8] border border-stone-800/20 rounded-xl px-2.5 py-1.5">
                       <span className="text-xs font-bold text-stone-600 select-none">₱</span>
                       <input
                         type="number"

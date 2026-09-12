@@ -161,7 +161,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
     >
       <div className="w-full max-w-xs flex flex-col items-center">
         {/* Balangay Logo */}
-        <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border-2 border-[#111111] flex items-center justify-center shadow-[3px_3px_0px_0px_#111111] mb-3">
+        <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center shadow-sm mb-3">
           <Wallet className="w-7 h-7 text-[#111111]" />
         </div>
 
@@ -188,7 +188,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
             if (isErrorState) {
               dotColor = 'bg-[#9E2A3B] border-2 border-[#9E2A3B] scale-110';
             } else if (isFilled) {
-              dotColor = 'bg-[#111111] border-2 border-[#111111] scale-110 shadow-[1px_1px_0px_0px_#111111]';
+              dotColor = 'bg-[#111111] border-2 border-[#111111] scale-110 shadow-sm';
             }
 
             return (
@@ -211,7 +211,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
           ) : null}
         </div>
 
-        {/* 3x4 Tactile Neo-Brutalist Keypad */}
+        {/* 3x4 Tactile Keypad */}
         <div className="grid grid-cols-3 gap-3 w-full mt-2">
           {/* Digits 1 to 9 */}
           {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
@@ -221,7 +221,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
               data-testid={`keypad-${digit}`}
               onClick={() => handleDigit(digit)}
               disabled={isVerifying}
-              className="h-14 sm:h-16 rounded-2xl bg-white hover:bg-stone-50 border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-mono text-xl sm:text-2xl font-black text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
+              className="h-14 sm:h-16 rounded-2xl bg-white hover:bg-stone-50 border border-stone-800/20 shadow-sm active:translate-y-0.5 font-mono text-xl sm:text-2xl font-bold text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
             >
               {digit}
             </button>
@@ -233,7 +233,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
             data-testid="keypad-clear"
             onClick={handleClear}
             disabled={isVerifying}
-            className="h-14 sm:h-16 rounded-2xl bg-[#F2C0CA]/30 hover:bg-[#F2C0CA]/50 border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
+            className="h-14 sm:h-16 rounded-2xl bg-[#F2C0CA]/30 hover:bg-[#F2C0CA]/50 border border-stone-800/20 shadow-sm active:translate-y-0.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
           >
             Clear
           </button>
@@ -244,7 +244,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
             data-testid="keypad-0"
             onClick={() => handleDigit('0')}
             disabled={isVerifying}
-            className="h-14 sm:h-16 rounded-2xl bg-white hover:bg-stone-50 border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-mono text-xl sm:text-2xl font-black text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
+            className="h-14 sm:h-16 rounded-2xl bg-white hover:bg-stone-50 border border-stone-800/20 shadow-sm active:translate-y-0.5 font-mono text-xl sm:text-2xl font-bold text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
           >
             0
           </button>
@@ -256,7 +256,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
             aria-label="Backspace"
             onClick={handleBackspace}
             disabled={isVerifying}
-            className="h-14 sm:h-16 rounded-2xl bg-stone-100 hover:bg-stone-200 border-2 border-[#111111] shadow-[3px_3px_0px_0px_#111111] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
+            className="h-14 sm:h-16 rounded-2xl bg-stone-100 hover:bg-stone-200 border border-stone-800/20 shadow-sm active:translate-y-0.5 text-[#111111] flex items-center justify-center cursor-pointer transition-all disabled:opacity-50"
           >
             <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -287,7 +287,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
         maxWidth="max-w-md"
       >
         <div className="space-y-4">
-          <div className="p-3.5 bg-[#FFED9E]/50 border-2 border-[#111111] rounded-2xl text-xs text-stone-800 leading-relaxed shadow-[2px_2px_0px_0px_#111111]">
+          <div className="p-3.5 bg-[#FFED9E]/30 border border-amber-800/20 rounded-2xl text-xs text-stone-800 leading-relaxed shadow-sm">
             <p className="font-bold text-[#111111] mb-1">Locked out without a PIN?</p>
             Restoring a valid Balangay JSON backup file will restore your financial data and disable the forgotten PIN, granting immediate access to your vault.
           </div>

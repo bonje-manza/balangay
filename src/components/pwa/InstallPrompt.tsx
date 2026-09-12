@@ -80,12 +80,12 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   return (
     <div
       data-testid="pwa-install-banner"
-      className={`w-full bg-[#FFFDF9] border-b-2 border-dark-anchor px-4 py-3 shadow-[0_3px_0px_0px_#111111] ${className}`}
+      className={`w-full bg-[#FFFDF9] border-b border-stone-800/15 px-4 py-3 shadow-sm ${className}`}
     >
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Banner Left Info */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl bg-butter border-2 border-dark-anchor flex items-center justify-center shadow-[2px_2px_0px_0px_#111111] flex-shrink-0">
+          <div className="w-9 h-9 rounded-2xl bg-butter border border-stone-800/20 flex items-center justify-center shadow-sm flex-shrink-0">
             <SparkleStar size={18} className="text-dark-anchor fill-dark-anchor" />
           </div>
           <div className="text-left">
@@ -103,7 +103,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
           <button
             type="button"
             onClick={handleInstall}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#FFED9E] hover:bg-[#FFE57A] border-2 border-dark-anchor text-xs font-black text-dark-anchor shadow-[2px_2px_0px_0px_#111111] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#FFED9E] hover:bg-[#FFE57A] border border-stone-800/20 text-xs font-bold text-dark-anchor shadow-sm active:translate-y-0.5 transition-all cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-dark-anchor stroke-[2.5]" />
             <span>Install App</span>

@@ -269,7 +269,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
       {/* Summary Bar */}
       <div
         data-testid="ledger-summary-bar"
-        className="bg-[#FFFDF9] border-2 border-[#111111] rounded-2xl p-4 sm:p-5 shadow-[3px_3px_0px_0px_#111111] flex flex-wrap items-center justify-between gap-4"
+        className="bg-[#FFFDF9] border border-stone-800/15 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-wrap items-center justify-between gap-4"
       >
         <div className="flex items-center gap-6 flex-wrap">
           <div>
@@ -313,9 +313,9 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
       {filteredTransactions.length === 0 ? (
         <div
           data-testid="empty-state"
-          className="text-center py-12 px-4 bg-white/70 rounded-3xl border-2 border-stone-800/15 shadow-[3px_3px_0px_0px_#111111] space-y-3"
+          className="text-center py-12 px-4 bg-[#FFFDF9] rounded-3xl border border-stone-800/15 shadow-sm space-y-3"
         >
-          <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border border-stone-800/20 flex items-center justify-center mx-auto shadow-[1px_1px_0px_0px_#111111]">
+          <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center mx-auto shadow-sm">
             <FileSpreadsheet className="w-6 h-6 text-[#111111]" />
           </div>
           <div>

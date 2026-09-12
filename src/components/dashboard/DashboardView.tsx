@@ -11,7 +11,6 @@ import {
 } from '../../domain/calculations';
 import { Button } from '../ui/Button';
 import { BentoCard } from '../ui/BentoCard';
-import { Starburst } from '../ui/StickerIcons';
 import { NetWorthCard } from './NetWorthCard';
 import { CashflowBento } from './CashflowBento';
 import { BudgetQuickMeter } from './BudgetQuickMeter';
@@ -119,13 +118,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <BentoCard
             variant="butter"
             sticker={
-              <div className="w-12 h-12 rounded-2xl bg-[#FFED9E] border-2 border-stone-800 flex items-center justify-center shadow-[2px_2px_0px_0px_#111111]">
-                <Starburst className="w-6 h-6 text-[#111111]" fill="#FFED9E" stroke="#111111" />
+              <div className="w-10 h-10 rounded-xl bg-amber-200/70 border border-amber-400/40 flex items-center justify-center shadow-sm">
+                <Database className="w-5 h-5 text-amber-900" />
               </div>
             }
             title="Ready to record your first transaction?"
             subtitle="Your offline ledger is clean and ready."
-            className="shadow-[4px_4px_0px_0px_#111111]"
+            className="border-amber-300/40"
           >
             <div className="max-w-2xl mt-2 space-y-4">
               <p className="text-sm sm:text-base text-stone-800 font-normal leading-relaxed">

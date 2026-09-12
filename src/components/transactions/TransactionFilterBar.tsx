@@ -97,7 +97,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
   return (
     <div
       data-testid="transaction-filter-bar"
-      className={`bg-[#FFFDF9] border-2 border-[#111111] rounded-3xl p-4 sm:p-5 shadow-[4px_4px_0px_0px_#111111] space-y-3 sm:space-y-4 ${className}`}
+      className={`bg-[#FFFDF9] border border-stone-800/15 rounded-3xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4 ${className}`}
     >
       {/* Top Row: Search Bar & Clear Filters */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -112,7 +112,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
             value={filters.search}
             onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
             placeholder="Search notes, tags, or categories..."
-            className="w-full pl-10 pr-10 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-sm text-[#111111] placeholder:text-stone-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#124224] transition-all shadow-[2px_2px_0px_0px_#111111]"
+            className="w-full pl-10 pr-10 py-2.5 bg-white rounded-2xl border border-stone-800/20 text-sm text-[#111111] placeholder:text-stone-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent transition-all shadow-sm"
           />
           {filters.search && (
             <button
@@ -159,8 +159,8 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
                 onClick={() => handleTypeChange(opt.value)}
                 className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 ${
                   isSelected
-                    ? 'bg-[#111111] text-[#F7F2E8] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#124224]'
-                    : 'bg-white text-stone-800 border-2 border-[#111111] hover:bg-stone-100 shadow-[1px_1px_0px_0px_#111111]'
+                    ? 'bg-[#111111] text-[#F7F2E8] border border-[#111111] shadow-sm'
+                    : 'bg-white text-stone-700 border border-stone-800/15 hover:bg-stone-50 hover:border-stone-800/30'
                 }`}
               >
                 {opt.label}
@@ -181,7 +181,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
               aria-label="Filter by account"
               value={filters.accountId || 'all'}
               onChange={(e) => onFilterChange({ ...filters, accountId: e.target.value })}
-              className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border-2 border-[#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
+              className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-semibold bg-white text-stone-800 rounded-xl border border-stone-800/20 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm cursor-pointer"
             >
               <option value="all">All Accounts</option>
               {accounts.map((acc) => (
@@ -200,7 +200,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
                 aria-label="Filter by category"
                 value={filters.categoryId || 'all'}
                 onChange={(e) => onFilterChange({ ...filters, categoryId: e.target.value })}
-                className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border-2 border-[#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
+                className="select-custom-chevron w-full lg:w-auto px-3 py-1.5 text-xs font-semibold bg-white text-stone-800 rounded-xl border border-stone-800/20 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm cursor-pointer"
               >
                 <option value="all">All Categories</option>
                 {availableCategories.map((cat) => (
@@ -214,7 +214,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
 
           {/* Date Range Inputs */}
           <div className="w-full sm:col-span-2 lg:col-span-1 lg:w-auto">
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border-2 border-[#111111] shadow-[1px_1px_0px_0px_#111111] w-full lg:w-auto">
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-stone-800/20 shadow-sm w-full lg:w-auto">
               <Calendar className="w-3.5 h-3.5 text-stone-600 flex-shrink-0" />
               <input
                 type="date"

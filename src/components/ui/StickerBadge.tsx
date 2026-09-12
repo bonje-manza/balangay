@@ -41,7 +41,7 @@ export const StickerBadge: React.FC<StickerBadgeProps> = ({
 }) => {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold tracking-tight transition-transform duration-150 select-none shadow-[1px_1px_0px_0px_#111111] ${variantStyles[variant]} ${rotationStyles[rotation]} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-semibold tracking-tight transition-transform duration-150 select-none shadow-sm ${variantStyles[variant]} ${rotationStyles[rotation]} ${className}`}
       {...rest}
     >
       {icon && <span className="flex-shrink-0 flex items-center justify-center">{icon}</span>}

@@ -55,7 +55,7 @@ export const Toast: React.FC<ToastProps> = ({
       role="status"
       aria-live="polite"
       data-testid="toast-notification"
-      className={`fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:bottom-20 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] sm:max-w-md bg-[#111111] text-[#F7F2E8] border-2 border-[#111111] rounded-2xl px-4 py-2.5 shadow-[4px_4px_0px_0px_#124224] flex items-center justify-between gap-3 text-xs font-bold transition-all select-none ${className}`}
+      className={`fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:bottom-20 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] sm:max-w-md bg-[#111111] text-[#F7F2E8] border border-stone-800 rounded-2xl px-4 py-2.5 shadow-xl shadow-black/25 flex items-center justify-between gap-3 text-xs font-semibold transition-all select-none ${className}`}
     >
       <div className="flex items-center gap-2.5 min-w-0">
         <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${iconBg}`}>

@@ -212,7 +212,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             >
               Select CSV Statement
             </label>
-            <div className="relative border-2 border-dashed border-[#111111] hover:border-dark-forest rounded-2xl p-4 sm:p-5 bg-white text-center cursor-pointer transition-colors shadow-[2px_2px_0px_0px_#111111]">
+            <div className="relative border border-dashed border-stone-800/30 hover:border-stone-800 rounded-2xl p-4 sm:p-5 bg-white text-center cursor-pointer transition-colors shadow-sm">
               <input
                 id="csv-file-upload"
                 ref={fileInputRef}
@@ -224,7 +224,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
-                <div className="w-10 h-10 rounded-xl bg-[#DAE097] border border-[#111111] flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
+                <div className="w-10 h-10 rounded-xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
                   <FileSpreadsheet className="w-5 h-5 text-[#111111]" />
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-[#111111]">
@@ -244,7 +244,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         {errorMessage && (
           <div
             data-testid="csv-error-message"
-            className="p-3.5 bg-[#F2C0CA]/30 border-2 border-[#111111] rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-[2px_2px_0px_0px_#111111]"
+            className="p-3.5 bg-[#F2C0CA]/30 border border-rose-300 rounded-2xl flex items-start gap-2.5 text-xs font-bold text-rose-900 shadow-sm"
           >
             <XCircle className="w-4 h-4 text-rose-700 flex-shrink-0 mt-0.5" />
             <span className="leading-snug">{errorMessage}</span>
@@ -255,7 +255,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         {rowCount > 0 && !hasImportedSuccessfully && (
           <div
             data-testid="csv-preview-summary"
-            className="p-3.5 bg-[#FFED9E]/40 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] flex items-center justify-between"
+            className="p-3.5 bg-[#FFED9E]/30 border border-amber-400/40 rounded-2xl shadow-sm flex items-center justify-between"
           >
             <div className="flex items-center gap-2">
               <FileSpreadsheet className="w-4 h-4 text-dark-forest" />
@@ -270,7 +270,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
                 transaction row{rowCount === 1 ? '' : 's'} to import
               </span>
             </div>
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-[#111111] font-bold text-[#111111]">
+            <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-stone-800/20 font-bold text-[#111111]">
               Ready
             </span>
           </div>
@@ -282,9 +282,9 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             {importResult.imported > 0 && (
               <div
                 data-testid="csv-success-banner"
-                className="p-4 bg-[#DAE097]/40 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] flex items-center gap-3"
+                className="p-4 bg-[#DAE097]/40 border border-[#124224]/30 rounded-2xl shadow-sm flex items-center gap-3"
               >
-                <div className="w-9 h-9 rounded-xl bg-[#DAE097] border border-[#111111] flex items-center justify-center shadow-[1px_1px_0px_0px_#111111] flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm flex-shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-dark-forest" />
                 </div>
                 <div>
@@ -302,7 +302,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             {importResult.errors && importResult.errors.length > 0 && (
               <div
                 data-testid="csv-errors-list"
-                className="p-3 bg-[#F2C0CA]/30 border-2 border-[#111111] rounded-2xl shadow-[2px_2px_0px_0px_#111111] space-y-1.5"
+                className="p-3 bg-[#F2C0CA]/30 border border-rose-300 rounded-2xl shadow-sm space-y-1.5"
               >
                 <div className="flex items-center gap-1.5 text-xs font-bold text-rose-900">
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-700" />

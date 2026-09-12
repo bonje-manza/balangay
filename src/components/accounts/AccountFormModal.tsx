@@ -216,7 +216,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
                 type="button"
                 data-testid={`preset-btn-${preset.presetKey}`}
                 onClick={() => handleApplyPreset(preset)}
-                className="px-2.5 py-1 text-xs font-bold rounded-xl border border-stone-800/20 bg-stone-100 hover:bg-[#FFED9E] text-stone-800 hover:border-[#111111] transition-all cursor-pointer select-none active:translate-y-0.5 shadow-[1px_1px_0px_0px_#111111]"
+                className="px-2.5 py-1 text-xs font-semibold rounded-xl border border-stone-800/15 bg-stone-100/70 hover:bg-[#FFED9E] text-stone-800 hover:border-stone-800/30 transition-all cursor-pointer select-none active:translate-y-0.5 shadow-sm"
               >
                 {preset.name}
               </button>
@@ -244,7 +244,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
                 });
               }
             }}
-            className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+            className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-stone-800/20 text-sm font-semibold text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm"
           />
           {errors.name && (
             <p data-testid="account-name-error" className="text-xs font-bold text-rose-600 mt-1">
@@ -262,7 +262,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
             data-testid="account-type-select"
             value={type}
             onChange={(e) => setType(e.target.value as AccountType)}
-            className="select-custom-chevron w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-900 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="select-custom-chevron w-full px-3.5 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
           >
             <option value="bank">Bank</option>
             <option value="ewallet">E-Wallet</option>
@@ -288,7 +288,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
               data-testid="account-balance-input"
               value={initialBalance}
               onChange={(e) => setInitialBalance(e.target.value)}
-              className="w-full pl-8 pr-4 py-2 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-8 pr-4 py-2 bg-white rounded-xl border border-stone-800/20 text-sm font-semibold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm"
             />
           </div>
         </div>
@@ -309,10 +309,10 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
                   title={c.label}
                   data-testid={`color-option-${c.value}`}
                   onClick={() => setColor(c.value)}
-                  className={`w-8 h-8 rounded-xl border-2 border-[#111111] flex items-center justify-center transition-all cursor-pointer ${
+                  className={`w-8 h-8 rounded-xl border border-stone-800/20 flex items-center justify-center transition-all cursor-pointer ${
                     isSelected
-                      ? 'scale-110 shadow-[2px_2px_0px_0px_#111111] ring-2 ring-offset-2 ring-[#124224]'
-                      : 'hover:scale-105 shadow-[1px_1px_0px_0px_#111111]'
+                      ? 'scale-110 shadow-md ring-2 ring-offset-2 ring-[#124224]'
+                      : 'hover:scale-105 shadow-sm'
                   }`}
                   style={{ backgroundColor: c.value }}
                 >
@@ -345,10 +345,10 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
                   title={item.label}
                   data-testid={`icon-option-${item.name}`}
                   onClick={() => setIcon(item.name)}
-                  className={`h-10 rounded-xl border-2 border-[#111111] flex items-center justify-center transition-all cursor-pointer ${
+                  className={`h-10 rounded-xl border border-stone-800/20 flex items-center justify-center transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#111111] text-[#F7F2E8] shadow-[2px_2px_0px_0px_#124224] scale-105'
-                      : 'bg-white text-stone-700 hover:bg-stone-100 shadow-[1px_1px_0px_0px_#111111]'
+                      ? 'bg-[#111111] text-[#F7F2E8] shadow-sm scale-105'
+                      : 'bg-white text-stone-700 hover:bg-stone-50 shadow-none'
                   }`}
                 >
                   <IconComp className="w-4 h-4" />

@@ -87,8 +87,8 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-10 h-10 rounded-2xl bg-[#A6CFF2] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
-          <History className="w-5 h-5 text-[#111111]" />
+        <div className="w-9 h-9 rounded-xl bg-[#A6CFF2] border border-stone-800/15 flex items-center justify-center shadow-sm">
+          <History className="w-4 h-4 text-[#111111]" />
         </div>
       }
       title="Recent Activity"
@@ -106,7 +106,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
           </Button>
         )
       }
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={className}
       data-testid="recent-activity-bento"
     >
       {recentTransactions.length === 0 ? (
@@ -150,7 +150,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
                 {/* Left: Category Icon + Note/Category + Account Badge + Date */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className="w-9 h-9 rounded-2xl border border-stone-800/15 flex items-center justify-center flex-shrink-0 shadow-[1px_1px_0px_0px_#111111]"
+                    className="w-9 h-9 rounded-xl border border-stone-800/15 flex items-center justify-center flex-shrink-0 shadow-sm"
                     style={{ backgroundColor: iconBg }}
                     data-testid={`tx-icon-${tx.id}`}
                   >

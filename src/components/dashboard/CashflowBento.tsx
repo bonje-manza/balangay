@@ -31,8 +31,8 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-10 h-10 rounded-2xl bg-[#DAE097] border border-stone-800/20 flex items-center justify-center shadow-[1px_1px_0px_0px_#111111]">
-          <ArrowDownLeft className="w-5 h-5 text-[#124224]" />
+        <div className="w-9 h-9 rounded-xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
+          <ArrowDownLeft className="w-4 h-4 text-[#124224]" />
         </div>
       }
       title="Monthly Cashflow"
@@ -49,7 +49,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
           />
         </div>
       }
-      className={`shadow-[3px_3px_0px_0px_#111111] ${className}`}
+      className={className}
       data-testid="cashflow-bento"
     >
       {/* 2-Column Split: Pistachio Income vs Blossom Expense */}

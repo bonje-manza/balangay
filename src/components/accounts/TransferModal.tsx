@@ -140,7 +140,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         {hasInsufficientAccounts && (
           <div
             data-testid="insufficient-accounts-banner"
-            className="p-3 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-center gap-2.5 text-xs font-bold text-amber-900 shadow-[2px_2px_0px_0px_#d97706]"
+            className="p-3 bg-amber-50 border border-amber-300 rounded-2xl flex items-center gap-2.5 text-xs font-semibold text-amber-900 shadow-sm"
           >
             <AlertCircle className="w-4 h-4 text-amber-700 flex-shrink-0" />
             <span>You need at least two accounts to make a transfer.</span>
@@ -173,7 +173,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   });
                 }
               }}
-              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border border-stone-800/20 text-lg font-bold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent shadow-sm"
             />
           </div>
           {errors.amount && (
@@ -184,7 +184,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         </div>
 
         {/* Source and Destination Accounts */}
-        <div className="p-3 bg-stone-100/80 rounded-2xl border-2 border-[#111111]/20 space-y-3">
+        <div className="p-3.5 bg-stone-100/60 rounded-2xl border border-stone-800/15 space-y-3">
           <div>
             <label className="block text-xs font-bold text-stone-800 mb-1">
               From (Source Account) *
@@ -193,7 +193,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
               data-testid="transfer-from-account-select"
               value={fromAccountId}
               onChange={(e) => handleFromAccountChange(e.target.value)}
-              className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+              className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
             >
               <option value="">Select source account</option>
               {accounts.map((acc) => (
@@ -213,7 +213,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="w-7 h-7 rounded-full bg-white border border-[#111111] flex items-center justify-center text-stone-600 shadow-[1px_1px_0px_0px_#111111]">
+            <div className="w-7 h-7 rounded-full bg-white border border-stone-800/20 flex items-center justify-center text-stone-600 shadow-sm">
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -236,7 +236,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   });
                 }
               }}
-              className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+              className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
             >
               <option value="">Select destination account</option>
               {destinationAccounts.map((acc) => (
@@ -281,7 +281,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                 });
               }
             }}
-            className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="w-full px-3 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-semibold text-stone-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
           />
           {errors.date && (
             <p data-testid="transfer-date-error" className="text-xs font-bold text-rose-600 mt-1">
@@ -301,7 +301,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             data-testid="transfer-notes-input"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="w-full px-3.5 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-normal text-stone-900 placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
           />
         </div>
 
@@ -319,10 +319,10 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   type="button"
                   data-testid={`transfer-mood-${item.name.toLowerCase()}`}
                   onClick={() => setMood(isSelected ? '' : item.name)}
-                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/25 ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/20 ${
                     isSelected
-                      ? 'shadow-[2px_2px_0px_0px_#111111] scale-105'
-                      : 'opacity-70 hover:opacity-100 shadow-[1px_1px_0px_0px_#111111]'
+                      ? 'ring-2 ring-[#124224] ring-offset-1 font-bold shadow-sm'
+                      : 'opacity-70 hover:opacity-100 shadow-none'
                   }`}
                   style={{ backgroundColor: item.color }}
                 >
