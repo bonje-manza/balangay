@@ -55,7 +55,7 @@ describe('TransferModal Component (TDD)', () => {
     await db.accounts.bulkAdd(testAccounts);
   });
 
-  describe('Validation', () => {
+  describe('Validation & Error Rendering', () => {
     it('requires amount > 0 and prevents submission with error message', async () => {
       render(
         <TransferModal
@@ -78,7 +78,7 @@ describe('TransferModal Component (TDD)', () => {
       expect(onSuccess).not.toHaveBeenCalled();
     });
 
-    it('requires different source and destination accounts', async () => {
+    it('renders error messages directly beneath fromAccount, toAccount, and date inputs when unselected', async () => {
       render(
         <TransferModal
           isOpen={true}
@@ -88,29 +88,78 @@ describe('TransferModal Component (TDD)', () => {
         />
       );
 
-      // Fill amount
+      // Fill valid amount
       fireEvent.change(screen.getByTestId('transfer-amount-input'), {
-        target: { value: '1500' },
+        target: { value: '500' },
       });
 
-      // Select same account for source and destination
+      // Clear fromAccount, toAccount, and date
       fireEvent.change(screen.getByTestId('transfer-from-account-select'), {
-        target: { value: 'acc-gcash' },
+        target: { value: '' },
       });
       fireEvent.change(screen.getByTestId('transfer-to-account-select'), {
-        target: { value: 'acc-gcash' },
+        target: { value: '' },
+      });
+      fireEvent.change(screen.getByTestId('transfer-date-input'), {
+        target: { value: '' },
       });
 
       const submitBtn = screen.getByTestId('transfer-submit-btn');
       fireEvent.click(submitBtn);
 
       await waitFor(() => {
-        expect(screen.getByTestId('transfer-accounts-error')).toBeInTheDocument();
+        expect(screen.getByTestId('transfer-from-account-error')).toBeInTheDocument();
+        expect(screen.getByTestId('transfer-to-account-error')).toBeInTheDocument();
+        expect(screen.getByTestId('transfer-date-error')).toBeInTheDocument();
       });
-      expect(screen.getByTestId('transfer-accounts-error')).toHaveTextContent(
-        /source and destination.*must be different/i
-      );
+
+      expect(screen.getByTestId('transfer-from-account-error')).toHaveTextContent(/source account is required/i);
+      expect(screen.getByTestId('transfer-to-account-error')).toHaveTextContent(/destination account is required/i);
+      expect(screen.getByTestId('transfer-date-error')).toHaveTextContent(/date is required/i);
       expect(await db.transactions.count()).toBe(0);
+    });
+
+    it('filters out source account from destination account options to prevent selecting same account', () => {
+      render(
+        <TransferModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          sourceAccountId="acc-bpi"
+          onSuccess={onSuccess}
+        />
+      );
+
+      const destinationSelect = screen.getByTestId('transfer-to-account-select');
+      const options = Array.from(destinationSelect.querySelectorAll('option')).map(
+        (opt) => (opt as HTMLOptionElement).value
+      );
+
+      // Should not contain 'acc-bpi'
+      expect(options).not.toContain('acc-bpi');
+      // Should contain other accounts
+      expect(options).toContain('acc-gcash');
+      expect(options).toContain('acc-maya');
+    });
+  });
+
+  describe('Handling Transfers with Fewer than 2 Accounts', () => {
+    it('displays a friendly banner and disables submit button when fewer than 2 accounts exist', () => {
+      render(
+        <TransferModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={[testAccounts[0]]}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const banner = screen.getByTestId('insufficient-accounts-banner');
+      expect(banner).toBeInTheDocument();
+      expect(banner).toHaveTextContent(/You need at least two accounts to make a transfer/i);
+
+      const submitBtn = screen.getByTestId('transfer-submit-btn');
+      expect(submitBtn).toBeDisabled();
     });
   });
 

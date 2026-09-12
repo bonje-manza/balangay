@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeftRight, Check, ArrowRight } from 'lucide-react';
+import { ArrowLeftRight, Check, ArrowRight, AlertCircle } from 'lucide-react';
 import type { Account, Transaction } from '../../domain/types';
 import { createTransfer } from '../../storage/transactionRepository';
 import { Modal } from '../ui/Modal';
@@ -22,7 +22,7 @@ const MOOD_OPTIONS = [
 /**
  * TransferModal: Fast, dedicated account-to-account funds transfer dialog.
  * Pre-selects source account, validates non-identical endpoints, formats PHP amounts,
- * and atomically persists the transaction through transactionRepository.
+ * filters destination accounts, displays error messages per field, and handles < 2 accounts gracefully.
  */
 export const TransferModal: React.FC<TransferModalProps> = ({
   isOpen,
@@ -40,10 +40,12 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const hasInsufficientAccounts = accounts.length < 2;
+
   // Sync state on open or sourceAccountId change
   useEffect(() => {
     const initialFrom = sourceAccountId || accounts[0]?.id || '';
-    const otherAccount = accounts.find((a) => a.id !== initialFrom)?.id || accounts[1]?.id || '';
+    const otherAccount = accounts.find((a) => a.id !== initialFrom)?.id || '';
 
     setFromAccountId(initialFrom);
     setToAccountId(otherAccount);
@@ -53,6 +55,24 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     setMood('');
     setErrors({});
   }, [sourceAccountId, accounts, isOpen]);
+
+  // Destination accounts excluding source account
+  const destinationAccounts = accounts.filter((acc) => acc.id !== fromAccountId);
+
+  const handleFromAccountChange = (newFromId: string) => {
+    setFromAccountId(newFromId);
+    setErrors((prev) => {
+      const copy = { ...prev };
+      delete copy.fromAccount;
+      delete copy.accounts;
+      return copy;
+    });
+
+    if (toAccountId === newFromId) {
+      const nextDest = accounts.find((a) => a.id !== newFromId)?.id || '';
+      setToAccountId(nextDest);
+    }
+  };
 
   const validate = (): boolean => {
     const errs: Record<string, string> = {};
@@ -82,6 +102,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (hasInsufficientAccounts) return;
     if (!validate()) return;
 
     try {
@@ -115,6 +136,17 @@ export const TransferModal: React.FC<TransferModalProps> = ({
       maxWidth="max-w-md"
     >
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="transfer-form">
+        {/* Banner for fewer than 2 accounts */}
+        {hasInsufficientAccounts && (
+          <div
+            data-testid="insufficient-accounts-banner"
+            className="p-3 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-center gap-2.5 text-xs font-bold text-amber-900 shadow-[2px_2px_0px_0px_#d97706]"
+          >
+            <AlertCircle className="w-4 h-4 text-amber-700 flex-shrink-0" />
+            <span>You need at least two accounts to make a transfer.</span>
+          </div>
+        )}
+
         {/* Amount Input */}
         <div>
           <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
@@ -160,16 +192,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             <select
               data-testid="transfer-from-account-select"
               value={fromAccountId}
-              onChange={(e) => {
-                setFromAccountId(e.target.value);
-                if (errors.accounts) {
-                  setErrors((prev) => {
-                    const copy = { ...prev };
-                    delete copy.accounts;
-                    return copy;
-                  });
-                }
-              }}
+              onChange={(e) => handleFromAccountChange(e.target.value)}
               className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
             >
               <option value="">Select source account</option>
@@ -179,6 +202,14 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                 </option>
               ))}
             </select>
+            {errors.fromAccount && (
+              <p
+                data-testid="transfer-from-account-error"
+                className="text-xs font-bold text-rose-600 mt-1"
+              >
+                {errors.fromAccount}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center justify-center">
@@ -196,9 +227,10 @@ export const TransferModal: React.FC<TransferModalProps> = ({
               value={toAccountId}
               onChange={(e) => {
                 setToAccountId(e.target.value);
-                if (errors.accounts) {
+                if (errors.toAccount || errors.accounts) {
                   setErrors((prev) => {
                     const copy = { ...prev };
+                    delete copy.toAccount;
                     delete copy.accounts;
                     return copy;
                   });
@@ -207,12 +239,20 @@ export const TransferModal: React.FC<TransferModalProps> = ({
               className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
             >
               <option value="">Select destination account</option>
-              {accounts.map((acc) => (
+              {destinationAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
                   {acc.name}
                 </option>
               ))}
             </select>
+            {errors.toAccount && (
+              <p
+                data-testid="transfer-to-account-error"
+                className="text-xs font-bold text-rose-600 mt-1"
+              >
+                {errors.toAccount}
+              </p>
+            )}
           </div>
 
           {errors.accounts && (
@@ -231,9 +271,23 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             type="date"
             data-testid="transfer-date-input"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => {
+              setDate(e.target.value);
+              if (errors.date) {
+                setErrors((prev) => {
+                  const copy = { ...prev };
+                  delete copy.date;
+                  return copy;
+                });
+              }
+            }}
             className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
           />
+          {errors.date && (
+            <p data-testid="transfer-date-error" className="text-xs font-bold text-rose-600 mt-1">
+              {errors.date}
+            </p>
+          )}
         </div>
 
         {/* Notes / Memo */}
@@ -290,6 +344,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
             variant="forest"
             size="sm"
             isLoading={isSubmitting}
+            disabled={isSubmitting || hasInsufficientAccounts}
             icon={<ArrowLeftRight className="w-3.5 h-3.5" />}
             data-testid="transfer-submit-btn"
           >
