@@ -112,8 +112,8 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
       {/* Ratio / Comparison Footer */}
       <div className="mt-4 pt-3.5 border-t border-stone-800/10">
         {!hasCashflow ? (
-          <div className="flex items-center gap-2 text-xs font-medium text-stone-500 italic py-1">
-            <Scale className="w-4 h-4 text-stone-400" />
+          <div className="flex items-center gap-2 text-xs font-medium text-stone-600 italic py-1">
+            <Scale className="w-4 h-4 text-stone-500" />
             <span>No cashflow recorded yet for this period.</span>
           </div>
         ) : income > 0 ? (
@@ -133,7 +133,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
                   {savingsRate}%
                 </span>
               </span>
-              <span className="text-stone-500 font-medium text-[11px]">
+              <span className="text-stone-600 font-medium text-[11px]">
                 {expenseRatio}% spent
               </span>
             </div>

@@ -47,7 +47,7 @@ const AppShell: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#F7F2E8] flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border-2 border-dark-anchor flex items-center justify-center shadow-[3px_3px_0px_0px_#111111] animate-bounce">
+          <div className="w-14 h-14 rounded-2xl bg-[#FFED9E] border-2 border-dark-anchor flex items-center justify-center shadow-[3px_3px_0px_0px_#111111]">
             <Wallet className="w-7 h-7 text-dark-anchor" />
           </div>
           <p className="font-serif font-bold text-lg text-dark-anchor">Balangay Vault</p>

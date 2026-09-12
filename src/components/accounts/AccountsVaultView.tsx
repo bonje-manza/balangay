@@ -156,7 +156,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
               <Wallet className="w-6 h-6 text-[#111111]" />
             </div>
             <div>
-              <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
+              <span className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block">
                 Total Net Worth
               </span>
               <div data-testid="vault-net-worth" className="mt-0.5">
@@ -181,7 +181,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
 
       {/* Account Type Filter Pills */}
       <section className="flex items-center gap-2 overflow-x-auto pb-1 select-none">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-stone-500 uppercase tracking-wider mr-1">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-stone-600 uppercase tracking-wider mr-1">
           <Filter className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Filter:</span>
         </div>

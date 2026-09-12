@@ -149,7 +149,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
 
         {/* Amount Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Amount (PHP) *
           </label>
           <div className="relative flex items-center">
@@ -173,7 +173,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   });
                 }
               }}
-              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
             />
           </div>
           {errors.amount && (
@@ -186,7 +186,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
         {/* Source and Destination Accounts */}
         <div className="p-3 bg-stone-100/80 rounded-2xl border-2 border-[#111111]/20 space-y-3">
           <div>
-            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-stone-800 mb-1">
               From (Source Account) *
             </label>
             <select
@@ -219,7 +219,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-stone-800 mb-1">
               To (Destination Account) *
             </label>
             <select
@@ -264,7 +264,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
 
         {/* Date Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Date *
           </label>
           <input

@@ -205,7 +205,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
       <form onSubmit={handleSubmit} className="space-y-4.5" data-testid="account-form">
         {/* Quick Presets Section (only for new accounts or to quickly auto-populate) */}
         <div>
-          <label className="flex items-center gap-1.5 text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+          <label className="flex items-center gap-1.5 text-xs font-bold text-stone-800 mb-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#124224]" />
             <span>Philippine Favorites Presets</span>
           </label>
@@ -226,7 +226,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
 
         {/* Account Name */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Account Name *
           </label>
           <input
@@ -244,7 +244,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
                 });
               }
             }}
-            className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+            className="w-full px-3.5 py-2.5 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
           />
           {errors.name && (
             <p data-testid="account-name-error" className="text-xs font-bold text-rose-600 mt-1">
@@ -255,7 +255,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
 
         {/* Account Type Selector */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Account Type *
           </label>
           <select
@@ -274,7 +274,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
 
         {/* Initial Balance Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Starting Balance (PHP)
           </label>
           <div className="relative flex items-center">
@@ -288,14 +288,14 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
               data-testid="account-balance-input"
               value={initialBalance}
               onChange={(e) => setInitialBalance(e.target.value)}
-              className="w-full pl-8 pr-4 py-2 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-8 pr-4 py-2 bg-white rounded-xl border-2 border-[#111111] text-sm font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
             />
           </div>
         </div>
 
         {/* Color Picker from Soft Neo-Brutalism Palette */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-bold text-stone-800 mb-1.5">
             Card Accent Color
           </label>
           <div className="flex items-center gap-2">
@@ -331,7 +331,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
 
         {/* Icon Picker */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-bold text-stone-800 mb-1.5">
             Account Icon
           </label>
           <div className="grid grid-cols-6 gap-2">

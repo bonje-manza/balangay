@@ -271,7 +271,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
 
         {/* Amount Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Amount (PHP) *
           </label>
           <div className="relative flex items-center">
@@ -295,7 +295,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                   });
                 }
               }}
-              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
+              className="w-full pl-9 pr-4 py-2.5 bg-white rounded-2xl border-2 border-[#111111] text-lg font-bold font-mono text-[#111111] placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[2px_2px_0px_0px_#111111]"
             />
           </div>
           {errors.amount && (
@@ -309,7 +309,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
         {type === 'transfer' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-stone-800 mb-1">
                 From Account *
               </label>
               <select
@@ -337,7 +337,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-stone-800 mb-1">
                 To Account *
               </label>
               <select
@@ -378,7 +378,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-stone-800 mb-1">
                 Account *
               </label>
               <select
@@ -396,7 +396,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-stone-800 mb-1">
                 Category *
               </label>
               <select
@@ -432,7 +432,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
 
         {/* Date Picker */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Date *
           </label>
           <input
@@ -446,7 +446,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
 
         {/* Notes / Memo Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Notes / Memo
           </label>
           <input
@@ -455,13 +455,13 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             data-testid="transaction-notes-input"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
           />
         </div>
 
         {/* Tags Input */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-stone-800 mb-1">
             Tags (comma-separated)
           </label>
           <input
@@ -470,13 +470,13 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             data-testid="transaction-tags-input"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
           />
         </div>
 
         {/* Mood Selector Pill Picker */}
         <div>
-          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-bold text-stone-800 mb-1.5">
             Mood Tag
           </label>
           <div className="flex items-center gap-2 flex-wrap">

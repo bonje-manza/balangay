@@ -99,7 +99,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
     >
       {budgeted.length === 0 ? (
         <div className="py-6 text-center">
-          <p className="text-xs text-stone-500 italic">
+          <p className="text-xs text-stone-600 italic">
             No category budgets set yet. Set limits in the Budgets tab to track your spending.
           </p>
         </div>
@@ -146,7 +146,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
                     >
                       {Math.round(percent)}%
                     </span>
-                    <span className="text-[11px] font-medium text-stone-500">
+                    <span className="text-[11px] font-medium text-stone-600">
                       {isOverBudget ? (
                         <span className="text-[#9E2A3B] font-semibold">
                           +{formatPHP(Math.abs(remaining))} over
@@ -174,7 +174,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
                 </div>
 
                 {/* Bottom caption: Spent of Limit */}
-                <div className="flex items-center justify-between text-[11px] text-stone-500 font-medium">
+                <div className="flex items-center justify-between text-[11px] text-stone-600 font-medium">
                   <span>
                     Spent:{' '}
                     <strong className="text-stone-800 font-mono font-semibold">

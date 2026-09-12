@@ -172,7 +172,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
               className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center p-3"
               data-testid="donut-center-display"
             >
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-stone-600">
                 Total Expenses
               </span>
               <span
@@ -181,7 +181,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
               >
                 {formatPHP(computedTotal)}
               </span>
-              <span className="text-[10px] font-bold text-stone-500 mt-0.5">
+              <span className="text-[10px] font-bold text-stone-600 mt-0.5">
                 {items.length} {items.length === 1 ? 'category' : 'categories'}
               </span>
             </div>
@@ -226,7 +226,7 @@ export const SpendingBreakdownChart: React.FC<SpendingBreakdownChartProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0 pl-2">
-                    <span className="text-[11px] font-mono font-bold text-stone-500">
+                    <span className="text-[11px] font-mono font-bold text-stone-600">
                       {item.percentage}%
                     </span>
                     <span className="text-xs font-mono font-bold text-stone-900">

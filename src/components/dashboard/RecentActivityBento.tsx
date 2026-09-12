@@ -111,7 +111,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
     >
       {recentTransactions.length === 0 ? (
         <div className="py-8 text-center" data-testid="recent-activity-empty">
-          <p className="text-xs text-stone-500 italic">
+          <p className="text-xs text-stone-600 italic">
             No recent transactions yet. Add a transaction to see your activity here.
           </p>
         </div>
@@ -177,7 +177,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-[11px] text-stone-500 mt-0.5 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-[11px] text-stone-600 mt-0.5 flex-wrap">
                       {secondaryCategory && (
                         <>
                           <span className="font-medium text-stone-600">

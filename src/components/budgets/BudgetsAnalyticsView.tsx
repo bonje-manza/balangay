@@ -270,7 +270,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
         >
           {totalBudgeted === 0 ? (
             <div className="py-6 text-center space-y-2" data-testid="no-budgets-hero">
-              <p className="text-xs text-stone-500 font-medium">
+              <p className="text-xs text-stone-600 font-medium">
                 No monthly budgets set yet. Set spending caps for your categories to view overall budget progress.
               </p>
               <Button
@@ -285,37 +285,37 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
           ) : (
             <div className="space-y-4 my-2">
               {/* Stat Counters Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 pb-2">
-                <div className="bg-[#F7F2E8] p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
-                  <span className="text-xs text-stone-500 font-medium block">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1 pb-2">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                  <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Total Budgeted
                   </span>
                   <span
-                    className="font-serif font-black text-lg sm:text-xl text-stone-900 block mt-0.5"
+                    className="font-serif font-black text-sm sm:text-xl text-stone-900 block mt-0.5 truncate"
                     data-testid="hero-total-budgeted"
                   >
                     {formatPHP(totalBudgeted)}
                   </span>
                 </div>
 
-                <div className="bg-[#F7F2E8] p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
-                  <span className="text-xs text-stone-500 font-medium block">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                  <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Total Spent
                   </span>
                   <span
-                    className="font-serif font-black text-lg sm:text-xl text-stone-900 block mt-0.5"
+                    className="font-serif font-black text-sm sm:text-xl text-stone-900 block mt-0.5 truncate"
                     data-testid="hero-total-spent"
                   >
                     {formatPHP(totalSpent)}
                   </span>
                 </div>
 
-                <div className="bg-[#F7F2E8] p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
-                  <span className="text-xs text-stone-500 font-medium block">
+                <div className="bg-[#F7F2E8] p-2.5 sm:p-3.5 rounded-2xl border border-stone-800/15 shadow-[1px_1px_0px_0px_#111111]">
+                  <span className="text-[11px] sm:text-xs text-stone-600 font-medium block truncate">
                     Remaining
                   </span>
                   <span
-                    className={`font-serif font-black text-lg sm:text-xl block mt-0.5 ${
+                    className={`font-serif font-black text-sm sm:text-xl block mt-0.5 truncate ${
                       overallProgress.remaining < 0
                         ? 'text-[#9E2A3B]'
                         : 'text-[#124224]'
@@ -323,7 +323,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
                     data-testid="hero-total-remaining"
                   >
                     {overallProgress.remaining < 0
-                      ? `${formatPHP(Math.abs(overallProgress.remaining))} over budget`
+                      ? `${formatPHP(Math.abs(overallProgress.remaining))} over`
                       : `${formatPHP(overallProgress.remaining)} left`}
                   </span>
                 </div>

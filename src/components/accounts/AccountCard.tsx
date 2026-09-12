@@ -122,7 +122,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
 
         {/* Middle Section: Running Balance */}
         <div className="my-3 pt-2">
-          <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block mb-0.5">
+          <span className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-0.5">
             Current Balance
           </span>
           <AmountDisplay
@@ -136,7 +136,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         {/* Initial Balance Note */}
         <div
           data-testid={`account-initial-balance-${account.id}`}
-          className="text-xs text-stone-500 font-medium mb-4"
+          className="text-xs text-stone-600 font-medium mb-4"
         >
           <span>Initial: </span>
           <span className="font-mono font-semibold text-stone-700">
