@@ -235,6 +235,12 @@
       "skillPath": "skills/engineering/prototype/SKILL.md",
       "computedHash": "62979fe039ef64407b258f8824db41b9185f788638747df803032df4153c2aae"
     },
+    "readme-gen": {
+      "source": "normieg/Readme-gen",
+      "sourceType": "github",
+      "skillPath": "readme-gen/SKILL.md",
+      "computedHash": "fa4f10144d43784d1f885a72d36eb2c357901039610a81e036e3c74ea5024174"
+    },
     "receiving-code-review": {
       "source": "obra/superpowers",
       "sourceType": "github",
