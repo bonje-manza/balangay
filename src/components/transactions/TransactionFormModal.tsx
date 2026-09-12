@@ -164,9 +164,9 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
           toAccountId: type === 'transfer' ? toAccountId : undefined,
           categoryId: type !== 'transfer' ? categoryId : undefined,
           date,
-          notes: notes.trim() || undefined,
-          tags: parsedTags.length > 0 ? parsedTags : undefined,
-          mood: mood || undefined,
+          notes: notes.trim() ? notes.trim() : '',
+          tags: parsedTags,
+          mood: mood || '',
         };
 
         await updateTransaction(transactionToEdit.id, updates);

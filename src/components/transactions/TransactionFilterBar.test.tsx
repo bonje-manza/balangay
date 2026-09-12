@@ -141,6 +141,33 @@ describe('TransactionFilterBar Component', () => {
       type: 'all',
       accountId: 'all',
       categoryId: 'all',
+      startDate: undefined,
+      endDate: undefined,
     });
+  });
+
+  it('updates start date and end date filters', () => {
+    const onFilterChange = vi.fn();
+    render(
+      <TransactionFilterBar
+        filters={defaultFilters}
+        onFilterChange={onFilterChange}
+        accounts={mockAccounts}
+        categories={mockCategories}
+      />
+    );
+
+    const startInput = screen.getByTestId('filter-start-date');
+    const endInput = screen.getByTestId('filter-end-date');
+
+    fireEvent.change(startInput, { target: { value: '2026-09-01' } });
+    expect(onFilterChange).toHaveBeenCalledWith(
+      expect.objectContaining({ startDate: '2026-09-01' })
+    );
+
+    fireEvent.change(endInput, { target: { value: '2026-09-15' } });
+    expect(onFilterChange).toHaveBeenCalledWith(
+      expect.objectContaining({ endDate: '2026-09-15' })
+    );
   });
 });

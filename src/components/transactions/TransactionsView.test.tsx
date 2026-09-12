@@ -261,6 +261,41 @@ describe('TransactionsView Component (TDD)', () => {
     });
   });
 
+  it('filters transactions by date range', async () => {
+    render(<TransactionsView />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Mid-month Salary Payroll')).toBeInTheDocument();
+    });
+
+    const startDateInput = screen.getByTestId('filter-start-date');
+    const endDateInput = screen.getByTestId('filter-end-date');
+
+    // Filter to August 2026 window (contains only tx-4: 2026-08-15)
+    fireEvent.change(startDateInput, { target: { value: '2026-08-01' } });
+    fireEvent.change(endDateInput, { target: { value: '2026-08-31' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Fund GCash for bills')).toBeInTheDocument();
+      expect(screen.queryByText('Mid-month Salary Payroll')).not.toBeInTheDocument();
+      expect(screen.queryByText('Ramen Nagi Lunch')).not.toBeInTheDocument();
+      expect(screen.queryByText('Weekend Grocery Run')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('summary-tx-count')).toHaveTextContent(/1 transaction/i);
+
+    // Filter to today only (tx-1 and tx-2)
+    fireEvent.change(startDateInput, { target: { value: todayStr } });
+    fireEvent.change(endDateInput, { target: { value: todayStr } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Mid-month Salary Payroll')).toBeInTheDocument();
+      expect(screen.getByText('Ramen Nagi Lunch')).toBeInTheDocument();
+      expect(screen.queryByText('Weekend Grocery Run')).not.toBeInTheDocument();
+      expect(screen.queryByText('Fund GCash for bills')).not.toBeInTheDocument();
+    });
+    expect(screen.getByTestId('summary-tx-count')).toHaveTextContent(/2 transactions/i);
+  });
+
   it('displays empty state when no transactions match filters', async () => {
     render(<TransactionsView />);
 

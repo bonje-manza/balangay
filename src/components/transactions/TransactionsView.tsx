@@ -116,6 +116,15 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
           }
         }
 
+        // Date range filter
+        const txDate = tx.date.slice(0, 10);
+        if (filterState.startDate && txDate < filterState.startDate) {
+          return false;
+        }
+        if (filterState.endDate && txDate > filterState.endDate) {
+          return false;
+        }
+
         // Search filter (notes, category name, or tags)
         if (searchLower) {
           const noteMatch = tx.notes?.toLowerCase().includes(searchLower);
@@ -206,7 +215,9 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
     filterState.search ||
       filterState.type !== 'all' ||
       filterState.accountId !== 'all' ||
-      filterState.categoryId !== 'all'
+      filterState.categoryId !== 'all' ||
+      filterState.startDate ||
+      filterState.endDate
   );
 
   return (
@@ -332,6 +343,8 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
                     type: 'all',
                     accountId: 'all',
                     categoryId: 'all',
+                    startDate: undefined,
+                    endDate: undefined,
                   })
                 }
               >

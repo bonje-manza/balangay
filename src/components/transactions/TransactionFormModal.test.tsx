@@ -435,5 +435,61 @@ describe('TransactionFormModal Component (TDD)', () => {
       expect(onDelete).toHaveBeenCalledWith('tx-test-delete');
       expect(onClose).toHaveBeenCalledTimes(1);
     });
+
+    it('clearing optional fields (notes, tags, mood) on edit clears them in database', async () => {
+      const existingTx: Transaction = {
+        id: 'tx-test-clear-fields',
+        amount: 500,
+        type: 'expense',
+        accountId: 'acc-gcash',
+        categoryId: 'cat-food',
+        date: '2026-09-11',
+        notes: 'Coffee with snacks',
+        tags: ['coffee', 'snack'],
+        mood: 'Treat',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      await db.transactions.add(existingTx);
+
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          transactionToEdit={existingTx}
+          accounts={testAccounts}
+          categories={testCategories}
+          onSuccess={onSuccess}
+          onDelete={onDelete}
+        />
+      );
+
+      // Clear notes
+      fireEvent.change(screen.getByTestId('transaction-notes-input'), {
+        target: { value: '' },
+      });
+
+      // Clear tags
+      fireEvent.change(screen.getByTestId('transaction-tags-input'), {
+        target: { value: '' },
+      });
+
+      // Clear mood by clicking the active mood pill
+      fireEvent.click(screen.getByTestId('mood-pill-treat'));
+
+      // Submit update
+      fireEvent.click(screen.getByTestId('transaction-submit-btn'));
+
+      await waitFor(async () => {
+        const updated = await db.transactions.get('tx-test-clear-fields');
+        expect(updated?.notes).toBe('');
+        expect(updated?.tags).toEqual([]);
+        expect(updated?.mood).toBe('');
+      });
+
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
   });
 });

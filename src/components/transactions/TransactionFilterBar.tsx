@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Calendar } from 'lucide-react';
 import type { Account, Category } from '../../domain/types';
 import { Button } from '../ui/Button';
 
@@ -61,6 +61,8 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
         type: 'all',
         accountId: 'all',
         categoryId: 'all',
+        startDate: undefined,
+        endDate: undefined,
       });
     }
   };
@@ -207,6 +209,34 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
             </select>
           </div>
         )}
+
+        {/* Date Range Inputs */}
+        <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-stone-800/30 shadow-[1px_1px_0px_0px_#111111]">
+            <Calendar className="w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
+            <input
+              type="date"
+              data-testid="filter-start-date"
+              aria-label="Filter start date"
+              value={filters.startDate || ''}
+              onChange={(e) =>
+                onFilterChange({ ...filters, startDate: e.target.value || undefined })
+              }
+              className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer"
+            />
+            <span className="text-xs text-stone-400 font-bold px-0.5">to</span>
+            <input
+              type="date"
+              data-testid="filter-end-date"
+              aria-label="Filter end date"
+              value={filters.endDate || ''}
+              onChange={(e) =>
+                onFilterChange({ ...filters, endDate: e.target.value || undefined })
+              }
+              className="text-xs font-semibold text-stone-800 bg-transparent focus:outline-none cursor-pointer"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
