@@ -184,7 +184,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   };
 
   return (
-    <div className={`min-h-screen bg-[#F7F2E8] p-4 sm:p-8 space-y-6 pb-28 ${className}`}>
+    <div className={`min-h-full bg-[#F7F2E8] p-4 sm:p-8 space-y-6 ${className}`}>
       {/* View Header */}
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b-2 border-dark-anchor/10 pb-5">
         <div>
