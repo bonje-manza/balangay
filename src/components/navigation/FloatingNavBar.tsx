@@ -54,11 +54,12 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
         type="button"
         data-testid={`nav-tab-${item.id}`}
         aria-current={isActive ? 'page' : undefined}
+        aria-label={item.label}
         onClick={() => onTabChange(item.id)}
         className={`relative flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full transition-all duration-150 cursor-pointer select-none text-xs font-semibold ${
           isActive
             ? 'bg-stone-800 text-[#FFFDF9] shadow-[1px_1px_0px_0px_#000000]'
-            : 'text-stone-400 hover:text-[#FFFDF9] hover:bg-stone-850'
+            : 'text-stone-400 hover:text-[#FFFDF9] hover:bg-stone-800'
         }`}
       >
         <Icon className="w-4 h-4 flex-shrink-0" />
@@ -70,7 +71,7 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
   return (
     <nav
       aria-label="Bottom Navigation"
-      className={`fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-[95vw] ${className}`}
+      className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-[95vw] ${className}`}
     >
       <div className="bg-[#111111] text-[#F7F2E8] rounded-full border-2 border-stone-700/60 px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1 sm:gap-1.5 shadow-[4px_4px_0px_0px_#124224] backdrop-blur-none">
         {/* Left Navigation Tabs */}

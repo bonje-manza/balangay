@@ -146,7 +146,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
               data-testid="budget-category-select"
               value={categoryId}
               onChange={handleCategoryChange}
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F2E8] border-2 border-stone-800 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111] cursor-pointer shadow-[2px_2px_0px_0px_#111111]"
+              className="select-custom-chevron w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F2E8] border-2 border-stone-800 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111] cursor-pointer shadow-[2px_2px_0px_0px_#111111]"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>

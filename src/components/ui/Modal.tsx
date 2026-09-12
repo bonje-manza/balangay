@@ -14,6 +14,15 @@ export interface ModalProps {
   className?: string;
 }
 
+const FOCUSABLE_SELECTOR = [
+  'button:not([disabled])',
+  '[href]',
+  'input:not([disabled]):not([type="hidden"])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"]):not([disabled])',
+].join(', ');
+
 /**
  * Modal: Accessible dialog modal with soft neo-brutalist bento styling,
  * rounded-3xl corners, hairline crisp borders, and backdrop scrim.
@@ -46,6 +55,61 @@ export const Modal: React.FC<ModalProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, closeOnEscape, onClose]);
+
+  // Focus trap and return focus on close
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const modalElement = modalRef.current;
+    if (!modalElement) return;
+
+    const getFocusableElements = (): HTMLElement[] => {
+      if (!modalElement) return [];
+      return Array.from(modalElement.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+    };
+
+    const focusables = getFocusableElements();
+    if (focusables.length > 0) {
+      focusables[0].focus();
+    } else {
+      modalElement.focus();
+    }
+
+    const handleTrapKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      const elements = getFocusableElements();
+      if (elements.length === 0) {
+        e.preventDefault();
+        return;
+      }
+
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first || !modalElement.contains(document.activeElement)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleTrapKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleTrapKeyDown);
+      if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
+        previouslyFocused.focus();
+      }
+    };
+  }, [isOpen]);
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -82,6 +146,7 @@ export const Modal: React.FC<ModalProps> = ({
       {/* Modal Container */}
       <div
         ref={modalRef}
+        tabIndex={-1}
         className={`relative z-10 w-full ${maxWidth} bg-[#FFFDF9] text-[#111111] rounded-3xl border-2 border-[#111111] shadow-[6px_6px_0px_0px_#111111] p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-150 ${className}`}
         onClick={(e) => e.stopPropagation()}
       >

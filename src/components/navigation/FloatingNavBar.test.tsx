@@ -9,7 +9,9 @@ describe('FloatingNavBar Component', () => {
     render(<FloatingNavBar activeTab="dashboard" onTabChange={vi.fn()} onAddTransaction={vi.fn()} />);
 
     tabs.forEach((tab) => {
-      expect(screen.getByTestId(`nav-tab-${tab}`)).toBeInTheDocument();
+      const button = screen.getByTestId(`nav-tab-${tab}`);
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveAttribute('aria-label');
     });
 
     expect(screen.getByTestId('nav-add-button')).toBeInTheDocument();

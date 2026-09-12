@@ -262,7 +262,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
             data-testid="account-type-select"
             value={type}
             onChange={(e) => setType(e.target.value as AccountType)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-900 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="select-custom-chevron w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-900 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
           >
             <option value="bank">Bank</option>
             <option value="ewallet">E-Wallet</option>

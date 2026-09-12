@@ -109,7 +109,7 @@ const AppShell: React.FC = () => {
       </header>
 
       {/* Active View Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto pb-28">
+      <main className="flex-1 max-w-7xl w-full mx-auto pb-[calc(7rem+env(safe-area-inset-bottom,0px))]">
         {activeTab === 'dashboard' && (
           <DashboardView
             onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}

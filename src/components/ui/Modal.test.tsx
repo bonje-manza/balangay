@@ -63,4 +63,47 @@ describe('Modal Component', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
+
+  it('traps focus inside the modal and restores focus on close', () => {
+    const trigger = document.createElement('button');
+    trigger.setAttribute('data-testid', 'trigger-btn');
+    document.body.appendChild(trigger);
+    trigger.focus();
+    expect(document.activeElement).toBe(trigger);
+
+    const { unmount } = render(
+      <Modal isOpen={true} onClose={vi.fn()} title="Focus Trap Modal">
+        <input data-testid="first-input" />
+        <button data-testid="second-button">Submit</button>
+      </Modal>
+    );
+
+    const closeBtn = screen.getByLabelText(/close modal/i);
+    const firstInput = screen.getByTestId('first-input');
+    const secondBtn = screen.getByTestId('second-button');
+
+    // Initially focused on first focusable element (close button in header)
+    expect(document.activeElement).toBe(closeBtn);
+
+    // Tab from close button to first input
+    fireEvent.keyDown(window, { key: 'Tab' });
+    firstInput.focus();
+
+    // Tab to last element
+    fireEvent.keyDown(window, { key: 'Tab' });
+    secondBtn.focus();
+
+    // Tab from last element wraps around to first element (closeBtn)
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(document.activeElement).toBe(closeBtn);
+
+    // Shift+Tab from first element wraps around to last element (secondBtn)
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(secondBtn);
+
+    // On unmount/close, focus returns to trigger
+    unmount();
+    expect(document.activeElement).toBe(trigger);
+    trigger.remove();
+  });
 });

@@ -347,7 +347,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 data-testid="autolock-select"
                 value={security.autoLockMinutes}
                 onChange={(e) => security.setAutoLockMinutes(Number(e.target.value))}
-                className="px-3 py-1.5 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+                className="select-custom-chevron px-3 py-1.5 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
               >
                 <option value="0">Off (Never)</option>
                 <option value="1">1 minute</option>

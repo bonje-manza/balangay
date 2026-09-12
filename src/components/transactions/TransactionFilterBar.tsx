@@ -160,7 +160,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
                 className={`px-3 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 ${
                   isSelected
                     ? 'bg-[#111111] text-[#F7F2E8] border-2 border-[#111111] shadow-[2px_2px_0px_0px_#124224]'
-                    : 'bg-white text-stone-700 border border-stone-800/25 hover:bg-stone-100 hover:border-stone-800/40 shadow-[1px_1px_0px_0px_#111111]'
+                    : 'bg-white text-stone-800 border-2 border-[#111111] hover:bg-stone-100 shadow-[1px_1px_0px_0px_#111111]'
                 }`}
               >
                 {opt.label}
@@ -179,7 +179,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
             aria-label="Filter by account"
             value={filters.accountId || 'all'}
             onChange={(e) => onFilterChange({ ...filters, accountId: e.target.value })}
-            className="w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border border-stone-800/30 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
+            className="select-custom-chevron w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border-2 border-[#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
           >
             <option value="all">All Accounts</option>
             {accounts.map((acc) => (
@@ -198,7 +198,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
               aria-label="Filter by category"
               value={filters.categoryId || 'all'}
               onChange={(e) => onFilterChange({ ...filters, categoryId: e.target.value })}
-              className="w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border border-stone-800/30 focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
+              className="select-custom-chevron w-full sm:w-auto px-3 py-1.5 text-xs font-bold bg-white text-stone-800 rounded-xl border-2 border-[#111111] focus:outline-none focus:ring-2 focus:ring-[#124224] shadow-[1px_1px_0px_0px_#111111] cursor-pointer"
             >
               <option value="all">All Categories</option>
               {availableCategories.map((cat) => (
@@ -212,7 +212,7 @@ export const TransactionFilterBar: React.FC<TransactionFilterBarProps> = ({
 
         {/* Date Range Inputs */}
         <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
-          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border border-stone-800/30 shadow-[1px_1px_0px_0px_#111111]">
+          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-xl border-2 border-[#111111] shadow-[1px_1px_0px_0px_#111111]">
             <Calendar className="w-3.5 h-3.5 text-stone-500 flex-shrink-0" />
             <input
               type="date"

@@ -186,7 +186,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             value={selectedAccountId}
             disabled={isImporting || hasImportedSuccessfully}
             onChange={(e) => setSelectedAccountId(e.target.value)}
-            className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+            className="select-custom-chevron w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
           >
             {loadedAccounts.length === 0 ? (
               <option value="">No accounts found</option>
