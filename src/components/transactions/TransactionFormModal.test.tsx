@@ -491,5 +491,23 @@ describe('TransactionFormModal Component (TDD)', () => {
       expect(onSuccess).toHaveBeenCalledTimes(1);
       expect(onClose).toHaveBeenCalledTimes(1);
     });
+
+    it('renders progressive disclosure accordion for secondary fields', () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const accordion = screen.getByTestId('transaction-details-accordion');
+      expect(accordion).toBeInTheDocument();
+      expect(screen.getByText(/Additional Details/i)).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-date-input')).toBeInTheDocument();
+      expect(screen.getByTestId('transaction-notes-input')).toBeInTheDocument();
+    });
   });
 });

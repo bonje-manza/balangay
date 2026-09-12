@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Wallet, Delete } from 'lucide-react';
 import { SecurityContext } from '../../context/SecurityContext';
+import { Modal } from '../ui/Modal';
+import { importFullDatabaseJSON } from '../../services/backupService';
+import { saveUserSettings } from '../../storage/settingsRepository';
 
 export interface PinLockScreenProps {
   pinLength?: number;
   onSuccess?: () => void;
+  onEmergencyRestore?: () => void;
   unlock?: (pin: string) => Promise<boolean>;
   title?: string;
   subtitle?: string;
@@ -18,6 +22,7 @@ export interface PinLockScreenProps {
 export const PinLockScreen: React.FC<PinLockScreenProps> = ({
   pinLength = 4,
   onSuccess,
+  onEmergencyRestore,
   unlock,
   title = 'Enter PIN to Unlock',
   subtitle = 'Balangay Offline Vault',
@@ -30,6 +35,47 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [isShaking, setIsShaking] = useState<boolean>(false);
+  const [showEmergencyRestore, setShowEmergencyRestore] = useState<boolean>(false);
+  const [emergencyError, setEmergencyError] = useState<string | null>(null);
+  const [isRestoringBackup, setIsRestoringBackup] = useState<boolean>(false);
+
+  const handleEmergencyFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsRestoringBackup(true);
+    setEmergencyError(null);
+
+    try {
+      const text =
+        typeof file.text === 'function'
+          ? await file.text()
+          : await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = () => reject(reader.error);
+              reader.readAsText(file);
+            });
+
+      await importFullDatabaseJSON(text);
+      await saveUserSettings({
+        pinEnabled: false,
+        pinHash: undefined,
+      });
+
+      if (security?.reloadSecurity) {
+        await security.reloadSecurity();
+      }
+
+      setShowEmergencyRestore(false);
+      onEmergencyRestore?.();
+      onSuccess?.();
+    } catch (err: any) {
+      setEmergencyError(err?.message || 'Invalid backup file. Could not restore.');
+    } finally {
+      setIsRestoringBackup(false);
+    }
+  };
 
   const verifyAttempt = useCallback(
     async (enteredPin: string) => {
@@ -131,7 +177,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
         <div
           data-testid="pin-dots-container"
           className={`flex items-center justify-center gap-4 my-2 transition-transform ${
-            isShaking ? 'animate-bounce' : ''
+            isShaking ? 'animate-shake' : ''
           }`}
         >
           {Array.from({ length: pinLength }).map((_, i) => {
@@ -215,7 +261,64 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
             <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
+
+        {/* Emergency Restore Link */}
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            data-testid="forgot-pin-btn"
+            onClick={() => setShowEmergencyRestore(true)}
+            className="text-xs font-semibold text-stone-500 hover:text-stone-800 underline underline-offset-4 cursor-pointer"
+          >
+            Forgot PIN? Restore from backup file
+          </button>
+        </div>
       </div>
+
+      {/* Emergency Restore Modal */}
+      <Modal
+        isOpen={showEmergencyRestore}
+        onClose={() => {
+          setShowEmergencyRestore(false);
+          setEmergencyError(null);
+        }}
+        title="Emergency Vault Restore"
+        subtitle="Restore from a JSON backup to reset your PIN"
+        maxWidth="max-w-md"
+      >
+        <div className="space-y-4">
+          <div className="p-3.5 bg-[#FFED9E]/50 border-2 border-[#111111] rounded-2xl text-xs text-stone-800 leading-relaxed shadow-[2px_2px_0px_0px_#111111]">
+            <p className="font-bold text-[#111111] mb-1">Locked out without a PIN?</p>
+            Restoring a valid Balangay JSON backup file will restore your financial data and disable the forgotten PIN, granting immediate access to your vault.
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">
+              Select Balangay Backup (.json)
+            </label>
+            <input
+              type="file"
+              accept=".json,application/json"
+              data-testid="emergency-restore-input"
+              disabled={isRestoringBackup}
+              onChange={handleEmergencyFileSelect}
+              className="block w-full text-xs text-stone-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-2 file:border-[#111111] file:text-xs file:font-bold file:bg-[#FFED9E] hover:file:bg-[#ffe67c] file:cursor-pointer file:shadow-[1px_1px_0px_0px_#111111] border-2 border-[#111111] rounded-2xl p-2 bg-white"
+            />
+          </div>
+
+          {emergencyError && (
+            <p role="alert" className="text-xs font-bold text-rose-600">
+              {emergencyError}
+            </p>
+          )}
+
+          {isRestoringBackup && (
+            <p className="text-xs font-medium text-stone-600 animate-pulse">
+              Restoring vault data and resetting PIN...
+            </p>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -56,14 +56,14 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
         aria-current={isActive ? 'page' : undefined}
         aria-label={item.label}
         onClick={() => onTabChange(item.id)}
-        className={`relative flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full transition-all duration-150 cursor-pointer select-none text-xs font-semibold ${
+        className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-150 cursor-pointer select-none text-[10px] sm:text-xs font-semibold ${
           isActive
             ? 'bg-stone-800 text-[#FFFDF9] shadow-[1px_1px_0px_0px_#000000]'
             : 'text-stone-400 hover:text-[#FFFDF9] hover:bg-stone-800'
         }`}
       >
-        <Icon className="w-4 h-4 flex-shrink-0" />
-        <span className="hidden sm:inline">{item.label}</span>
+        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+        <span className="text-[9px] sm:text-xs font-semibold leading-none">{item.label}</span>
       </button>
     );
   };

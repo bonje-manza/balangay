@@ -56,7 +56,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-3">
         {/* Income Card */}
         <div
-          className="bg-[#DAE097] border-2 border-stone-800/20 rounded-2xl p-4 shadow-[2px_2px_0px_0px_#111111] flex flex-col justify-between"
+          className="bg-[#DAE097] border border-stone-800/15 rounded-2xl p-4 flex flex-col justify-between"
           data-testid="cashflow-income-card"
         >
           <div className="flex items-center justify-between mb-1">
@@ -83,7 +83,7 @@ export const CashflowBento: React.FC<CashflowBentoProps> = ({
 
         {/* Expense Card */}
         <div
-          className="bg-[#F2C0CA] border-2 border-stone-800/20 rounded-2xl p-4 shadow-[2px_2px_0px_0px_#111111] flex flex-col justify-between"
+          className="bg-[#F2C0CA] border border-stone-800/15 rounded-2xl p-4 flex flex-col justify-between"
           data-testid="cashflow-expense-card"
         >
           <div className="flex items-center justify-between mb-1">

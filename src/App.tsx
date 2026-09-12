@@ -15,6 +15,7 @@ import { SettingsView } from './components/settings/SettingsView';
 import { TransactionFormModal } from './components/transactions/TransactionFormModal';
 import { TransferModal } from './components/accounts/TransferModal';
 import { InstallPrompt } from './components/pwa/InstallPrompt';
+import { Toast, type ToastVariant } from './components/ui/Toast';
 
 const AppShell: React.FC = () => {
   const security = useSecurity();
@@ -22,6 +23,7 @@ const AppShell: React.FC = () => {
   const [isAddTxOpen, setIsAddTxOpen] = useState<boolean>(false);
   const [isTransferOpen, setIsTransferOpen] = useState<boolean>(false);
   const [isOnboardingDismissed, setIsOnboardingDismissed] = useState<boolean>(false);
+  const [toast, setToast] = useState<{ message: string; variant?: ToastVariant } | null>(null);
 
   // Live queries for reactive data
   const userSettings = useLiveQuery(getUserSettings, []);
@@ -151,6 +153,12 @@ const AppShell: React.FC = () => {
       <TransactionFormModal
         isOpen={isAddTxOpen}
         onClose={() => setIsAddTxOpen(false)}
+        onSuccess={(tx) => {
+          setToast({
+            message: `${tx.type === 'transfer' ? 'Transfer' : tx.type === 'income' ? 'Income' : 'Expense'} recorded in vault`,
+            variant: 'pistachio',
+          });
+        }}
         accounts={accounts ?? []}
         categories={categories ?? []}
       />
@@ -158,7 +166,21 @@ const AppShell: React.FC = () => {
       <TransferModal
         isOpen={isTransferOpen}
         onClose={() => setIsTransferOpen(false)}
+        onSuccess={() => {
+          setToast({
+            message: 'Funds transferred successfully',
+            variant: 'pistachio',
+          });
+        }}
         accounts={accounts ?? []}
+      />
+
+      {/* Post-Action Confirmation Toast */}
+      <Toast
+        isOpen={Boolean(toast)}
+        message={toast?.message || ''}
+        variant={toast?.variant || 'pistachio'}
+        onClose={() => setToast(null)}
       />
 
       {/* Onboarding Dialog */}

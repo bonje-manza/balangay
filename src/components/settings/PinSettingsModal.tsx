@@ -207,6 +207,12 @@ export const PinSettingsModal: React.FC<PinSettingsModalProps> = ({
           </div>
         )}
 
+        {/* Offline Vault Security Warning Notice */}
+        <div className="p-3 bg-butter/40 border border-stone-800/20 rounded-2xl flex items-start gap-2.5 text-xs text-stone-800 font-medium">
+          <ShieldAlert className="w-4 h-4 text-[#124224] flex-shrink-0 mt-0.5" />
+          <span>Balangay is 100% offline. If forgotten, your vault cannot be recovered without a local JSON backup file. Keep regular backups in Settings.</span>
+        </div>
+
         {/* Error Feedback */}
         {errorMessage && (
           <div

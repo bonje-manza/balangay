@@ -443,4 +443,31 @@ describe('SecurityContext', () => {
 
     expect(firstValue).toBe(secondValue);
   });
+
+  it('reloads security settings from persistent storage and updates isPinSet / isLocked', async () => {
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    expect(result.current.isPinSet).toBe(false);
+
+    // External change in storage (e.g. backup restore or direct reset)
+    const pinHash = await hashPin('5678');
+    await saveUserSettings({
+      pinEnabled: true,
+      pinHash,
+      autoLockMinutes: 10,
+    });
+
+    await act(async () => {
+      await result.current.reloadSecurity?.();
+    });
+
+    expect(result.current.isPinSet).toBe(true);
+    expect(result.current.isLocked).toBe(true);
+    expect(result.current.autoLockMinutes).toBe(10);
+  });
 });

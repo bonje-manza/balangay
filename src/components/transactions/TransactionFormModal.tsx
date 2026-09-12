@@ -8,7 +8,7 @@ import {
 } from '../../storage/transactionRepository';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
-import { Trash2, Check } from 'lucide-react';
+import { Trash2, Check, ChevronDown } from 'lucide-react';
 import { getMoodPillColor } from './TransactionListItem';
 
 export interface TransactionFormModalProps {
@@ -430,78 +430,95 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
           </div>
         )}
 
-        {/* Date Picker */}
-        <div>
-          <label className="block text-xs font-bold text-stone-800 mb-1">
-            Date *
-          </label>
-          <input
-            type="date"
-            data-testid="transaction-date-input"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
-          />
-        </div>
+        {/* Progressive Disclosure: Additional Details Accordion */}
+        <details
+          data-testid="transaction-details-accordion"
+          open={Boolean(isEdit || notes || tagsInput || mood)}
+          className="group border border-stone-800/20 rounded-2xl bg-stone-50/60 p-3 transition-all"
+        >
+          <summary className="flex items-center justify-between cursor-pointer list-none select-none text-xs font-bold text-stone-700 hover:text-[#111111]">
+            <span className="flex items-center gap-1.5">
+              <span>Additional Details</span>
+              <span className="text-[11px] font-normal text-stone-500">(Date, Notes, Mood, Tags)</span>
+            </span>
+            <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180 text-stone-600" />
+          </summary>
 
-        {/* Notes / Memo Input */}
-        <div>
-          <label className="block text-xs font-bold text-stone-800 mb-1">
-            Notes / Memo
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. Ramen Nagi with team"
-            data-testid="transaction-notes-input"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
-          />
-        </div>
+          <div className="pt-3 space-y-3.5">
+            {/* Date Picker */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 mb-1">
+                Date *
+              </label>
+              <input
+                type="date"
+                data-testid="transaction-date-input"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full px-3 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-bold text-stone-800 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+              />
+            </div>
 
-        {/* Tags Input */}
-        <div>
-          <label className="block text-xs font-bold text-stone-800 mb-1">
-            Tags (comma-separated)
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. food, team, grab"
-            data-testid="transaction-tags-input"
-            value={tagsInput}
-            onChange={(e) => setTagsInput(e.target.value)}
-            className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
-          />
-        </div>
+            {/* Notes / Memo Input */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 mb-1">
+                Notes / Memo
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Ramen Nagi with team"
+                data-testid="transaction-notes-input"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+              />
+            </div>
 
-        {/* Mood Selector Pill Picker */}
-        <div>
-          <label className="block text-xs font-bold text-stone-800 mb-1.5">
-            Mood Tag
-          </label>
-          <div className="flex items-center gap-2 flex-wrap">
-            {MOODS.map((m) => {
-              const isSelected = mood.toLowerCase() === m.toLowerCase();
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  data-testid={`mood-pill-${m.toLowerCase()}`}
-                  onClick={() => setMood(isSelected ? '' : m)}
-                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/25 ${
-                    isSelected
-                      ? 'shadow-[2px_2px_0px_0px_#111111] scale-105'
-                      : 'opacity-70 hover:opacity-100 shadow-[1px_1px_0px_0px_#111111]'
-                  }`}
-                  style={{ backgroundColor: getMoodPillColor(m) }}
-                >
-                  {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                  <span>{m}</span>
-                </button>
-              );
-            })}
+            {/* Tags Input */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 mb-1">
+                Tags (comma-separated)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. food, team, grab"
+                data-testid="transaction-tags-input"
+                value={tagsInput}
+                onChange={(e) => setTagsInput(e.target.value)}
+                className="w-full px-3.5 py-2 bg-white rounded-xl border-2 border-[#111111] text-xs font-medium text-stone-900 placeholder:text-stone-500 shadow-[2px_2px_0px_0px_#111111] focus:outline-none focus:ring-2 focus:ring-[#124224]"
+              />
+            </div>
+
+            {/* Mood Selector Pill Picker */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 mb-1.5">
+                Mood Tag
+              </label>
+              <div className="flex items-center gap-2 flex-wrap">
+                {MOODS.map((m) => {
+                  const isSelected = mood.toLowerCase() === m.toLowerCase();
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      data-testid={`mood-pill-${m.toLowerCase()}`}
+                      onClick={() => setMood(isSelected ? '' : m)}
+                      className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer select-none active:translate-y-0.5 flex items-center gap-1 border border-stone-800/25 ${
+                        isSelected
+                          ? 'shadow-[2px_2px_0px_0px_#111111] scale-105'
+                          : 'opacity-70 hover:opacity-100 shadow-[1px_1px_0px_0px_#111111]'
+                      }`}
+                      style={{ backgroundColor: getMoodPillColor(m) }}
+                    >
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      <span>{m}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        </details>
 
         {/* Modal Actions */}
         <div className="pt-3 border-t border-stone-800/10 flex items-center justify-between gap-3">
