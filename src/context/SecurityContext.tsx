@@ -24,7 +24,7 @@ export interface SecurityContextValue {
   setAutoLockMinutes: (minutes: number) => Promise<void>;
 }
 
-const SecurityContext = createContext<SecurityContextValue | null>(null);
+export const SecurityContext = createContext<SecurityContextValue | null>(null);
 
 export interface SecurityProviderProps {
   children: ReactNode;
