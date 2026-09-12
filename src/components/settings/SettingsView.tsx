@@ -567,7 +567,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {resetStep === 2 && (
               <div
                 data-testid="reset-step2-prompt"
-                className="p-4 bg-rose-100 border-2 border-rose-800 rounded-2xl shadow-[3px_3px_0px_0px_#991b1b] space-y-2.5 animate-pulse"
+                className="p-4 bg-rose-100 border-2 border-rose-800 rounded-2xl shadow-[3px_3px_0px_0px_#991b1b] space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-extrabold text-rose-950">
                   <AlertTriangle className="w-4 h-4 text-rose-800 flex-shrink-0" />

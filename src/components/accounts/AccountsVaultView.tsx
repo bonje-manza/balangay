@@ -180,7 +180,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
       </section>
 
       {/* Account Type Filter Pills */}
-      <section className="flex items-center gap-2 overflow-x-auto pb-1 select-none">
+      <section className="flex flex-wrap items-center gap-2 select-none">
         <div className="flex items-center gap-1.5 text-xs font-bold text-stone-600 uppercase tracking-wider mr-1">
           <Filter className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Filter:</span>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import { SparkleStar } from '../ui/StickerIcons';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -73,12 +73,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
     onDismiss?.();
   }, [onDismiss]);
 
-  if (!isVisible && !forceShow) {
-    return null;
-  }
-
-  // Check dismissal even if forceShow was passed
-  if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
+  if (!isVisible) {
     return null;
   }
 
@@ -110,7 +105,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
             onClick={handleInstall}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#FFED9E] hover:bg-[#FFE57A] border-2 border-dark-anchor text-xs font-black text-dark-anchor shadow-[2px_2px_0px_0px_#111111] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#111111] transition-all cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 fill-dark-anchor text-dark-anchor" />
+            <Download className="w-3.5 h-3.5 text-dark-anchor stroke-[2.5]" />
             <span>Install App</span>
           </button>
 

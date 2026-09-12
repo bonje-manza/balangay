@@ -26,9 +26,7 @@ export interface DashboardViewProps {
 }
 
 /**
- * DashboardView: Main Bento Hub dashboard view featuring live Net Worth calculation,
- * monthly Cashflow breakdown (Income vs Expense), Category Budget meters, and Recent Activity
- * using Dexie reactive live queries (useLiveQuery).
+ * Main dashboard view showing net worth, monthly cashflow, category budgets, and recent activity.
  */
 export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateTab,
@@ -184,15 +182,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           />
 
           {/* Row 2: 2-Column Bento Grid (Cashflow & Budget Meter) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+            <div className="md:col-span-1 lg:col-span-7">
               <CashflowBento
                 cashflow={cashflow}
                 monthName={monthName}
               />
             </div>
 
-            <div className="lg:col-span-5">
+            <div className="md:col-span-1 lg:col-span-5">
               <BudgetQuickMeter
                 categories={categories}
                 spending={spending}

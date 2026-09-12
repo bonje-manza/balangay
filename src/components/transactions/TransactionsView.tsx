@@ -58,9 +58,7 @@ export function getDateGroupTitle(dateStr: string): string {
 }
 
 /**
- * TransactionsView: Full ledger view featuring Soft Neo-brutalism aesthetics,
- * multi-criteria live filtering, date-grouped list items, summary metrics,
- * quick RFC-compliant CSV export, and accessible transaction creation/editing modals.
+ * Ledger view with date-grouped transactions, filtering, and CSV export.
  */
 export const TransactionsView: React.FC<TransactionsViewProps> = ({
   className = '',
