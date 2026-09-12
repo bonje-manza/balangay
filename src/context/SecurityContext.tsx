@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   useRef,
   type ReactNode,
   type FC,
@@ -45,11 +46,11 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
         const settings = await getUserSettings();
         if (!isSubscribed) return;
 
-        pinHashRef.current = settings.pinHash;
         const pinConfigured = Boolean(
           settings.pinEnabled && settings.pinHash && settings.pinHash.trim().length > 0
         );
 
+        pinHashRef.current = pinConfigured ? settings.pinHash : undefined;
         setIsPinSet(pinConfigured);
         setAutoLockMinutesState(settings.autoLockMinutes ?? 0);
         setIsLocked(pinConfigured);
@@ -67,26 +68,35 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     };
   }, []);
 
-  const unlock = useCallback(async (pin: string): Promise<boolean> => {
-    let currentHash = pinHashRef.current;
-    if (!currentHash) {
-      const settings = await getUserSettings();
-      currentHash = settings.pinHash;
-      pinHashRef.current = currentHash;
-    }
+  const unlock = useCallback(
+    async (pin: string): Promise<boolean> => {
+      if (!isPinSet) {
+        return false;
+      }
 
-    if (!currentHash) {
+      let currentHash = pinHashRef.current;
+      if (!currentHash) {
+        const settings = await getUserSettings();
+        if (settings.pinEnabled && settings.pinHash && settings.pinHash.trim().length > 0) {
+          currentHash = settings.pinHash;
+          pinHashRef.current = currentHash;
+        }
+      }
+
+      if (!currentHash) {
+        return false;
+      }
+
+      const isValid = await verifyPin(pin, currentHash);
+      if (isValid) {
+        setIsLocked(false);
+        return true;
+      }
+
       return false;
-    }
-
-    const isValid = await verifyPin(pin, currentHash);
-    if (isValid) {
-      setIsLocked(false);
-      return true;
-    }
-
-    return false;
-  }, []);
+    },
+    [isPinSet]
+  );
 
   const setPin = useCallback(async (pin: string): Promise<void> => {
     const hashed = await hashPin(pin);
@@ -100,43 +110,53 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     setIsLocked(false);
   }, []);
 
-  const removePin = useCallback(async (currentPin: string): Promise<boolean> => {
-    let currentHash = pinHashRef.current;
-    if (!currentHash) {
-      const settings = await getUserSettings();
-      currentHash = settings.pinHash;
-      pinHashRef.current = currentHash;
-    }
+  const removePin = useCallback(
+    async (currentPin: string): Promise<boolean> => {
+      if (!isPinSet) {
+        return false;
+      }
 
-    if (!currentHash) {
-      return false;
-    }
+      let currentHash = pinHashRef.current;
+      if (!currentHash) {
+        const settings = await getUserSettings();
+        if (settings.pinEnabled && settings.pinHash && settings.pinHash.trim().length > 0) {
+          currentHash = settings.pinHash;
+          pinHashRef.current = currentHash;
+        }
+      }
 
-    const isValid = await verifyPin(currentPin, currentHash);
-    if (!isValid) {
-      return false;
-    }
+      if (!currentHash) {
+        return false;
+      }
 
-    await saveUserSettings({
-      pinEnabled: false,
-      pinHash: undefined,
-    });
+      const isValid = await verifyPin(currentPin, currentHash);
+      if (!isValid) {
+        return false;
+      }
 
-    pinHashRef.current = undefined;
-    setIsPinSet(false);
-    setIsLocked(false);
-    return true;
-  }, []);
+      await saveUserSettings({
+        pinEnabled: false,
+        pinHash: undefined,
+      });
+
+      pinHashRef.current = undefined;
+      setIsPinSet(false);
+      setIsLocked(false);
+      return true;
+    },
+    [isPinSet]
+  );
 
   const lock = useCallback((): void => {
     setIsLocked(true);
   }, []);
 
   const setAutoLockMinutes = useCallback(async (minutes: number): Promise<void> => {
+    const sanitized = Math.max(0, Math.floor(minutes) || 0);
     await saveUserSettings({
-      autoLockMinutes: minutes,
+      autoLockMinutes: sanitized,
     });
-    setAutoLockMinutesState(minutes);
+    setAutoLockMinutesState(sanitized);
   }, []);
 
   // Inactivity monitoring effect
@@ -177,17 +197,30 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     };
   }, [isLocked, isPinSet, autoLockMinutes]);
 
-  const value: SecurityContextValue = {
-    isLocked,
-    isPinSet,
-    autoLockMinutes,
-    isLoading,
-    unlock,
-    setPin,
-    removePin,
-    lock,
-    setAutoLockMinutes,
-  };
+  const value: SecurityContextValue = useMemo(
+    () => ({
+      isLocked,
+      isPinSet,
+      autoLockMinutes,
+      isLoading,
+      unlock,
+      setPin,
+      removePin,
+      lock,
+      setAutoLockMinutes,
+    }),
+    [
+      isLocked,
+      isPinSet,
+      autoLockMinutes,
+      isLoading,
+      unlock,
+      setPin,
+      removePin,
+      lock,
+      setAutoLockMinutes,
+    ]
+  );
 
   return <SecurityContext.Provider value={value}>{children}</SecurityContext.Provider>;
 };

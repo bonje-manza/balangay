@@ -355,4 +355,92 @@ describe('SecurityContext', () => {
     });
     expect(result.current.isLocked).toBe(false);
   });
+
+  it('sanitizes autoLockMinutes to non-negative integers', async () => {
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.setAutoLockMinutes(-10);
+    });
+    expect(result.current.autoLockMinutes).toBe(0);
+
+    await act(async () => {
+      await result.current.setAutoLockMinutes(NaN);
+    });
+    expect(result.current.autoLockMinutes).toBe(0);
+
+    await act(async () => {
+      await result.current.setAutoLockMinutes(4.8);
+    });
+    expect(result.current.autoLockMinutes).toBe(4);
+  });
+
+  it('rejects unlock and removePin immediately when PIN is not set or disabled', async () => {
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    let unlocked = true;
+    await act(async () => {
+      unlocked = await result.current.unlock('1234');
+    });
+    expect(unlocked).toBe(false);
+
+    let removed = true;
+    await act(async () => {
+      removed = await result.current.removePin('1234');
+    });
+    expect(removed).toBe(false);
+  });
+
+  it('does not retain residual pinHash when pinEnabled is false in settings', async () => {
+    const pinHash = await hashPin('1234');
+    await saveUserSettings({
+      pinEnabled: false,
+      pinHash,
+    });
+
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.isPinSet).toBe(false);
+    expect(result.current.isLocked).toBe(false);
+
+    let unlocked = true;
+    await act(async () => {
+      unlocked = await result.current.unlock('1234');
+    });
+    expect(unlocked).toBe(false);
+  });
+
+  it('memoizes SecurityContextValue when state is unchanged', async () => {
+    const { result, rerender } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    const firstValue = result.current;
+    rerender();
+    const secondValue = result.current;
+
+    expect(firstValue).toBe(secondValue);
+  });
 });
