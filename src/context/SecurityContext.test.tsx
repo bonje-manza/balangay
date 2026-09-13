@@ -470,4 +470,79 @@ describe('SecurityContext', () => {
     expect(result.current.isLocked).toBe(true);
     expect(result.current.autoLockMinutes).toBe(10);
   });
+
+  it('sets pinLength when setPin is called with 6-digit PIN and persists to storage', async () => {
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.setPin('123456');
+    });
+
+    expect(result.current.pinLength).toBe(6);
+    expect(result.current.isPinSet).toBe(true);
+
+    const saved = await getUserSettings();
+    expect(saved.pinLength).toBe(6);
+  });
+
+  it('resets pinLength when removePin is called', async () => {
+    const pinHash = await hashPin('654321');
+    await saveUserSettings({
+      pinEnabled: true,
+      pinHash,
+      pinLength: 6,
+    });
+
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.pinLength).toBe(6);
+
+    await act(async () => {
+      const removed = await result.current.removePin('654321');
+      expect(removed).toBe(true);
+    });
+
+    expect(result.current.pinLength).toBeUndefined();
+    const saved = await getUserSettings();
+    expect(saved.pinLength).toBeUndefined();
+  });
+
+  it('updates and persists pinLength upon unlocking legacy vault when pinLength is undefined', async () => {
+    const pinHash = await hashPin('987654');
+    await saveUserSettings({
+      pinEnabled: true,
+      pinHash,
+    });
+
+    const { result } = renderHook(() => useSecurity(), {
+      wrapper: ({ children }) => <SecurityProvider>{children}</SecurityProvider>,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.pinLength).toBeUndefined();
+
+    await act(async () => {
+      const unlocked = await result.current.unlock('987654');
+      expect(unlocked).toBe(true);
+    });
+
+    expect(result.current.pinLength).toBe(6);
+    const saved = await getUserSettings();
+    expect(saved.pinLength).toBe(6);
+  });
 });

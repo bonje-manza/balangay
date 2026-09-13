@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext, useRef } from 'react';
 import { Wallet, Delete } from 'lucide-react';
 import { SecurityContext } from '../../context/SecurityContext';
 import { Modal } from '../ui/Modal';
@@ -20,7 +20,7 @@ export interface PinLockScreenProps {
  * Balangay branding, animated PIN dot indicators, and tactile 3x4 numeric keypad.
  */
 export const PinLockScreen: React.FC<PinLockScreenProps> = ({
-  pinLength = 4,
+  pinLength: propPinLength,
   onSuccess,
   onEmergencyRestore,
   unlock,
@@ -31,6 +31,10 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
   const security = useContext(SecurityContext);
   const unlockFn = unlock ?? security?.unlock;
 
+  const configuredLength = propPinLength ?? security?.pinLength;
+  const isAdaptive = configuredLength === undefined;
+  const pinLength = configuredLength ?? 6;
+
   const [pin, setPin] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
@@ -38,6 +42,30 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
   const [showEmergencyRestore, setShowEmergencyRestore] = useState<boolean>(false);
   const [emergencyError, setEmergencyError] = useState<string | null>(null);
   const [isRestoringBackup, setIsRestoringBackup] = useState<boolean>(false);
+
+  const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shakeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearPendingTimeout = useCallback(() => {
+    if (pendingTimeoutRef.current) {
+      clearTimeout(pendingTimeoutRef.current);
+      pendingTimeoutRef.current = null;
+    }
+  }, []);
+
+  const clearShakeTimeout = useCallback(() => {
+    if (shakeTimeoutRef.current) {
+      clearTimeout(shakeTimeoutRef.current);
+      shakeTimeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearPendingTimeout();
+      clearShakeTimeout();
+    };
+  }, [clearPendingTimeout, clearShakeTimeout]);
 
   const handleEmergencyFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,6 +89,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
       await saveUserSettings({
         pinEnabled: false,
         pinHash: undefined,
+        pinLength: undefined,
       });
 
       if (security?.reloadSecurity) {
@@ -77,66 +106,88 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
     }
   };
 
+  const triggerFailure = useCallback(
+    (msg = 'Incorrect PIN. Please try again.') => {
+      clearShakeTimeout();
+      setError(msg);
+      setIsShaking(true);
+      shakeTimeoutRef.current = setTimeout(() => {
+        setIsShaking(false);
+        setPin('');
+      }, 600);
+    },
+    [clearShakeTimeout]
+  );
+
   const verifyAttempt = useCallback(
-    async (enteredPin: string) => {
+    async (enteredPin: string, isFinal = true) => {
       if (!unlockFn) {
         setError('Security service unavailable.');
         return;
       }
 
       setIsVerifying(true);
+      clearPendingTimeout();
+
       try {
         const success = await unlockFn(enteredPin);
         if (success) {
           setError(null);
           onSuccess?.();
+        } else if (isFinal) {
+          triggerFailure();
         } else {
-          setError('Incorrect PIN. Please try again.');
-          setIsShaking(true);
-          setTimeout(() => {
-            setIsShaking(false);
-            setPin('');
-          }, 600);
+          // If adaptive and not final (e.g. 4 or 5 digits entered),
+          // schedule fallback failure timeout in case user stops typing.
+          pendingTimeoutRef.current = setTimeout(() => {
+            triggerFailure();
+          }, 1200);
         }
       } catch {
-        setError('Failed to verify PIN. Please try again.');
-        setIsShaking(true);
-        setTimeout(() => {
-          setIsShaking(false);
-          setPin('');
-        }, 600);
+        triggerFailure('Failed to verify PIN. Please try again.');
       } finally {
         setIsVerifying(false);
       }
     },
-    [unlockFn, onSuccess]
+    [unlockFn, onSuccess, clearPendingTimeout, triggerFailure]
   );
 
   const handleDigit = useCallback(
     (digit: string) => {
       if (isVerifying || isShaking || pin.length >= pinLength) return;
+      clearPendingTimeout();
       setError(null);
       const nextPin = pin + digit;
       setPin(nextPin);
 
-      if (nextPin.length === pinLength) {
-        verifyAttempt(nextPin);
+      if (isAdaptive) {
+        if (nextPin.length === 6) {
+          verifyAttempt(nextPin, true);
+        } else if (nextPin.length >= 4) {
+          pendingTimeoutRef.current = setTimeout(() => {
+            verifyAttempt(nextPin, false);
+          }, 350);
+        }
+      } else if (nextPin.length === pinLength) {
+        verifyAttempt(nextPin, true);
       }
     },
-    [pin, pinLength, isVerifying, isShaking, verifyAttempt]
+    [pin, pinLength, isAdaptive, isVerifying, isShaking, clearPendingTimeout, verifyAttempt]
   );
 
   const handleBackspace = useCallback(() => {
     if (isVerifying || isShaking || pin.length === 0) return;
+    clearPendingTimeout();
     setError(null);
     setPin((prev) => prev.slice(0, -1));
-  }, [isVerifying, isShaking, pin.length]);
+  }, [isVerifying, isShaking, pin.length, clearPendingTimeout]);
 
   const handleClear = useCallback(() => {
     if (isVerifying || isShaking) return;
+    clearPendingTimeout();
     setError(null);
     setPin('');
-  }, [isVerifying, isShaking]);
+  }, [isVerifying, isShaking, clearPendingTimeout]);
 
   // Physical keyboard support
   useEffect(() => {
@@ -147,12 +198,16 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
         handleBackspace();
       } else if (e.key === 'Escape') {
         handleClear();
+      } else if (e.key === 'Enter') {
+        if (pin.length >= 4) {
+          verifyAttempt(pin, true);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleDigit, handleBackspace, handleClear]);
+  }, [handleDigit, handleBackspace, handleClear, pin, verifyAttempt]);
 
   return (
     <div

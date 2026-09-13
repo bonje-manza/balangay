@@ -72,7 +72,7 @@ const AppShell: React.FC = () => {
 
   // 1. PIN Lock Screen overlay takes top priority if vault session is locked
   if (security.isLocked) {
-    return <PinLockScreen onSuccess={() => {}} />;
+    return <PinLockScreen pinLength={security.pinLength} onSuccess={() => {}} />;
   }
 
   return (

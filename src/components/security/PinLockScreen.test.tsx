@@ -197,8 +197,118 @@ describe('PinLockScreen Component', () => {
       expect(saveSettingsSpy).toHaveBeenCalledWith({
         pinEnabled: false,
         pinHash: undefined,
+        pinLength: undefined,
       });
       expect(mockEmergencySuccess).toHaveBeenCalledTimes(1);
+      expect(mockSuccess).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('renders 6 dot indicators and unlocks with 6-digit PIN', async () => {
+    const mockUnlock = vi.fn().mockResolvedValue(true);
+    const mockSuccess = vi.fn();
+    render(<PinLockScreen pinLength={6} unlock={mockUnlock} onSuccess={mockSuccess} />);
+
+    // 6 dot indicators
+    for (let i = 0; i < 6; i++) {
+      expect(screen.getByTestId(`pin-dot-${i}`)).toBeInTheDocument();
+      expect(screen.getByTestId(`pin-dot-${i}`)).toHaveAttribute('data-filled', 'false');
+    }
+
+    // Input 6 digits: 1 2 3 4 5 6
+    fireEvent.click(screen.getByTestId('keypad-1'));
+    fireEvent.click(screen.getByTestId('keypad-2'));
+    fireEvent.click(screen.getByTestId('keypad-3'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+    fireEvent.click(screen.getByTestId('keypad-5'));
+    fireEvent.click(screen.getByTestId('keypad-6'));
+
+    await waitFor(() => {
+      expect(mockUnlock).toHaveBeenCalledWith('123456');
+      expect(mockSuccess).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('uses security.pinLength from SecurityContext when pinLength prop is omitted', async () => {
+    const mockUnlock = vi.fn().mockResolvedValue(true);
+    const mockContextValue: any = {
+      isLocked: true,
+      isPinSet: true,
+      pinLength: 6,
+      autoLockMinutes: 0,
+      isLoading: false,
+      unlock: mockUnlock,
+      setPin: vi.fn(),
+      removePin: vi.fn(),
+      lock: vi.fn(),
+      setAutoLockMinutes: vi.fn(),
+    };
+
+    const { SecurityContext } = await import('../../context/SecurityContext');
+
+    render(
+      <SecurityContext.Provider value={mockContextValue}>
+        <PinLockScreen />
+      </SecurityContext.Provider>
+    );
+
+    // Should render 6 dots based on context pinLength
+    for (let i = 0; i < 6; i++) {
+      expect(screen.getByTestId(`pin-dot-${i}`)).toBeInTheDocument();
+    }
+
+    // Entering 6 digits verifies and unlocks
+    fireEvent.click(screen.getByTestId('keypad-6'));
+    fireEvent.click(screen.getByTestId('keypad-5'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+    fireEvent.click(screen.getByTestId('keypad-3'));
+    fireEvent.click(screen.getByTestId('keypad-2'));
+    fireEvent.click(screen.getByTestId('keypad-1'));
+
+    await waitFor(() => {
+      expect(mockUnlock).toHaveBeenCalledWith('654321');
+    });
+  });
+
+  it('operates in adaptive mode when pinLength is undefined: unlocks with 4-digit PIN', async () => {
+    const mockUnlock = vi.fn().mockImplementation(async (pin: string) => pin === '1234');
+    const mockSuccess = vi.fn();
+
+    render(<PinLockScreen unlock={mockUnlock} onSuccess={mockSuccess} />);
+
+    // In adaptive mode, 6 dots are rendered
+    for (let i = 0; i < 6; i++) {
+      expect(screen.getByTestId(`pin-dot-${i}`)).toBeInTheDocument();
+    }
+
+    // Enter 4 digits: 1 2 3 4
+    fireEvent.click(screen.getByTestId('keypad-1'));
+    fireEvent.click(screen.getByTestId('keypad-2'));
+    fireEvent.click(screen.getByTestId('keypad-3'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+
+    await waitFor(() => {
+      expect(mockUnlock).toHaveBeenCalledWith('1234');
+      expect(mockSuccess).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('operates in adaptive mode when pinLength is undefined: unlocks with 6-digit PIN', async () => {
+    const mockUnlock = vi.fn().mockImplementation(async (pin: string) => pin === '123456');
+    const mockSuccess = vi.fn();
+
+    render(<PinLockScreen unlock={mockUnlock} onSuccess={mockSuccess} />);
+
+    // Enter 6 digits: 1 2 3 4 5 6
+    fireEvent.click(screen.getByTestId('keypad-1'));
+    fireEvent.click(screen.getByTestId('keypad-2'));
+    fireEvent.click(screen.getByTestId('keypad-3'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+    fireEvent.click(screen.getByTestId('keypad-5'));
+    fireEvent.click(screen.getByTestId('keypad-6'));
+
+    await waitFor(() => {
+      expect(mockUnlock).toHaveBeenCalledWith('123456');
       expect(mockSuccess).toHaveBeenCalledTimes(1);
     });
   });

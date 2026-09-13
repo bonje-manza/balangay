@@ -46,6 +46,34 @@ describe('App Root Shell', () => {
     expect(screen.getByTestId('keypad-4')).toBeInTheDocument();
   });
 
+  it('renders PinLockScreen with 6 dot indicators when 6-digit PIN is active and unlocks on entry', async () => {
+    const hashed = await hashPin('654321');
+    await saveUserSettings({
+      hasCompletedOnboarding: true,
+      pinEnabled: true,
+      pinHash: hashed,
+      pinLength: 6,
+    });
+
+    render(<App />);
+
+    expect(await screen.findByTestId('pin-lock-screen')).toBeInTheDocument();
+    for (let i = 0; i < 6; i++) {
+      expect(screen.getByTestId(`pin-dot-${i}`)).toBeInTheDocument();
+    }
+
+    // Input 654321
+    fireEvent.click(screen.getByTestId('keypad-6'));
+    fireEvent.click(screen.getByTestId('keypad-5'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+    fireEvent.click(screen.getByTestId('keypad-3'));
+    fireEvent.click(screen.getByTestId('keypad-2'));
+    fireEvent.click(screen.getByTestId('keypad-1'));
+
+    // Should unlock and reveal dashboard
+    expect(await screen.findByTestId('dashboard-view')).toBeInTheDocument();
+  });
+
   it('renders FloatingNavBar dock and active Dashboard view when onboarded and unlocked', async () => {
     await saveUserSettings({
       hasCompletedOnboarding: true,

@@ -15,6 +15,7 @@ import { hashPin, verifyPin } from '../services/securityService';
 export interface SecurityContextValue {
   isLocked: boolean;
   isPinSet: boolean;
+  pinLength?: number;
   autoLockMinutes: number;
   isLoading: boolean;
   unlock: (pin: string) => Promise<boolean>;
@@ -35,8 +36,10 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isPinSet, setIsPinSet] = useState<boolean>(false);
+  const [pinLength, setPinLengthState] = useState<number | undefined>(undefined);
   const [autoLockMinutes, setAutoLockMinutesState] = useState<number>(0);
   const pinHashRef = useRef<string | undefined>(undefined);
+  const pinLengthRef = useRef<number | undefined>(undefined);
 
   // Load initial settings on mount
   useEffect(() => {
@@ -52,6 +55,8 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
         );
 
         pinHashRef.current = pinConfigured ? settings.pinHash : undefined;
+        pinLengthRef.current = pinConfigured ? settings.pinLength : undefined;
+        setPinLengthState(pinConfigured ? settings.pinLength : undefined);
         setIsPinSet(pinConfigured);
         setAutoLockMinutesState(settings.autoLockMinutes ?? 0);
         setIsLocked(pinConfigured);
@@ -90,6 +95,11 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
 
       const isValid = await verifyPin(pin, currentHash);
       if (isValid) {
+        if (!pinLengthRef.current) {
+          pinLengthRef.current = pin.length;
+          setPinLengthState(pin.length);
+          saveUserSettings({ pinLength: pin.length }).catch(() => {});
+        }
         setIsLocked(false);
         return true;
       }
@@ -104,9 +114,12 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     await saveUserSettings({
       pinEnabled: true,
       pinHash: hashed,
+      pinLength: pin.length,
     });
 
     pinHashRef.current = hashed;
+    pinLengthRef.current = pin.length;
+    setPinLengthState(pin.length);
     setIsPinSet(true);
     setIsLocked(false);
   }, []);
@@ -138,9 +151,12 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
       await saveUserSettings({
         pinEnabled: false,
         pinHash: undefined,
+        pinLength: undefined,
       });
 
       pinHashRef.current = undefined;
+      pinLengthRef.current = undefined;
+      setPinLengthState(undefined);
       setIsPinSet(false);
       setIsLocked(false);
       return true;
@@ -166,6 +182,8 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
       settings.pinEnabled && settings.pinHash && settings.pinHash.trim().length > 0
     );
     pinHashRef.current = pinConfigured ? settings.pinHash : undefined;
+    pinLengthRef.current = pinConfigured ? settings.pinLength : undefined;
+    setPinLengthState(pinConfigured ? settings.pinLength : undefined);
     setIsPinSet(pinConfigured);
     setAutoLockMinutesState(settings.autoLockMinutes ?? 0);
     setIsLocked(pinConfigured);
@@ -213,6 +231,7 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     () => ({
       isLocked,
       isPinSet,
+      pinLength,
       autoLockMinutes,
       isLoading,
       unlock,
@@ -225,6 +244,7 @@ export const SecurityProvider: FC<SecurityProviderProps> = ({ children }) => {
     [
       isLocked,
       isPinSet,
+      pinLength,
       autoLockMinutes,
       isLoading,
       unlock,

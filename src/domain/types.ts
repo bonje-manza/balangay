@@ -64,6 +64,7 @@ export interface UserSettings {
   currencySymbol: string; // '₱'
   currencyLocale: string; // 'en-PH'
   pinHash?: string;
+  pinLength?: number;
   pinEnabled: boolean;
   autoLockMinutes: number; // 0 for disabled, or 1, 5, 15
   hasCompletedOnboarding: boolean;

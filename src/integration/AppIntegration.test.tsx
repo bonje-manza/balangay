@@ -280,4 +280,63 @@ describe('Offline-First PWA Finance Tracker Integration Tests (E2E)', () => {
       await screen.findByRole('heading', { name: /Mabuhay! Welcome to Balangay/i })
     ).toBeInTheDocument();
   });
+
+  it('Test 7: Setting a 6-digit PIN in Settings displays 6 dots on PinLockScreen and unlocks when 6 digits are entered', async () => {
+    await seedDefaultCategories();
+    await loadSampleDemoData();
+    await saveUserSettings({ hasCompletedOnboarding: true });
+
+    render(<App />);
+
+    // Navigate to Settings
+    const settingsTab = await screen.findByTestId('nav-tab-settings');
+    fireEvent.click(settingsTab);
+
+    expect(
+      await screen.findByRole('heading', { name: /Settings & Vault Tools/i })
+    ).toBeInTheDocument();
+
+    // Click Set Security PIN
+    const setPinBtn = screen.getByTestId('set-pin-btn');
+    fireEvent.click(setPinBtn);
+
+    // Enter 6-digit PIN: 987654
+    const newPinInput = await screen.findByTestId('new-pin-input');
+    const confirmPinInput = screen.getByTestId('confirm-pin-input');
+    fireEvent.change(newPinInput, { target: { value: '987654' } });
+    fireEvent.change(confirmPinInput, { target: { value: '987654' } });
+
+    // Save PIN
+    const savePinBtn = screen.getByTestId('pin-submit-btn');
+    fireEvent.click(savePinBtn);
+
+    // PIN is saved. Wait for modal to close and Lock Vault button to appear
+    const lockVaultBtn = await screen.findByTestId('lock-vault-btn');
+    expect(lockVaultBtn).toBeInTheDocument();
+
+    // Lock session
+    fireEvent.click(lockVaultBtn);
+
+    // PinLockScreen is now displayed with 6 dots
+    expect(await screen.findByTestId('pin-lock-screen')).toBeInTheDocument();
+    for (let i = 0; i < 6; i++) {
+      expect(screen.getByTestId(`pin-dot-${i}`)).toBeInTheDocument();
+    }
+
+    // Enter 6-digit PIN via keypad
+    fireEvent.click(screen.getByTestId('keypad-9'));
+    fireEvent.click(screen.getByTestId('keypad-8'));
+    fireEvent.click(screen.getByTestId('keypad-7'));
+    fireEvent.click(screen.getByTestId('keypad-6'));
+    fireEvent.click(screen.getByTestId('keypad-5'));
+    fireEvent.click(screen.getByTestId('keypad-4'));
+
+    // PinLockScreen unlocks and restores application
+    await waitFor(() => {
+      expect(screen.queryByTestId('pin-lock-screen')).not.toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole('heading', { name: /Settings & Vault Tools/i })
+    ).toBeInTheDocument();
+  });
 });
