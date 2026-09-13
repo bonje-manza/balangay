@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { StickerBadge } from '../ui/StickerBadge';
-import { SparkleStar } from '../ui/StickerIcons';
 import {
   PHILIPPINE_STARTER_ACCOUNTS,
   seedDefaultCategories,
@@ -223,8 +222,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                       Explore Fast
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FFED9E] border border-[#111111] text-[#111111]">
-                      <SparkleStar size={10} className="fill-[#111111]" /> Instant
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FFED9E] border border-[#111111] text-[#111111]">
+                      Instant
                     </span>
                   </div>
                   <h3 className="font-serif font-bold text-base text-[#111111] mb-1">
@@ -239,7 +238,6 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   variant="butter"
                   size="md"
                   fullWidth
-                  icon={<SparkleStar size={16} className="text-[#111111] fill-[#111111]" />}
                   isLoading={loadingAction === 'demo'}
                   disabled={Boolean(loadingAction)}
                   onClick={handleTryDemo}
@@ -360,7 +358,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     </div>
 
                     {/* Bottom Row: Balance Input */}
-                    <div className="flex items-center gap-2 bg-[#F7F2E8] border border-stone-800/20 rounded-xl px-2.5 py-1.5">
+                    <div className="flex items-center gap-2 bg-[#F7F2E8] border border-stone-800/20 rounded-xl px-2.5 py-1.5 focus-within:ring-2 focus-within:ring-[#124224]">
                       <span className="text-xs font-bold text-stone-600 select-none">₱</span>
                       <input
                         type="number"
@@ -373,7 +371,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                         onChange={(e) => handleBalanceChange(acc.id, e.target.value)}
                         disabled={!isSelected || Boolean(loadingAction)}
                         placeholder="0.00"
-                        className="w-full bg-transparent text-xs font-bold text-[#111111] focus:outline-none disabled:text-stone-400 placeholder:text-stone-400"
+                        className="w-full bg-transparent text-xs font-bold text-[#111111] focus:outline-none disabled:text-stone-500 placeholder:text-stone-500"
                       />
                     </div>
                   </div>
@@ -394,14 +392,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               <Button
                 variant="forest"
                 size="md"
-                iconRight={
-                  <SparkleStar size={16} className="text-[#F7F2E8] fill-[#F7F2E8]" />
-                }
+                iconRight={<ArrowRight className="w-4 h-4" />}
                 isLoading={loadingAction === 'custom'}
                 disabled={Boolean(loadingAction)}
                 onClick={handleCustomSetup}
               >
-                Get Started
+                Start Tracking
               </Button>
             </div>
           </div>

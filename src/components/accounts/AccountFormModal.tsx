@@ -8,7 +8,7 @@ import {
   PiggyBank,
   Trash2,
   Check,
-  Sparkles,
+  Bookmark,
 } from 'lucide-react';
 import type { Account, AccountType } from '../../domain/types';
 import {
@@ -206,7 +206,7 @@ export const AccountFormModal: React.FC<AccountFormModalProps> = ({
         {/* Quick Presets Section (only for new accounts or to quickly auto-populate) */}
         <div>
           <label className="flex items-center gap-1.5 text-xs font-bold text-stone-800 mb-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#124224]" />
+            <Bookmark className="w-3.5 h-3.5 text-[#124224]" />
             <span>Philippine Favorites Presets</span>
           </label>
           <div className="flex flex-wrap gap-1.5">

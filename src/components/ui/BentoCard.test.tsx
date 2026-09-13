@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { BentoCard, BentoCardVariant } from './BentoCard';
-import { SparkleStar } from './StickerIcons';
 
 describe('BentoCard Component', () => {
   it('renders title, subtitle, sticker badge, and child content', () => {
@@ -9,7 +8,7 @@ describe('BentoCard Component', () => {
       <BentoCard
         title="Monthly Budget"
         subtitle="Tracking spending limits"
-        sticker={<SparkleStar data-testid="card-sticker" />}
+        sticker={<span data-testid="card-sticker">🏷️</span>}
         action={<button data-testid="card-action">View</button>}
       >
         <div data-testid="card-child">Children Content Here</div>

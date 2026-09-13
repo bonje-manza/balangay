@@ -16,6 +16,7 @@ import { TransactionFormModal } from './components/transactions/TransactionFormM
 import { TransferModal } from './components/accounts/TransferModal';
 import { InstallPrompt } from './components/pwa/InstallPrompt';
 import { Toast, type ToastVariant } from './components/ui/Toast';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 const AppShell: React.FC = () => {
   const security = useSecurity();
@@ -70,27 +71,29 @@ const AppShell: React.FC = () => {
       <InstallPrompt />
 
       {/* Top Navigation Header */}
-      <header className="w-full border-b border-stone-800/15 bg-[#F7F2E8]/90 backdrop-blur-sm px-4 sm:px-8 py-3.5 sticky top-0 z-30">
+      <header className="w-full border-b border-stone-800/15 bg-[#F7F2E8]/90 backdrop-blur-sm px-4 sm:px-8 py-2.5 sm:py-3.5 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div
-            className="flex items-center gap-3 cursor-pointer select-none"
+          <button
+            type="button"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none text-left focus-visible:ring-2 focus-visible:ring-dark-forest focus-visible:outline-none rounded-2xl"
             onClick={() => setActiveTab('dashboard')}
+            aria-label="Balangay Dashboard"
           >
-            <div className="w-10 h-10 rounded-2xl bg-butter border border-stone-800/20 flex items-center justify-center shadow-sm">
-              <Wallet className="w-5 h-5 text-dark-anchor" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-butter border border-stone-800/20 flex items-center justify-center shadow-sm flex-shrink-0">
+              <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-dark-anchor" />
             </div>
             <div>
-              <h1 className="font-serif font-bold text-xl sm:text-2xl tracking-tight leading-none text-dark-anchor">
+              <h1 className="font-serif font-bold text-lg sm:text-2xl tracking-tight leading-none text-dark-anchor">
                 Balangay
               </h1>
-              <p className="text-[11px] font-medium text-dark-forest/80 tracking-wide mt-0.5">
+              <p className="text-[10px] sm:text-[11px] font-medium text-dark-forest/80 tracking-wide mt-0.5">
                 Offline Finance Tracker
               </p>
             </div>
-          </div>
+          </button>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pistachio border border-stone-800/20 text-xs font-bold text-dark-forest shadow-sm">
+            <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-pistachio border border-stone-800/20 text-[11px] sm:text-xs font-bold text-dark-forest shadow-sm">
               <WifiOff className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Offline Ready</span>
             </div>
@@ -102,7 +105,7 @@ const AppShell: React.FC = () => {
                 data-testid="header-lock-btn"
                 title="Lock Vault"
                 aria-label="Lock Vault"
-                className="p-2 rounded-xl bg-white border border-stone-800/20 shadow-sm hover:bg-stone-50 active:translate-y-0.5 cursor-pointer transition-all"
+                className="p-2 min-h-[40px] min-w-[40px] rounded-xl bg-white border border-stone-800/20 shadow-sm hover:bg-stone-50 active:translate-y-0.5 cursor-pointer transition-all flex items-center justify-center"
               >
                 <Lock className="w-4 h-4 text-dark-anchor" />
               </button>
@@ -113,48 +116,50 @@ const AppShell: React.FC = () => {
 
       {/* Active View Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto pb-[calc(7rem+env(safe-area-inset-bottom,0px))]">
-        {activeTab === 'dashboard' && (
-          <DashboardView
-            onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
-            onOpenAddTransaction={() => {
-              setAddTxDate(undefined);
-              setIsAddTxOpen(true);
-            }}
-            onOpenTransfer={() => setIsTransferOpen(true)}
-          />
-        )}
+        <ErrorBoundary>
+          {activeTab === 'dashboard' && (
+            <DashboardView
+              onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
+              onOpenAddTransaction={() => {
+                setAddTxDate(undefined);
+                setIsAddTxOpen(true);
+              }}
+              onOpenTransfer={() => setIsTransferOpen(true)}
+            />
+          )}
 
-        {activeTab === 'transactions' && (
-          <TransactionsView
-            onAddTransaction={() => {
-              setAddTxDate(undefined);
-              setIsAddTxOpen(true);
-            }}
-          />
-        )}
+          {activeTab === 'transactions' && (
+            <TransactionsView
+              onAddTransaction={() => {
+                setAddTxDate(undefined);
+                setIsAddTxOpen(true);
+              }}
+            />
+          )}
 
-        {activeTab === 'budgets' && (
-          <BudgetsAnalyticsView
-            onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
-            onOpenAddTransaction={(date) => {
-              setAddTxDate(date);
-              setIsAddTxOpen(true);
-            }}
-          />
-        )}
+          {activeTab === 'budgets' && (
+            <BudgetsAnalyticsView
+              onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
+              onOpenAddTransaction={(date) => {
+                setAddTxDate(date);
+                setIsAddTxOpen(true);
+              }}
+            />
+          )}
 
-        {activeTab === 'accounts' && (
-          <AccountsVaultView onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)} />
-        )}
+          {activeTab === 'accounts' && (
+            <AccountsVaultView onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)} />
+          )}
 
-        {activeTab === 'settings' && (
-          <SettingsView
-            onDataReset={() => {
-              setIsOnboardingDismissed(false);
-              setActiveTab('dashboard');
-            }}
-          />
-        )}
+          {activeTab === 'settings' && (
+            <SettingsView
+              onDataReset={() => {
+                setIsOnboardingDismissed(false);
+                setActiveTab('dashboard');
+              }}
+            />
+          )}
+        </ErrorBoundary>
       </main>
 
       {/* Floating Bottom Navigation Dock */}
@@ -218,9 +223,11 @@ const AppShell: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <SecurityProvider>
-      <AppShell />
-    </SecurityProvider>
+    <ErrorBoundary>
+      <SecurityProvider>
+        <AppShell />
+      </SecurityProvider>
+    </ErrorBoundary>
   );
 };
 

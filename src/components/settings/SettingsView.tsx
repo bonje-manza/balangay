@@ -9,7 +9,7 @@ import {
   Download,
   Upload,
   FileSpreadsheet,
-  Sparkles,
+  Database,
   Trash2,
   AlertTriangle,
   CheckCircle2,
@@ -225,7 +225,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-2xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Globe className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -242,7 +242,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   Philippine Peso (PHP)
                 </span>
               </div>
-              <span className="text-xl font-mono font-black text-dark-forest px-3 py-1 bg-[#DAE097]/40 rounded-xl border border-stone-800/15 shadow-sm">
+              <span className="text-xl font-mono font-bold text-dark-forest px-3 py-1 bg-stone-100 rounded-xl border border-stone-800/15 shadow-sm">
                 ₱
               </span>
             </div>
@@ -261,7 +261,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </span>
             </div>
 
-            <div className="p-3 bg-[#FFED9E]/25 rounded-2xl border border-stone-800/15 flex items-start gap-2.5 text-xs text-stone-800">
+            <div className="p-3 bg-stone-50 rounded-2xl border border-stone-800/15 flex items-start gap-2.5 text-xs text-stone-800">
               <Coins className="w-4 h-4 text-dark-forest flex-shrink-0 mt-0.5" />
               <span>
                 All account ledgers and transaction computations are locked to standard Philippine
@@ -275,7 +275,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#F2C0CA] border border-stone-800/15 flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-2xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Shield className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -376,7 +376,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-2xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
               <FolderKanban className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -421,7 +421,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#A6CFF2] border border-stone-800/15 flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-2xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
               <Download className="w-4 h-4 text-dark-anchor" />
             </div>
           }
@@ -429,6 +429,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           subtitle="Full vault JSON snapshots and bank CSV statements"
         >
           <div className="space-y-3 pt-2">
+            <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-200">
+              All records reside 100% locally on this device in your browser database. Create regular JSON backups so your data remains safe if browser cache or history is cleared.
+            </p>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {/* Full JSON Export */}
               <Button
@@ -458,7 +462,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             {/* Import Statement (CSV) */}
             <Button
-              variant="pistachio"
+              variant="outline"
               size="md"
               data-testid="open-csv-modal-btn"
               icon={<FileSpreadsheet className="w-4 h-4" />}
@@ -470,19 +474,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
             {/* Export Notification */}
             {exportFeedback && (
-              <p className="text-xs font-bold text-dark-forest bg-[#DAE097]/40 p-2.5 rounded-xl border border-stone-800/15">
+              <p className="text-xs font-bold text-emerald-900 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
                 {exportFeedback}
               </p>
             )}
           </div>
         </BentoCard>
 
-        {/* Bento 4: Data Management & Demo Mode */}
+        {/* Bento 5: Data Management & Demo Mode */}
         <BentoCard
           variant="oat"
           sticker={
-            <div className="w-9 h-9 rounded-2xl bg-[#DAE097] border border-stone-800/15 flex items-center justify-center shadow-sm">
-              <Sparkles className="w-4 h-4 text-dark-anchor" />
+            <div className="w-9 h-9 rounded-2xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
+              <Database className="w-4 h-4 text-dark-anchor" />
             </div>
           }
           title="Data Management & Demo"
@@ -493,9 +497,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {demoLoadedBanner && (
               <div
                 data-testid="demo-loaded-banner"
-                className="p-3 bg-[#DAE097]/40 border border-[#124224]/30 rounded-2xl shadow-sm flex items-center gap-2 text-xs font-bold text-dark-forest"
+                className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-sm flex items-center gap-2 text-xs font-bold text-emerald-900"
               >
-                <CheckCircle2 className="w-4 h-4 text-dark-forest flex-shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 flex-shrink-0" />
                 <span>18 realistic Philippine sample transactions loaded successfully!</span>
               </div>
             )}
@@ -522,10 +526,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   </p>
                 </div>
                 <Button
-                  variant="butter"
+                  variant="outline"
                   size="sm"
                   data-testid="load-demo-btn"
-                  icon={<Sparkles className="w-3.5 h-3.5" />}
+                  icon={<Database className="w-3.5 h-3.5" />}
                   onClick={() => setShowDemoConfirm(true)}
                 >
                   Load Sample Demo Data
@@ -534,7 +538,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             ) : (
               <div
                 data-testid="confirm-load-demo-prompt"
-                className="p-4 bg-[#FFED9E]/30 border border-amber-800/20 rounded-2xl shadow-sm space-y-2.5"
+                className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl shadow-sm space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-bold text-[#111111]">
                   <AlertTriangle className="w-4 h-4 text-amber-700 flex-shrink-0" />
@@ -593,7 +597,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {resetStep === 1 && (
               <div
                 data-testid="reset-step1-prompt"
-                className="p-4 bg-[#F2C0CA]/30 border border-rose-800/20 rounded-2xl shadow-sm space-y-2.5"
+                className="p-4 bg-rose-50 border border-rose-200 rounded-2xl shadow-sm space-y-2.5"
               >
                 <div className="flex items-center gap-2 text-xs font-bold text-rose-900">
                   <AlertTriangle className="w-4 h-4 text-rose-700 flex-shrink-0" />
@@ -611,8 +615,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Cancel
                   </Button>
                   <Button
-                    variant="blossom"
+                    variant="ghost"
                     size="sm"
+                    className="bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 font-bold"
                     data-testid="confirm-reset-step1-btn"
                     onClick={() => setResetStep(2)}
                   >

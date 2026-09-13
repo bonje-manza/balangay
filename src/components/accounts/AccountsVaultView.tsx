@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Plus, ArrowLeftRight, Wallet, Sparkles, Filter } from 'lucide-react';
+import { Plus, ArrowLeftRight, Wallet, Database, Filter } from 'lucide-react';
 import { db } from '../../storage/db';
 import type { Account, AccountType, Transaction } from '../../domain/types';
 import { calculateAccountBalances, calculateNetWorth } from '../../domain/calculations';
@@ -172,7 +172,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
           <div className="flex items-center gap-2 text-xs font-semibold text-stone-600 bg-stone-100 px-3.5 py-2 rounded-2xl border border-stone-800/15">
             <span className="text-stone-700">Total Accounts:</span>
             <span className="font-mono font-bold text-[#111111] text-sm">{accounts.length}</span>
-            <span className="mx-1 text-stone-400">•</span>
+            <span className="mx-1 text-stone-500">•</span>
             <span className="text-stone-700">Active Ledger Entries:</span>
             <span className="font-mono font-bold text-[#111111] text-sm">{transactions.length}</span>
           </div>
@@ -242,11 +242,11 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
 
             {accounts.length === 0 && (
               <Button
-                variant="butter"
+                variant="forest"
                 size="md"
                 onClick={handleLoadPresets}
                 isLoading={isSeedingPresets}
-                icon={<Sparkles className="w-4 h-4" />}
+                icon={<Database className="w-4 h-4" />}
                 data-testid="empty-load-presets-btn"
               >
                 Load Philippine Presets

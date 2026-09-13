@@ -138,9 +138,9 @@ describe('OnboardingModal Component', () => {
     const gcashBalanceInput = screen.getByTestId('balance-input-acc-gcash');
     fireEvent.change(gcashBalanceInput, { target: { value: '5000' } });
 
-    // Click "Get Started" button
-    const getStartedButton = screen.getByRole('button', { name: /Get Started/i });
-    fireEvent.click(getStartedButton);
+    // Click "Start Tracking" button
+    const startTrackingButton = screen.getByRole('button', { name: /Start Tracking/i });
+    fireEvent.click(startTrackingButton);
 
     await waitFor(() => {
       expect(handleComplete).toHaveBeenCalledTimes(1);

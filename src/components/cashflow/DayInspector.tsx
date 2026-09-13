@@ -137,12 +137,14 @@ export const DayInspector: React.FC<DayInspectorProps> = ({
               const isTransfer = tx.type === 'transfer';
 
               return (
-                <div
+                <button
                   key={tx.id}
+                  type="button"
                   data-testid={`day-tx-item-${tx.id}`}
                   onClick={() => onEditTransaction && onEditTransaction(tx)}
-                  className={`p-3 rounded-2xl border border-stone-800/15 bg-white flex items-center justify-between gap-3 shadow-sm hover:border-stone-800/30 transition-all ${
-                    onEditTransaction ? 'cursor-pointer' : ''
+                  disabled={!onEditTransaction}
+                  className={`w-full p-3 rounded-2xl border border-stone-800/15 bg-white flex items-center justify-between gap-3 shadow-sm hover:border-stone-800/30 transition-all text-left select-none focus-visible:ring-2 focus-visible:ring-dark-forest focus-visible:outline-none ${
+                    onEditTransaction ? 'cursor-pointer' : 'cursor-default'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -178,7 +180,7 @@ export const DayInspector: React.FC<DayInspectorProps> = ({
                       showSign={!isTransfer}
                     />
                   </div>
-                </div>
+                </button>
               );
             })
           )}

@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Account } from '../../domain/types';
 import { formatPHP } from '../../domain/money';
+import { Wallet } from 'lucide-react';
 import { BentoCard, BentoCardVariant } from '../ui/BentoCard';
 import { AmountDisplay } from '../ui/AmountDisplay';
-import { SparkleStar } from '../ui/StickerIcons';
 import { StickerBadge } from '../ui/StickerBadge';
 import { renderAccountIcon } from './iconHelpers';
 
@@ -16,8 +16,8 @@ export interface NetWorthCardProps {
 }
 
 /**
- * NetWorthCard: Hero Bento card displaying total net worth with AmountDisplay (hero),
- * sparkling sticker badge, and a breakdown strip of active account balances and icons.
+ * NetWorthCard: Hero financial card displaying total net worth with AmountDisplay (hero),
+ * live status badge, and a breakdown strip of active account balances and icons.
  */
 export const NetWorthCard: React.FC<NetWorthCardProps> = ({
   netWorth,
@@ -36,15 +36,16 @@ export const NetWorthCard: React.FC<NetWorthCardProps> = ({
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm ${
           isDark
             ? 'bg-stone-900 border-stone-800 text-stone-200'
-            : 'bg-[#FFED9E] border-stone-800/15 text-[#111111]'
+            : 'bg-stone-100 border-stone-800/15 text-[#111111]'
         }`}>
-          <SparkleStar className="w-4 h-4" />
+          <Wallet className="w-4 h-4" />
         </div>
       }
       title="Total Net Worth"
       subtitle="Live across all active accounts"
       action={
-        <StickerBadge variant="pistachio" icon={<SparkleStar className="w-3 h-3 text-[#124224]" />}>
+        <StickerBadge variant={isDark ? 'dark' : 'pistachio'}>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mr-1 animate-pulse" />
           Real-time
         </StickerBadge>
       }
@@ -76,7 +77,7 @@ export const NetWorthCard: React.FC<NetWorthCardProps> = ({
         {activeAccounts.length === 0 ? (
           <p
             className={`text-xs font-medium italic ${
-              isDark ? 'text-stone-500' : 'text-stone-400'
+              isDark ? 'text-stone-400' : 'text-stone-600'
             }`}
           >
             No active accounts found.

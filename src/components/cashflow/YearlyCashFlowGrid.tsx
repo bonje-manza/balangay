@@ -125,7 +125,7 @@ export const YearlyCashFlowGrid: React.FC<YearlyCashFlowGridProps> = ({
                   </div>
                 </div>
               ) : (
-                <p className="text-[11px] text-stone-400 font-medium py-2">
+                <p className="text-[11px] text-stone-600 font-medium py-2">
                   No activity recorded
                 </p>
               )}

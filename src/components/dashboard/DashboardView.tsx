@@ -77,22 +77,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#111111] tracking-tight">
-              Kumusta, here's what's happening with your money.
+              Kumusta: Financial Overview
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1">
-            100% offline, private, and stored locally on your device.
+            Personal cashflow and active balances. 100% offline and stored locally on your device.
           </p>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap flex-shrink-0 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             icon={<ArrowLeftRight className="w-4 h-4" />}
             onClick={onOpenTransfer}
             data-testid="dashboard-quick-transfer-btn"
+            className="flex-1 sm:flex-initial"
           >
             Transfer
           </Button>
@@ -103,6 +104,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             icon={<Plus className="w-4 h-4" />}
             onClick={onOpenAddTransaction}
             data-testid="dashboard-quick-add-btn"
+            className="flex-1 sm:flex-initial"
           >
             + Add Transaction
           </Button>
@@ -116,15 +118,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           data-testid="dashboard-empty-state"
         >
           <BentoCard
-            variant="butter"
+            variant="oat"
             sticker={
-              <div className="w-10 h-10 rounded-xl bg-amber-200/70 border border-amber-400/40 flex items-center justify-center shadow-sm">
-                <Database className="w-5 h-5 text-amber-900" />
+              <div className="w-10 h-10 rounded-xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
+                <Database className="w-5 h-5 text-[#111111]" />
               </div>
             }
             title="Ready to record your first transaction?"
             subtitle="Your offline ledger is clean and ready."
-            className="border-amber-300/40"
+            className="border-stone-800/15"
           >
             <div className="max-w-2xl mt-2 space-y-4">
               <p className="text-sm sm:text-base text-stone-800 font-normal leading-relaxed">
@@ -181,15 +183,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           />
 
           {/* Row 2: 2-Column Bento Grid (Cashflow & Budget Meter) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
-            <div className="md:col-span-1 lg:col-span-7">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-7">
               <CashflowBento
                 cashflow={cashflow}
                 monthName={monthName}
               />
             </div>
 
-            <div className="md:col-span-1 lg:col-span-5">
+            <div className="lg:col-span-5">
               <BudgetQuickMeter
                 categories={categories}
                 spending={spending}

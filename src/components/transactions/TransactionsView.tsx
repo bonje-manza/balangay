@@ -68,13 +68,15 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
   onAddTransaction,
 }) => {
   // Dexie live queries (fallback to prop overrides for testing if provided)
-  const liveAccounts = useLiveQuery(() => db.accounts.toArray(), []) ?? [];
-  const liveTransactions = useLiveQuery(() => db.transactions.toArray(), []) ?? [];
-  const liveCategories = useLiveQuery(() => db.categories.toArray(), []) ?? [];
+  const rawLiveAccounts = useLiveQuery(() => db.accounts.toArray(), []);
+  const rawLiveTransactions = useLiveQuery(() => db.transactions.toArray(), []);
+  const rawLiveCategories = useLiveQuery(() => db.categories.toArray(), []);
 
-  const accounts = initialAccounts || liveAccounts;
-  const transactions = initialTransactions || liveTransactions;
-  const categories = initialCategories || liveCategories;
+  const isInitialLoading = !initialTransactions && rawLiveTransactions === undefined;
+
+  const accounts = initialAccounts || (rawLiveAccounts ?? []);
+  const transactions = initialTransactions || (rawLiveTransactions ?? []);
+  const categories = initialCategories || (rawLiveCategories ?? []);
 
   // Filter state
   const [filterState, setFilterState] = useState<TransactionFilterState>({
@@ -235,13 +237,14 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap flex-shrink-0 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             onClick={handleExportCSV}
             icon={<Download className="w-4 h-4" />}
             data-testid="export-csv-btn"
+            className="flex-1 sm:flex-initial"
           >
             Export CSV
           </Button>
@@ -252,6 +255,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
             onClick={handleOpenAdd}
             icon={<Plus className="w-4 h-4" />}
             data-testid="add-transaction-btn"
+            className="flex-1 sm:flex-initial"
           >
             + Add
           </Button>
@@ -310,7 +314,18 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
       </div>
 
       {/* Transaction List / Groups */}
-      {filteredTransactions.length === 0 ? (
+      {isInitialLoading ? (
+        <div
+          data-testid="ledger-loading-state"
+          className="space-y-4 py-6"
+        >
+          <div className="h-6 w-32 bg-stone-200/80 rounded-lg animate-pulse" />
+          <div className="space-y-2.5">
+            <div className="h-16 bg-[#FFFDF9] rounded-2xl border border-stone-800/10 animate-pulse" />
+            <div className="h-16 bg-[#FFFDF9] rounded-2xl border border-stone-800/10 animate-pulse" />
+          </div>
+        </div>
+      ) : filteredTransactions.length === 0 ? (
         <div
           data-testid="empty-state"
           className="text-center py-12 px-4 bg-[#FFFDF9] rounded-3xl border border-stone-800/15 shadow-sm space-y-3"

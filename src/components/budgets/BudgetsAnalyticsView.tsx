@@ -254,7 +254,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
             aria-label="Previous Month"
             data-testid="prev-month-button"
             onClick={handlePrevMonth}
-            className="w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-300 flex items-center justify-center text-stone-700 transition-colors cursor-pointer select-none active:translate-y-0.5"
+            className="w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-300 flex items-center justify-center text-stone-700 transition-colors cursor-pointer select-none active:translate-y-0.5 touch-manipulation"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -263,7 +263,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
             aria-label="Next Month"
             data-testid="next-month-button"
             onClick={handleNextMonth}
-            className="w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-300 flex items-center justify-center text-stone-700 transition-colors cursor-pointer select-none active:translate-y-0.5"
+            className="w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-300 flex items-center justify-center text-stone-700 transition-colors cursor-pointer select-none active:translate-y-0.5 touch-manipulation"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -341,7 +341,7 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
                 No monthly budgets set yet. Set spending caps for your categories to view overall budget progress.
               </p>
               <Button
-                variant="butter"
+                variant="primary"
                 size="sm"
                 onClick={handleOpenNewBudget}
                 className="mt-2 text-xs font-bold"

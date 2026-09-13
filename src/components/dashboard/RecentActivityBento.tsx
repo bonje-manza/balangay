@@ -46,24 +46,6 @@ export function formatTransactionDate(dateStr: string): string {
 }
 
 /**
- * Resolves mood pill background color.
- */
-function getMoodPillColor(mood: string): string {
-  switch (mood.toLowerCase()) {
-    case 'peaceful':
-      return '#DAE097';
-    case 'essential':
-      return '#A6CFF2';
-    case 'treat':
-      return '#FFED9E';
-    case 'invest':
-      return '#DAE097';
-    default:
-      return '#FFFDF9';
-  }
-}
-
-/**
  * RecentActivityBento: Bento card displaying the 5 most recent transactions with
  * category icons, note/category title, account badge, formatted date, semantic amounts,
  * mood tags, and a "View All" button leading to the Transactions tab.
@@ -87,7 +69,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-9 h-9 rounded-xl bg-[#A6CFF2] border border-stone-800/15 flex items-center justify-center shadow-sm">
+        <div className="w-9 h-9 rounded-xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
           <History className="w-4 h-4 text-[#111111]" />
         </div>
       }
@@ -168,8 +150,7 @@ export const RecentActivityBento: React.FC<RecentActivityBentoProps> = ({
 
                       {tx.mood && (
                         <span
-                          className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-stone-800/20 text-[#111111] shadow-[1px_1px_0px_0px_#111111] select-none"
-                          style={{ backgroundColor: getMoodPillColor(tx.mood) }}
+                          className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-stone-100 border border-stone-200 text-stone-700 select-none"
                           data-testid={`tx-mood-${tx.id}`}
                         >
                           {tx.mood}

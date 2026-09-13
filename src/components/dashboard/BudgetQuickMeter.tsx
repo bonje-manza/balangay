@@ -87,7 +87,7 @@ export const BudgetQuickMeter: React.FC<BudgetQuickMeterProps> = ({
     <BentoCard
       variant="oat"
       sticker={
-        <div className="w-9 h-9 rounded-xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
+        <div className="w-9 h-9 rounded-xl bg-stone-100 border border-stone-800/15 flex items-center justify-center shadow-sm">
           <PieChart className="w-4 h-4 text-[#111111]" />
         </div>
       }

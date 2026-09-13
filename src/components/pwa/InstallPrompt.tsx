@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, Download } from 'lucide-react';
-import { SparkleStar } from '../ui/StickerIcons';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -86,7 +85,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
         {/* Banner Left Info */}
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-butter border border-stone-800/20 flex items-center justify-center shadow-sm flex-shrink-0">
-            <SparkleStar size={18} className="text-dark-anchor fill-dark-anchor" />
+            <Download size={18} className="text-dark-anchor stroke-[2.2]" />
           </div>
           <div className="text-left">
             <p className="text-xs sm:text-sm font-bold text-dark-anchor leading-tight">
@@ -103,7 +102,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
           <button
             type="button"
             onClick={handleInstall}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#FFED9E] hover:bg-[#FFE57A] border border-stone-800/20 text-xs font-bold text-dark-anchor shadow-sm active:translate-y-0.5 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[38px] rounded-xl bg-[#FFED9E] hover:bg-[#FFE57A] border border-stone-800/20 text-xs font-bold text-dark-anchor shadow-sm active:translate-y-0.5 transition-all cursor-pointer select-none touch-manipulation"
           >
             <Download className="w-3.5 h-3.5 text-dark-anchor stroke-[2.5]" />
             <span>Install App</span>
@@ -113,7 +112,7 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
             type="button"
             onClick={handleDismiss}
             aria-label="Dismiss banner"
-            className="p-1.5 rounded-xl hover:bg-stone-200/60 border border-transparent hover:border-dark-anchor/20 text-stone-600 hover:text-dark-anchor transition-all cursor-pointer"
+            className="p-2 min-h-[38px] min-w-[38px] rounded-xl hover:bg-stone-200/60 border border-transparent hover:border-dark-anchor/20 text-stone-600 hover:text-dark-anchor transition-all cursor-pointer flex items-center justify-center touch-manipulation"
           >
             <X className="w-4 h-4" />
           </button>

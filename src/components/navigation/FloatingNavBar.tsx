@@ -30,7 +30,7 @@ const leftTabs: TabItemConfig[] = [
 
 const rightTabs: TabItemConfig[] = [
   { id: 'budgets', label: 'Budgets', icon: PieChart },
-  { id: 'accounts', label: 'Wallets', icon: Wallet },
+  { id: 'accounts', label: 'Accounts', icon: Wallet },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -56,7 +56,7 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
         aria-current={isActive ? 'page' : undefined}
         aria-label={item.label}
         onClick={() => onTabChange(item.id)}
-        className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-150 cursor-pointer select-none text-[10px] sm:text-xs font-semibold ${
+        className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 min-h-[44px] min-w-[44px] rounded-full transition-all duration-150 cursor-pointer select-none text-[10px] sm:text-xs font-semibold touch-manipulation ${
           isActive
             ? 'bg-stone-800 text-[#FFFDF9] shadow-sm'
             : 'text-stone-400 hover:text-[#FFFDF9] hover:bg-stone-800/80'
@@ -73,7 +73,7 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
       aria-label="Bottom Navigation"
       className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-[95vw] ${className}`}
     >
-      <div className="bg-[#111111] text-[#F7F2E8] rounded-full border border-stone-800 px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1 sm:gap-1.5 shadow-xl shadow-black/30 backdrop-blur-none">
+      <div className="bg-[#111111] text-[#F7F2E8] rounded-full border border-stone-800 px-2 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1 sm:gap-1.5 shadow-xl shadow-black/30 backdrop-blur-none">
         {/* Left Navigation Tabs */}
         {leftTabs.map(renderTabButton)}
 
@@ -83,7 +83,7 @@ export const FloatingNavBar: React.FC<FloatingNavBarProps> = ({
             type="button"
             data-testid="nav-add-button"
             onClick={onAddTransaction}
-            className="inline-flex items-center gap-1 bg-[#FFED9E] text-[#111111] hover:bg-[#FFF3B8] font-bold text-xs px-3 sm:px-3.5 py-1.5 rounded-full border border-amber-300/40 shadow-sm active:translate-y-0.5 transition-all cursor-pointer mx-0.5 flex-shrink-0"
+            className="inline-flex items-center justify-center gap-1 bg-[#FFED9E] text-[#111111] hover:bg-[#FFF3B8] font-bold text-xs px-3.5 sm:px-4 py-2 min-h-[44px] rounded-full border border-amber-300/40 shadow-sm active:translate-y-0.5 transition-all cursor-pointer mx-0.5 flex-shrink-0 touch-manipulation"
             aria-label="Add transaction"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />

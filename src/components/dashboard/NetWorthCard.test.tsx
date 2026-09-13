@@ -59,7 +59,7 @@ describe('NetWorthCard Component', () => {
 
     expect(screen.getByText('Total Net Worth')).toBeInTheDocument();
     expect(screen.getByTestId('net-worth-amount')).toHaveTextContent(/₱21,700\.00/);
-    expect(screen.getAllByTestId('sticker-sparkle-star').length).toBeGreaterThan(0);
+    expect(screen.getByText('Real-time')).toBeInTheDocument();
   });
 
   it('renders active accounts in breakdown strip and excludes archived accounts', () => {

@@ -20,16 +20,16 @@ const variantStyles: Record<StickerBadgeVariant, string> = {
 };
 
 const rotationStyles: Record<StickerBadgeRotation, string> = {
-  'tilt-left': 'rotate-[-2deg]',
-  left: 'rotate-[-2deg]',
-  'tilt-right': 'rotate-[2deg]',
-  right: 'rotate-[2deg]',
+  'tilt-left': 'rotate-0',
+  left: 'rotate-0',
+  'tilt-right': 'rotate-0',
+  right: 'rotate-0',
   flat: 'rotate-0',
   none: 'rotate-0',
 };
 
 /**
- * StickerBadge: Playful pill badge with crisp borders, pastel fills, and optional slight rotation.
+ * StickerBadge: Clean status badge with crisp hairline border and dignified alignment.
  */
 export const StickerBadge: React.FC<StickerBadgeProps> = ({
   variant = 'butter',
@@ -41,7 +41,7 @@ export const StickerBadge: React.FC<StickerBadgeProps> = ({
 }) => {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-semibold tracking-tight transition-transform duration-150 select-none shadow-sm ${variantStyles[variant]} ${rotationStyles[rotation]} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-semibold tracking-tight select-none shadow-sm ${variantStyles[variant]} ${rotationStyles[rotation]} ${className}`}
       {...rest}
     >
       {icon && <span className="flex-shrink-0 flex items-center justify-center">{icon}</span>}
