@@ -16,6 +16,7 @@ export interface TransactionFormModalProps {
   onClose: () => void;
   transactionToEdit?: Transaction | null;
   initialType?: TransactionType;
+  initialDate?: string;
   accounts: Account[];
   categories: Category[];
   onSuccess?: (transaction: Transaction) => void;
@@ -29,6 +30,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
   onClose,
   transactionToEdit,
   initialType = 'expense',
+  initialDate,
   accounts,
   categories,
   onSuccess,
@@ -42,7 +44,9 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
   const [accountId, setAccountId] = useState<string>('');
   const [toAccountId, setToAccountId] = useState<string>('');
   const [categoryId, setCategoryId] = useState<string>('');
-  const [date, setDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState<string>(
+    initialDate || new Date().toISOString().slice(0, 10)
+  );
   const [notes, setNotes] = useState<string>('');
   const [tagsInput, setTagsInput] = useState<string>('');
   const [mood, setMood] = useState<string>('');
@@ -77,14 +81,14 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
       // Auto-select first matching category if available
       const matchingCat = categories.find((c) => c.type === initialType);
       setCategoryId(matchingCat ? matchingCat.id : '');
-      setDate(new Date().toISOString().slice(0, 10));
+      setDate(initialDate || new Date().toISOString().slice(0, 10));
       setNotes('');
       setTagsInput('');
       setMood('');
     }
     setErrors({});
     setShowDeleteConfirm(false);
-  }, [transactionToEdit, initialType, accounts, categories, isOpen]);
+  }, [transactionToEdit, initialType, initialDate, accounts, categories, isOpen]);
 
   // When type changes, ensure valid category selection
   const handleTypeChange = (newType: TransactionType) => {
@@ -226,7 +230,9 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
     }
   };
 
-  const availableCategories = categories.filter((c) => c.type === type);
+  const availableCategories = categories.filter(
+    (c) => c.type === type && (!c.isArchived || c.id === categoryId)
+  );
 
   return (
     <Modal
@@ -447,10 +453,11 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
           <div className="pt-3 space-y-3.5">
             {/* Date Picker */}
             <div>
-              <label className="block text-xs font-bold text-stone-800 mb-1">
+              <label htmlFor="transaction-date-input" className="block text-xs font-bold text-stone-800 mb-1">
                 Date *
               </label>
               <input
+                id="transaction-date-input"
                 type="date"
                 data-testid="transaction-date-input"
                 value={date}

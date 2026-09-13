@@ -21,6 +21,7 @@ const AppShell: React.FC = () => {
   const security = useSecurity();
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
   const [isAddTxOpen, setIsAddTxOpen] = useState<boolean>(false);
+  const [addTxDate, setAddTxDate] = useState<string | undefined>(undefined);
   const [isTransferOpen, setIsTransferOpen] = useState<boolean>(false);
   const [isOnboardingDismissed, setIsOnboardingDismissed] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; variant?: ToastVariant } | null>(null);
@@ -115,17 +116,31 @@ const AppShell: React.FC = () => {
         {activeTab === 'dashboard' && (
           <DashboardView
             onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
-            onOpenAddTransaction={() => setIsAddTxOpen(true)}
+            onOpenAddTransaction={() => {
+              setAddTxDate(undefined);
+              setIsAddTxOpen(true);
+            }}
             onOpenTransfer={() => setIsTransferOpen(true)}
           />
         )}
 
         {activeTab === 'transactions' && (
-          <TransactionsView onAddTransaction={() => setIsAddTxOpen(true)} />
+          <TransactionsView
+            onAddTransaction={() => {
+              setAddTxDate(undefined);
+              setIsAddTxOpen(true);
+            }}
+          />
         )}
 
         {activeTab === 'budgets' && (
-          <BudgetsAnalyticsView onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)} />
+          <BudgetsAnalyticsView
+            onNavigateTab={(tab) => setActiveTab(tab as NavigationTab)}
+            onOpenAddTransaction={(date) => {
+              setAddTxDate(date);
+              setIsAddTxOpen(true);
+            }}
+          />
         )}
 
         {activeTab === 'accounts' && (
@@ -146,13 +161,20 @@ const AppShell: React.FC = () => {
       <FloatingNavBar
         activeTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab)}
-        onAddTransaction={() => setIsAddTxOpen(true)}
+        onAddTransaction={() => {
+          setAddTxDate(undefined);
+          setIsAddTxOpen(true);
+        }}
       />
 
       {/* Global Modals */}
       <TransactionFormModal
         isOpen={isAddTxOpen}
-        onClose={() => setIsAddTxOpen(false)}
+        initialDate={addTxDate}
+        onClose={() => {
+          setIsAddTxOpen(false);
+          setAddTxDate(undefined);
+        }}
         onSuccess={(tx) => {
           setToast({
             message: `${tx.type === 'transfer' ? 'Transfer' : tx.type === 'income' ? 'Income' : 'Expense'} recorded in vault`,

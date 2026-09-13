@@ -195,3 +195,108 @@ export function calculateBudgetProgress(
     isOverBudget,
   };
 }
+
+/**
+ * Normalizes a transaction date string to a 'YYYY-MM-DD' key.
+ */
+export function toDateKey(dateStr: string): string {
+  const match = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (match) {
+    return match[1];
+  }
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) {
+    return '';
+  }
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Aggregates daily cashflow (income, expense, net) for each date in a given month and year.
+ * Returns a Map where keys are 'YYYY-MM-DD' strings.
+ * Transfers are excluded from income and expense.
+ */
+export function calculateDailyCashflow(
+  transactions: Transaction[],
+  year: number,
+  month: number
+): Map<string, CashflowSummary> {
+  const daily = new Map<string, { income: number; expense: number }>();
+
+  for (const tx of transactions) {
+    if (!matchesYearMonth(tx.date, year, month)) {
+      continue;
+    }
+    if (tx.type !== 'income' && tx.type !== 'expense') {
+      continue;
+    }
+
+    const key = toDateKey(tx.date);
+    if (!key) continue;
+
+    const current = daily.get(key) || { income: 0, expense: 0 };
+    if (tx.type === 'income') {
+      current.income += tx.amount;
+    } else if (tx.type === 'expense') {
+      current.expense += tx.amount;
+    }
+    daily.set(key, current);
+  }
+
+  const result = new Map<string, CashflowSummary>();
+  for (const [key, val] of daily.entries()) {
+    const income = roundMoney(val.income);
+    const expense = roundMoney(val.expense);
+    const net = roundMoney(income - expense);
+    result.set(key, { income, expense, net });
+  }
+
+  return result;
+}
+
+export interface MonthlyCashflowItem extends CashflowSummary {
+  month: number; // 1 to 12
+}
+
+export interface YearlyCashflowSummary {
+  months: MonthlyCashflowItem[];
+  total: CashflowSummary;
+}
+
+/**
+ * Aggregates cashflow for each of the 12 months in a given calendar year.
+ */
+export function calculateYearlyCashflow(
+  transactions: Transaction[],
+  year: number
+): YearlyCashflowSummary {
+  const months: MonthlyCashflowItem[] = [];
+  let totalIncome = 0;
+  let totalExpense = 0;
+
+  for (let m = 1; m <= 12; m++) {
+    const summary = calculateMonthlyCashflow(transactions, year, m);
+    months.push({
+      month: m,
+      ...summary,
+    });
+    totalIncome += summary.income;
+    totalExpense += summary.expense;
+  }
+
+  const roundedIncome = roundMoney(totalIncome);
+  const roundedExpense = roundMoney(totalExpense);
+  const totalNet = roundMoney(roundedIncome - roundedExpense);
+
+  return {
+    months,
+    total: {
+      income: roundedIncome,
+      expense: roundedExpense,
+      net: totalNet,
+    },
+  };
+}

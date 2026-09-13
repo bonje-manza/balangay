@@ -236,4 +236,66 @@ describe('BudgetsAnalyticsView Component (TDD)', () => {
     const select = screen.getByTestId('budget-category-select') as HTMLSelectElement;
     expect(select.value).toBe('cat-groceries');
   });
+
+  it('switches between Budgets and Cash Flow tabs seamlessly', () => {
+    const handleAddTx = vi.fn();
+
+    render(
+      <BudgetsAnalyticsView
+        currentDate={new Date(2026, 8, 12)}
+        initialCategories={testCategories}
+        initialTransactions={testTransactions}
+        onOpenAddTransaction={handleAddTx}
+      />
+    );
+
+    // Initial state: Budgets & Breakdown
+    const budgetsSubTab = screen.getByTestId('subtab-budgets');
+    const cashflowSubTab = screen.getByTestId('subtab-cashflow');
+
+    expect(budgetsSubTab).toHaveAttribute('aria-selected', 'true');
+    expect(cashflowSubTab).toHaveAttribute('aria-selected', 'false');
+    expect(screen.getByTestId('spending-breakdown-svg')).toBeInTheDocument();
+    expect(screen.queryByTestId('cash-flow-view')).not.toBeInTheDocument();
+
+    // Click Cash Flow & Calendar tab
+    fireEvent.click(cashflowSubTab);
+
+    expect(budgetsSubTab).toHaveAttribute('aria-selected', 'false');
+    expect(cashflowSubTab).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('heading', { name: /Cash Flow & Calendar/i })).toBeInTheDocument();
+    expect(screen.getByTestId('cash-flow-view')).toBeInTheDocument();
+    expect(screen.queryByTestId('spending-breakdown-svg')).not.toBeInTheDocument();
+
+    // Switch back to Budgets
+    fireEvent.click(budgetsSubTab);
+
+    expect(budgetsSubTab).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('heading', { name: /Budgets & Spending Analytics/i })).toBeInTheDocument();
+    expect(screen.getByTestId('spending-breakdown-svg')).toBeInTheDocument();
+    expect(screen.queryByTestId('cash-flow-view')).not.toBeInTheDocument();
+  });
+
+  it('passes onOpenAddTransaction to CashFlowView day inspector', () => {
+    const handleAddTx = vi.fn();
+
+    render(
+      <BudgetsAnalyticsView
+        currentDate={new Date(2026, 8, 12)}
+        initialCategories={testCategories}
+        initialTransactions={testTransactions}
+        onOpenAddTransaction={handleAddTx}
+      />
+    );
+
+    // Switch to Cash Flow
+    fireEvent.click(screen.getByTestId('subtab-cashflow'));
+    expect(screen.getByTestId('cash-flow-view')).toBeInTheDocument();
+
+    // The active day inspector has an "+ Add for this date" button
+    const addForDateBtn = screen.getByTestId('add-tx-for-date-btn');
+    fireEvent.click(addForDateBtn);
+
+    expect(handleAddTx).toHaveBeenCalledWith('2026-09-12');
+  });
 });

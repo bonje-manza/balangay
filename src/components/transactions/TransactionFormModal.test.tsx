@@ -509,5 +509,78 @@ describe('TransactionFormModal Component (TDD)', () => {
       expect(screen.getByTestId('transaction-date-input')).toBeInTheDocument();
       expect(screen.getByTestId('transaction-notes-input')).toBeInTheDocument();
     });
+
+    it('filters out archived categories for new transactions but retains them when editing', () => {
+      const categoriesWithArchived: Category[] = [
+        ...testCategories,
+        {
+          id: 'cat-archived-gym',
+          name: 'Archived Gym',
+          type: 'expense',
+          icon: 'Dumbbell',
+          color: '#DAE097',
+          isArchived: true,
+        },
+      ];
+
+      // 1. New transaction: Archived Gym should not be present
+      const { unmount } = render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={categoriesWithArchived}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const select = screen.getByTestId('transaction-category-select');
+      expect(select).not.toHaveTextContent('Archived Gym');
+      expect(select).toHaveTextContent('Food & Dining');
+      unmount();
+
+      // 2. Edit transaction that was saved with Archived Gym: should be visible
+      const existingTxWithArchivedCat: Transaction = {
+        id: 'tx-archived-cat',
+        amount: 1200,
+        type: 'expense',
+        accountId: 'acc-gcash',
+        categoryId: 'cat-archived-gym',
+        date: '2026-08-15',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          transactionToEdit={existingTxWithArchivedCat}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={categoriesWithArchived}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const editSelect = screen.getByTestId('transaction-category-select') as HTMLSelectElement;
+      expect(editSelect).toHaveTextContent('Archived Gym');
+      expect(editSelect.value).toBe('cat-archived-gym');
+    });
+
+    it('pre-fills custom initialDate when provided', () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          initialDate="2026-09-22"
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const dateInput = screen.getByTestId('transaction-date-input') as HTMLInputElement;
+      expect(dateInput.value).toBe('2026-09-22');
+    });
   });
 });

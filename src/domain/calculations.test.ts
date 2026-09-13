@@ -6,6 +6,8 @@ import {
   calculateMonthlyCashflow,
   calculateCategorySpending,
   calculateBudgetProgress,
+  calculateDailyCashflow,
+  calculateYearlyCashflow,
 } from './calculations';
 
 describe('calculateAccountBalances', () => {
@@ -634,6 +636,159 @@ describe('additional calculation edge cases', () => {
 
     const spending = calculateCategorySpending(transactions, 2026, 9);
     expect(spending.size).toBe(0);
+  });
+});
+
+describe('calculateDailyCashflow', () => {
+  const transactions: Transaction[] = [
+    {
+      id: 'tx-1',
+      amount: 1500,
+      type: 'income',
+      accountId: 'acc-1',
+      date: '2026-09-05',
+      createdAt: '2026-09-05T00:00:00Z',
+      updatedAt: '2026-09-05T00:00:00Z',
+    },
+    {
+      id: 'tx-2',
+      amount: 450,
+      type: 'expense',
+      accountId: 'acc-1',
+      date: '2026-09-05',
+      createdAt: '2026-09-05T00:00:00Z',
+      updatedAt: '2026-09-05T00:00:00Z',
+    },
+    {
+      id: 'tx-3',
+      amount: 100,
+      type: 'expense',
+      accountId: 'acc-1',
+      date: '2026-09-05T12:30:00Z', // ISO format
+      createdAt: '2026-09-05T00:00:00Z',
+      updatedAt: '2026-09-05T00:00:00Z',
+    },
+    {
+      id: 'tx-4',
+      amount: 2000,
+      type: 'expense',
+      accountId: 'acc-1',
+      date: '2026-09-12',
+      createdAt: '2026-09-12T00:00:00Z',
+      updatedAt: '2026-09-12T00:00:00Z',
+    },
+    {
+      id: 'tx-transfer',
+      amount: 500,
+      type: 'transfer',
+      accountId: 'acc-1',
+      toAccountId: 'acc-2',
+      date: '2026-09-05',
+      createdAt: '2026-09-05T00:00:00Z',
+      updatedAt: '2026-09-05T00:00:00Z',
+    },
+    {
+      id: 'tx-diff-month',
+      amount: 3000,
+      type: 'income',
+      accountId: 'acc-1',
+      date: '2026-10-01',
+      createdAt: '2026-10-01T00:00:00Z',
+      updatedAt: '2026-10-01T00:00:00Z',
+    },
+  ];
+
+  it('aggregates daily cashflow by YYYY-MM-DD date key', () => {
+    const daily = calculateDailyCashflow(transactions, 2026, 9);
+    expect(daily.size).toBe(2);
+
+    const day5 = daily.get('2026-09-05');
+    expect(day5).toBeDefined();
+    expect(day5?.income).toBe(1500);
+    expect(day5?.expense).toBe(550); // 450 + 100, transfer ignored
+    expect(day5?.net).toBe(950);
+
+    const day12 = daily.get('2026-09-12');
+    expect(day12).toBeDefined();
+    expect(day12?.income).toBe(0);
+    expect(day12?.expense).toBe(2000);
+    expect(day12?.net).toBe(-2000);
+  });
+
+  it('returns empty map if no transactions match the month', () => {
+    const daily = calculateDailyCashflow(transactions, 2026, 8);
+    expect(daily.size).toBe(0);
+  });
+});
+
+describe('calculateYearlyCashflow', () => {
+  const transactions: Transaction[] = [
+    {
+      id: 'tx-jan',
+      amount: 10000,
+      type: 'income',
+      accountId: 'acc-1',
+      date: '2026-01-15',
+      createdAt: '2026-01-15T00:00:00Z',
+      updatedAt: '2026-01-15T00:00:00Z',
+    },
+    {
+      id: 'tx-jan-exp',
+      amount: 3000,
+      type: 'expense',
+      accountId: 'acc-1',
+      date: '2026-01-20',
+      createdAt: '2026-01-20T00:00:00Z',
+      updatedAt: '2026-01-20T00:00:00Z',
+    },
+    {
+      id: 'tx-feb-exp',
+      amount: 4000,
+      type: 'expense',
+      accountId: 'acc-1',
+      date: '2026-02-10',
+      createdAt: '2026-02-10T00:00:00Z',
+      updatedAt: '2026-02-10T00:00:00Z',
+    },
+    {
+      id: 'tx-other-year',
+      amount: 50000,
+      type: 'income',
+      accountId: 'acc-1',
+      date: '2025-12-31',
+      createdAt: '2025-12-31T00:00:00Z',
+      updatedAt: '2025-12-31T00:00:00Z',
+    },
+  ];
+
+  it('computes 12 monthly breakdowns and the yearly total', () => {
+    const yearly = calculateYearlyCashflow(transactions, 2026);
+    expect(yearly.months).toHaveLength(12);
+
+    // January (month 1)
+    const jan = yearly.months[0];
+    expect(jan.month).toBe(1);
+    expect(jan.income).toBe(10000);
+    expect(jan.expense).toBe(3000);
+    expect(jan.net).toBe(7000);
+
+    // February (month 2)
+    const feb = yearly.months[1];
+    expect(feb.month).toBe(2);
+    expect(feb.income).toBe(0);
+    expect(feb.expense).toBe(4000);
+    expect(feb.net).toBe(-4000);
+
+    // March (month 3, empty)
+    const mar = yearly.months[2];
+    expect(mar.income).toBe(0);
+    expect(mar.expense).toBe(0);
+    expect(mar.net).toBe(0);
+
+    // Total
+    expect(yearly.total.income).toBe(10000);
+    expect(yearly.total.expense).toBe(7000);
+    expect(yearly.total.net).toBe(3000);
   });
 });
 

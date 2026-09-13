@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 import { resetDatabase } from './storage/db';
 import { saveUserSettings } from './storage/settingsRepository';
@@ -58,5 +58,37 @@ describe('App Root Shell', () => {
     expect(screen.getByRole('navigation', { name: /Bottom Navigation/i })).toBeInTheDocument();
     expect(screen.getByTestId('nav-add-button')).toBeInTheDocument();
     expect(screen.getByTestId('nav-tab-dashboard')).toBeInTheDocument();
+  });
+
+  it('allows navigating to Budgets tab, switching to Cash Flow & Calendar, and opening Add Transaction prefilled', async () => {
+    await saveUserSettings({
+      hasCompletedOnboarding: true,
+      pinEnabled: false,
+    });
+
+    render(<App />);
+
+    // Click Budgets in floating nav
+    const budgetsNavBtn = await screen.findByTestId('nav-tab-budgets');
+    fireEvent.click(budgetsNavBtn);
+
+    // Verify Budgets view is active
+    expect(await screen.findByTestId('budgets-analytics-view')).toBeInTheDocument();
+
+    // Click Cash Flow & Calendar subtab
+    const cashflowSubTab = screen.getByTestId('subtab-cashflow');
+    fireEvent.click(cashflowSubTab);
+
+    // Cash flow view rendered
+    expect(await screen.findByTestId('cash-flow-view')).toBeInTheDocument();
+
+    // Click "+ Add for this date" in Day Inspector
+    const addForDateBtn = screen.getByTestId('add-tx-for-date-btn');
+    fireEvent.click(addForDateBtn);
+
+    // Modal opens
+    expect(await screen.findByRole('heading', { name: /^Add Transaction$/i })).toBeInTheDocument();
+    const dateInput = screen.getByLabelText(/Date/i) as HTMLInputElement;
+    expect(dateInput.value).toBeTruthy();
   });
 });

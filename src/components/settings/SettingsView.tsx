@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import {
   Globe,
   Shield,
@@ -14,6 +15,7 @@ import {
   CheckCircle2,
   Clock,
   Coins,
+  FolderKanban,
 } from 'lucide-react';
 import { BentoCard } from '../ui/BentoCard';
 import { Button } from '../ui/Button';
@@ -21,11 +23,12 @@ import { StickerBadge } from '../ui/StickerBadge';
 import { useSecurity } from '../../context/SecurityContext';
 import { exportFullDatabaseJSON } from '../../services/backupService';
 import { loadSampleDemoData } from '../../storage/seedData';
-import { resetDatabase } from '../../storage/db';
+import { db, resetDatabase } from '../../storage/db';
 import { saveUserSettings } from '../../storage/settingsRepository';
 import { BackupModal } from './BackupModal';
 import { CsvImportModal } from './CsvImportModal';
 import { PinSettingsModal, type PinModalMode } from './PinSettingsModal';
+import { CategoryManagerModal } from '../categories';
 
 export interface SettingsViewProps {
   onDataReset?: () => void;
@@ -46,10 +49,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const security = useSecurity();
 
   // Modals state
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
   const [isBackupModalOpen, setIsBackupModalOpen] = useState<boolean>(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState<boolean>(false);
   const [isPinModalOpen, setIsPinModalOpen] = useState<boolean>(false);
   const [pinModalMode, setPinModalMode] = useState<PinModalMode>('set');
+
+  // Categories live query
+  const liveCategories = useLiveQuery(() => db.categories.toArray(), []) ?? [];
+  const expenseCategoriesCount = liveCategories.filter(
+    (c) => c.type === 'expense' && !c.isArchived
+  ).length;
+  const incomeCategoriesCount = liveCategories.filter(
+    (c) => c.type === 'income' && !c.isArchived
+  ).length;
 
   // Backup export state
   const [isExporting, setIsExporting] = useState<boolean>(false);
@@ -359,7 +372,52 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
         </BentoCard>
 
-        {/* Bento 3: Backup & Portability */}
+        {/* Bento 3: Category Manager */}
+        <BentoCard
+          variant="oat"
+          sticker={
+            <div className="w-9 h-9 rounded-2xl bg-[#FFED9E] border border-stone-800/15 flex items-center justify-center shadow-sm">
+              <FolderKanban className="w-4 h-4 text-dark-anchor" />
+            </div>
+          }
+          title="Category Manager"
+          subtitle="Custom spending categories, income streams, and budget caps"
+        >
+          <div className="space-y-3 pt-2">
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="p-3 bg-stone-50 rounded-2xl border border-stone-800/10 flex flex-col">
+                <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+                  Expense Categories
+                </span>
+                <span className="text-xl font-bold font-mono text-dark-anchor mt-1">
+                  {expenseCategoriesCount}
+                </span>
+              </div>
+
+              <div className="p-3 bg-stone-50 rounded-2xl border border-stone-800/10 flex flex-col">
+                <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">
+                  Income Streams
+                </span>
+                <span className="text-xl font-bold font-mono text-dark-anchor mt-1">
+                  {incomeCategoriesCount}
+                </span>
+              </div>
+            </div>
+
+            <Button
+              variant="primary"
+              size="md"
+              data-testid="open-category-manager-btn"
+              icon={<FolderKanban className="w-4 h-4" />}
+              onClick={() => setIsCategoryModalOpen(true)}
+              fullWidth
+            >
+              Manage Categories
+            </Button>
+          </div>
+        </BentoCard>
+
+        {/* Bento 4: Backup & Portability */}
         <BentoCard
           variant="oat"
           sticker={
@@ -625,6 +683,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         isOpen={isPinModalOpen}
         mode={pinModalMode}
         onClose={() => setIsPinModalOpen(false)}
+      />
+
+      {/* Category Manager Modal */}
+      <CategoryManagerModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
       />
     </div>
   );

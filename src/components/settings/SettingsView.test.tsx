@@ -64,16 +64,27 @@ describe('SettingsView Component (TDD)', () => {
     expect(screen.getByTestId('set-pin-btn')).toBeInTheDocument();
     expect(screen.getByTestId('autolock-select')).toBeInTheDocument();
 
-    // Bento 3: Backup & Portability
+    // Bento 3: Category Manager
+    expect(screen.getByText(/Category Manager/i)).toBeInTheDocument();
+    expect(screen.getByTestId('open-category-manager-btn')).toBeInTheDocument();
+
+    // Bento 4: Backup & Portability
     expect(screen.getByText(/Backup & Portability/i)).toBeInTheDocument();
     expect(screen.getByTestId('export-backup-btn')).toBeInTheDocument();
     expect(screen.getByTestId('open-restore-modal-btn')).toBeInTheDocument();
     expect(screen.getByTestId('open-csv-modal-btn')).toBeInTheDocument();
 
-    // Bento 4: Data Management & Demo Mode
+    // Bento 5: Data Management & Demo Mode
     expect(screen.getByText(/Data Management & Demo/i)).toBeInTheDocument();
     expect(screen.getByTestId('load-demo-btn')).toBeInTheDocument();
     expect(screen.getByTestId('reset-vault-btn')).toBeInTheDocument();
+  });
+
+  it('opens CategoryManagerModal when clicking Manage Categories button', () => {
+    renderWithSecurity(<SettingsView />);
+    const manageCategoriesBtn = screen.getByTestId('open-category-manager-btn');
+    fireEvent.click(manageCategoriesBtn);
+    expect(screen.getByTestId('category-manager-modal')).toBeInTheDocument();
   });
 
   it('renders Protected badge and allows Lock Vault Now when PIN is configured', () => {

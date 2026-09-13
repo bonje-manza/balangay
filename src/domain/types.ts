@@ -38,6 +38,9 @@ export interface Category {
   color: string;
   budgetLimit?: number; // monthly spending cap in PHP
   isDefault?: boolean;
+  isArchived?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface BudgetProgress {

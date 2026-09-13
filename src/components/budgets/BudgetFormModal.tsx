@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Trash2, Check, AlertCircle } from 'lucide-react';
 import type { Category } from '../../domain/types';
 import { db } from '../../storage/db';
@@ -32,14 +32,21 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const activeExpenseCategories = useMemo(
+    () =>
+      categories.filter(
+        (c) => c.type === 'expense' && (!c.isArchived || c.id === selectedCategoryId)
+      ),
+    [categories, selectedCategoryId]
+  );
+
   // Sync category and budget limit when modal opens or selectedCategoryId changes
   useEffect(() => {
     if (!isOpen) return;
 
     const targetCategory =
-      categories.find((c) => c.id === selectedCategoryId) ||
-      categories.find((c) => c.type === 'expense') ||
-      categories[0];
+      activeExpenseCategories.find((c) => c.id === selectedCategoryId) ||
+      activeExpenseCategories[0];
 
     if (targetCategory) {
       setCategoryId(targetCategory.id);
@@ -53,7 +60,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
       setLimit('');
     }
     setError(null);
-  }, [isOpen, selectedCategoryId, categories]);
+  }, [isOpen, selectedCategoryId, activeExpenseCategories]);
 
   // Handle category change in selector dropdown
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -148,7 +155,7 @@ export const BudgetFormModal: React.FC<BudgetFormModalProps> = ({
               onChange={handleCategoryChange}
               className="select-custom-chevron w-full px-3.5 py-2.5 rounded-2xl bg-[#F7F2E8] border-2 border-stone-800 text-sm font-bold text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#111111] cursor-pointer shadow-[2px_2px_0px_0px_#111111]"
             >
-              {categories.map((cat) => (
+              {activeExpenseCategories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name} {cat.budgetLimit ? `(Current: ${formatPHP(cat.budgetLimit)})` : ''}
                 </option>

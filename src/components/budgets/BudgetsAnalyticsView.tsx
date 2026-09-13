@@ -9,9 +9,10 @@ import {
   AlertTriangle,
   AlertCircle,
   TrendingDown,
+  Calendar,
 } from 'lucide-react';
 import { db } from '../../storage/db';
-import type { Category, Transaction } from '../../domain/types';
+import type { Account, Category, Transaction } from '../../domain/types';
 import {
   calculateCategorySpending,
   calculateBudgetProgress,
@@ -23,37 +24,51 @@ import { Button } from '../ui/Button';
 import { CategoryBudgetCard } from './CategoryBudgetCard';
 import { SpendingBreakdownChart } from './SpendingBreakdownChart';
 import { BudgetFormModal } from './BudgetFormModal';
+import { CashFlowView } from '../cashflow';
 
 export interface BudgetsAnalyticsViewProps {
   initialCategories?: Category[];
   initialTransactions?: Transaction[];
+  initialAccounts?: Account[];
   currentDate?: Date;
   className?: string;
   onNavigateTab?: (tab: string) => void;
+  onOpenAddTransaction?: (date?: string) => void;
+  onEditTransaction?: (transaction: Transaction) => void;
 }
 
 /**
  * BudgetsAnalyticsView: Complete Budgets & Visual Spending Analytics view.
  * Features:
  * - Fraunces serif headline and subtitle
+ * - Sub-tab toggle between Budgets & Breakdown and Cash Flow & Calendar
  * - Month/Year interactive navigation with Previous, Next, and Today reset
  * - Overall Monthly Budget Progress Hero Bento with total budgeted, total spent, remaining, and status badge
  * - Pure SVG Spending Breakdown Donut Chart with center total and interactive legend
  * - Responsive grid of Category Budget Cards with real-time progress meters
+ * - CashFlowView with interactive calendar, day inspector, and cash flow charts
  * - Quick "Set New Budget" action and accessible limit editing modal
  */
 export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
   initialCategories,
   initialTransactions,
+  initialAccounts,
   currentDate,
   className = '',
+  onOpenAddTransaction,
+  onEditTransaction,
 }) => {
   // Reactive Dexie data with optional test prop fallbacks
   const liveCategories = useLiveQuery(() => db.categories.toArray(), []) ?? [];
   const liveTransactions = useLiveQuery(() => db.transactions.toArray(), []) ?? [];
+  const liveAccounts = useLiveQuery(() => db.accounts.toArray(), []) ?? [];
 
   const categories = initialCategories || liveCategories;
   const transactions = initialTransactions || liveTransactions;
+  const accounts = initialAccounts || liveAccounts;
+
+  // Sub-tab navigation state
+  const [activeSubTab, setActiveSubTab] = useState<'budgets' | 'cashflow'>('budgets');
 
   // Selected date state for month navigation
   const [selectedDate, setSelectedDate] = useState<Date>(() => currentDate || new Date());
@@ -87,22 +102,24 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
     setSelectedDate(new Date());
   };
 
-  // Filter categories to expenses
-  const expenseCategories = useMemo(() => {
-    return categories.filter((c) => c.type === 'expense');
-  }, [categories]);
-
-  // Categories with positive budget limit
-  const budgetedCategories = useMemo(() => {
-    return expenseCategories.filter(
-      (c) => typeof c.budgetLimit === 'number' && c.budgetLimit > 0
-    );
-  }, [expenseCategories]);
-
   // Calculate category spending for selected month/year
   const spending = useMemo(() => {
     return calculateCategorySpending(transactions, targetYear, targetMonth);
   }, [transactions, targetYear, targetMonth]);
+
+  // Filter categories to expenses: active categories or archived categories with spending in target month
+  const expenseCategories = useMemo(() => {
+    return categories.filter(
+      (c) => c.type === 'expense' && (!c.isArchived || (spending.get(c.id) ?? 0) > 0)
+    );
+  }, [categories, spending]);
+
+  // Categories with positive budget limit (active categories only)
+  const budgetedCategories = useMemo(() => {
+    return expenseCategories.filter(
+      (c) => !c.isArchived && typeof c.budgetLimit === 'number' && c.budgetLimit > 0
+    );
+  }, [expenseCategories]);
 
   // Calculate overall budget metrics
   const { totalBudgeted, totalSpent, overallProgress } = useMemo(() => {
@@ -158,28 +175,79 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b-2 border-stone-800/10">
         <div>
           <h1 className="font-serif font-black text-2xl sm:text-3xl text-[#111111] tracking-tight">
-            Budgets & Spending Analytics
+            {activeSubTab === 'budgets'
+              ? 'Budgets & Spending Analytics'
+              : 'Cash Flow & Calendar'}
           </h1>
           <p className="text-xs sm:text-sm font-medium text-stone-600 mt-1">
-            See where your money goes each month and adjust your category limits.
+            {activeSubTab === 'budgets'
+              ? 'See where your money goes each month and adjust your category limits.'
+              : 'Track daily cash flow, net balances, and seasonal financial rhythms.'}
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 flex-shrink-0">
-          <Button
-            variant="primary"
-            size="md"
-            icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
-            onClick={handleOpenNewBudget}
-            data-testid="quick-set-budget-btn"
-          >
-            Set Budget
-          </Button>
+          {activeSubTab === 'budgets' && (
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Plus className="w-4 h-4 stroke-[2.5]" />}
+              onClick={handleOpenNewBudget}
+              data-testid="quick-set-budget-btn"
+            >
+              Set Budget
+            </Button>
+          )}
         </div>
       </header>
 
-      {/* Month/Year Navigator Bar */}
-      <div className="flex items-center justify-between bg-[#FFFDF9] rounded-2xl border border-stone-800/15 px-3.5 py-2 shadow-sm">
+      {/* Sub-Tab Navigation Bar */}
+      <div
+        className="flex items-center gap-1.5 p-1 bg-stone-200/70 rounded-2xl border border-stone-800/15 w-fit"
+        role="tablist"
+        aria-label="Analytics Sections"
+      >
+        <button
+          type="button"
+          role="tab"
+          id="tab-budgets"
+          aria-controls="panel-budgets"
+          aria-selected={activeSubTab === 'budgets'}
+          data-testid="subtab-budgets"
+          onClick={() => setActiveSubTab('budgets')}
+          className={`px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none flex items-center gap-2 min-h-[44px] ${
+            activeSubTab === 'budgets'
+              ? 'bg-[#111111] text-[#F7F2E8] shadow-sm'
+              : 'text-stone-700 hover:text-stone-900 hover:bg-stone-100/70'
+          }`}
+        >
+          <PieChartIcon className="w-4 h-4" />
+          <span>Budgets & Breakdown</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-cashflow"
+          aria-controls="panel-cashflow"
+          aria-selected={activeSubTab === 'cashflow'}
+          data-testid="subtab-cashflow"
+          onClick={() => setActiveSubTab('cashflow')}
+          className={`px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer select-none flex items-center gap-2 min-h-[44px] ${
+            activeSubTab === 'cashflow'
+              ? 'bg-[#111111] text-[#F7F2E8] shadow-sm'
+              : 'text-stone-700 hover:text-stone-900 hover:bg-stone-100/70'
+          }`}
+        >
+          <Calendar className="w-4 h-4" />
+          <span>Cash Flow & Calendar</span>
+        </button>
+      </div>
+
+      {/* Tab Panels */}
+      {activeSubTab === 'budgets' ? (
+        <div id="panel-budgets" role="tabpanel" aria-labelledby="tab-budgets" className="space-y-8">
+          {/* Month/Year Navigator Bar */}
+          <div className="flex items-center justify-between bg-[#FFFDF9] rounded-2xl border border-stone-800/15 px-3.5 py-2 shadow-sm">
         <div className="flex items-center gap-1.5">
           <button
             type="button"
@@ -440,6 +508,19 @@ export const BudgetsAnalyticsView: React.FC<BudgetsAnalyticsViewProps> = ({
           </div>
         )}
       </section>
+        </div>
+      ) : (
+        <div id="panel-cashflow" role="tabpanel" aria-labelledby="tab-cashflow">
+          <CashFlowView
+            categories={categories}
+            transactions={transactions}
+            accounts={accounts}
+            currentDate={selectedDate}
+            onOpenAddTransaction={onOpenAddTransaction}
+            onEditTransaction={onEditTransaction}
+          />
+        </div>
+      )}
 
       {/* Budget Limit Form Modal */}
       <BudgetFormModal
