@@ -354,4 +354,30 @@ describe('TransactionsView Component (TDD)', () => {
       expect(screen.getByTestId('transaction-notes-input')).toHaveValue('Ramen Nagi Lunch');
     });
   });
+
+  it('renders transactions view gracefully when a category has missing name without throwing toLowerCase error', async () => {
+    // Add a corrupted category missing name to database
+    await db.categories.add({
+      id: 'cat-corrupted-tx',
+      name: undefined as any,
+      type: 'expense',
+      icon: 'Tag',
+      color: '#FFED9E',
+    });
+
+    render(<TransactionsView />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('transactions-view')).toBeInTheDocument();
+    });
+
+    // Verify search input still functions without crash
+    const searchInput = screen.getByTestId('filter-search-input');
+    fireEvent.change(searchInput, { target: { value: 'ramen' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Ramen Nagi Lunch')).toBeInTheDocument();
+    });
+  });
 });
+

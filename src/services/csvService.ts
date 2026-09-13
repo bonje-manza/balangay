@@ -41,7 +41,7 @@ export function exportTransactionsToCSV(
   categories: Category[]
 ): string {
   const accountMap = new Map<string, string>(accounts.map((a) => [a.id, a.name]));
-  const categoryMap = new Map<string, string>(categories.map((c) => [c.id, c.name]));
+  const categoryMap = new Map<string, string>(categories.map((c) => [c.id, c.name || 'Unnamed Category']));
 
   const headers = [
     'Date',
@@ -296,8 +296,12 @@ export async function importTransactionsFromCSV(
 
   const categoryMapByName = new Map<string, string>();
   for (const cat of existingCategories) {
-    categoryMapByName.set(cat.name.toLowerCase(), cat.id);
-    categoryMapByName.set(cat.id.toLowerCase(), cat.id);
+    if (cat.name) {
+      categoryMapByName.set(cat.name.toLowerCase(), cat.id);
+    }
+    if (cat.id) {
+      categoryMapByName.set(cat.id.toLowerCase(), cat.id);
+    }
   }
 
   const validTransactions: Transaction[] = [];

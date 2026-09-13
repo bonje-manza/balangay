@@ -87,12 +87,17 @@ export const CategoryFormModal: React.FC<CategoryFormModalProps> = ({
       let savedCategory: Category;
 
       if (isEdit && categoryToEdit) {
-        await updateCategory(categoryToEdit.id, {
-          name: isDefaultCategory ? undefined : name.trim(),
+        const updatePayload: Partial<Omit<Category, 'id' | 'createdAt'>> = {
           color,
-          icon: isDefaultCategory ? undefined : icon,
           budgetLimit: type === 'expense' ? parsedLimit : undefined,
-        });
+        };
+
+        if (!isDefaultCategory) {
+          updatePayload.name = name.trim();
+          updatePayload.icon = icon;
+        }
+
+        await updateCategory(categoryToEdit.id, updatePayload);
         savedCategory = {
           ...categoryToEdit,
           name: isDefaultCategory ? categoryToEdit.name : name.trim(),

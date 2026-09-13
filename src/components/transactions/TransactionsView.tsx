@@ -93,7 +93,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
   // Filter transactions based on current criteria
   const filteredTransactions = useMemo(() => {
     const searchLower = filterState.search.trim().toLowerCase();
-    const categoryMap = new Map(categories.map((c) => [c.id, c.name.toLowerCase()]));
+    const categoryMap = new Map(categories.map((c) => [c.id, (c.name || '').toLowerCase()]));
 
     return transactions
       .filter((tx) => {

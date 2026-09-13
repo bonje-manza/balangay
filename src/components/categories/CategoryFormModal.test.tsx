@@ -145,4 +145,50 @@ describe('CategoryFormModal', () => {
     expect(nameInput).toBeDisabled();
     expect(screen.getByText(/Default category name cannot be changed/i)).toBeInTheDocument();
   });
+
+  it('preserves name and icon when deleting budget limit of a default expense category', async () => {
+    const defaultCat: Category = {
+      id: 'cat-food-dining',
+      name: 'Food & Dining',
+      type: 'expense',
+      icon: 'Utensils',
+      color: '#FFED9E',
+      budgetLimit: 8000,
+      isDefault: true,
+    };
+    await db.categories.add(defaultCat);
+
+    const user = userEvent.setup();
+    const onSuccess = vi.fn();
+    const onClose = vi.fn();
+
+    render(
+      <CategoryFormModal
+        isOpen={true}
+        categoryToEdit={defaultCat}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const budgetInput = screen.getByLabelText(/Monthly Budget Limit/i);
+    expect(budgetInput).toHaveValue(8000);
+
+    // Clear budget limit
+    await user.clear(budgetInput);
+    expect(budgetInput).toHaveValue(null);
+
+    const submitBtn = screen.getByRole('button', { name: /Save Changes/i });
+    await user.click(submitBtn);
+
+    await waitFor(async () => {
+      expect(onSuccess).toHaveBeenCalled();
+      const updated = await db.categories.get('cat-food-dining');
+      expect(updated).toBeDefined();
+      expect(updated?.name).toBe('Food & Dining');
+      expect(updated?.icon).toBe('Utensils');
+      expect(updated?.budgetLimit).toBeUndefined();
+    });
+  });
 });
+

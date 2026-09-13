@@ -91,4 +91,31 @@ describe('App Root Shell', () => {
     const dateInput = screen.getByLabelText(/Date/i) as HTMLInputElement;
     expect(dateInput.value).toBeTruthy();
   });
+
+  it('self-heals corrupted categories with missing name or icon on app load', async () => {
+    await saveUserSettings({
+      hasCompletedOnboarding: true,
+      pinEnabled: false,
+    });
+
+    // Seed corrupted category
+    const { db } = await import('./storage/db');
+    await db.categories.put({
+      id: 'cat-food-dining',
+      type: 'expense',
+      color: '#FFED9E',
+      isDefault: true,
+    } as any);
+
+    render(<App />);
+
+    expect(await screen.findByTestId('dashboard-view')).toBeInTheDocument();
+
+    const { waitFor } = await import('@testing-library/react');
+    await waitFor(async () => {
+      const repaired = await db.categories.get('cat-food-dining');
+      expect(repaired?.name).toBe('Food & Dining');
+      expect(repaired?.icon).toBe('Utensils');
+    });
+  });
 });

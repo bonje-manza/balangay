@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Wallet, WifiOff, Lock } from 'lucide-react';
 import { db } from './storage/db';
 import { getUserSettings } from './storage/settingsRepository';
+import { repairCorruptedCategories } from './storage/categoryRepository';
 import { SecurityProvider, useSecurity } from './context/SecurityContext';
 import { PinLockScreen } from './components/security/PinLockScreen';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
@@ -38,6 +39,15 @@ const AppShell: React.FC = () => {
       setIsOnboardingDismissed(false);
     }
   }, [userSettings?.hasCompletedOnboarding]);
+
+  // Self-heal corrupted categories on startup if any records are missing required name/icon
+  useEffect(() => {
+    if (categories && categories.some((c) => !c.name || !c.icon)) {
+      repairCorruptedCategories(categories).catch((err) => {
+        console.error('Failed to auto-repair corrupted categories', err);
+      });
+    }
+  }, [categories]);
 
   const isLoading =
     security.isLoading ||

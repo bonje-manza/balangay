@@ -1,9 +1,58 @@
 import { db } from './db';
 import type { Category } from '../domain/types';
+import { DEFAULT_CATEGORIES } from './seedData';
 
 export interface GetCategoriesOptions {
   includeArchived?: boolean;
   type?: 'expense' | 'income';
+}
+
+/**
+ * Repairs categories that may have corrupted or missing names or icons
+ * (e.g. from prior bug where updating default category budget erased required fields).
+ * Restores canonical metadata for default categories and provides fallbacks for custom ones.
+ */
+export async function repairCorruptedCategories(categories: Category[]): Promise<Category[]> {
+  const defaultMap = new Map(DEFAULT_CATEGORIES.map((c) => [c.id, c]));
+
+  const repaired = await Promise.all(
+    categories.map(async (cat) => {
+      const defaultMatch = defaultMap.get(cat.id);
+      const isMissingName = !cat.name || typeof cat.name !== 'string' || cat.name.trim() === '';
+      const isMissingIcon = !cat.icon || typeof cat.icon !== 'string' || cat.icon.trim() === '';
+
+      if (isMissingName || isMissingIcon) {
+        const restoredName = isMissingName
+          ? (defaultMatch?.name || (cat.isDefault ? defaultMatch?.name : undefined) || 'Unnamed Category')
+          : cat.name;
+        const restoredIcon = isMissingIcon
+          ? (defaultMatch?.icon || 'Tag')
+          : cat.icon;
+
+        const fixed: Category = {
+          ...cat,
+          name: restoredName,
+          icon: restoredIcon,
+          updatedAt: new Date().toISOString(),
+        };
+
+        try {
+          await db.categories.update(cat.id, {
+            name: restoredName,
+            icon: restoredIcon,
+            updatedAt: fixed.updatedAt,
+          });
+        } catch {
+          // Ignore DB write errors during read repair
+        }
+
+        return fixed;
+      }
+      return cat;
+    })
+  );
+
+  return repaired;
 }
 
 /**
@@ -15,6 +64,9 @@ export async function getCategories(options: GetCategoriesOptions = {}): Promise
 
   let categories = await db.categories.toArray();
 
+  // Heal corrupted categories if any
+  categories = await repairCorruptedCategories(categories);
+
   if (!includeArchived) {
     categories = categories.filter((c) => c.isArchived !== true);
   }
@@ -23,17 +75,47 @@ export async function getCategories(options: GetCategoriesOptions = {}): Promise
     categories = categories.filter((c) => c.type === type);
   }
 
-  // Sort alphabetically by name for consistent UI display
-  categories.sort((a, b) => a.name.localeCompare(b.name, 'en-PH'));
+  // Sort alphabetically by name for consistent UI display (with null-safety)
+  categories.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'en-PH'));
 
   return categories;
 }
 
 /**
- * Retrieves a single category by its ID.
+ * Retrieves a single category by its ID, repairing if missing required metadata.
  */
 export async function getCategoryById(id: string): Promise<Category | undefined> {
-  return await db.categories.get(id);
+  const category = await db.categories.get(id);
+  if (!category) return undefined;
+
+  const defaultMatch = DEFAULT_CATEGORIES.find((d) => d.id === category.id);
+  const isMissingName = !category.name || typeof category.name !== 'string' || category.name.trim() === '';
+  const isMissingIcon = !category.icon || typeof category.icon !== 'string' || category.icon.trim() === '';
+
+  if (isMissingName || isMissingIcon) {
+    const restoredName = isMissingName
+      ? (defaultMatch?.name || 'Unnamed Category')
+      : category.name;
+    const restoredIcon = isMissingIcon
+      ? (defaultMatch?.icon || 'Tag')
+      : category.icon;
+
+    category.name = restoredName;
+    category.icon = restoredIcon;
+    category.updatedAt = new Date().toISOString();
+
+    try {
+      await db.categories.update(id, {
+        name: restoredName,
+        icon: restoredIcon,
+        updatedAt: category.updatedAt,
+      });
+    } catch {
+      // Ignore DB write errors during read repair
+    }
+  }
+
+  return category;
 }
 
 /**
@@ -116,7 +198,7 @@ export async function updateCategory(
         (c) =>
           c.id !== id &&
           c.type === targetType &&
-          c.name.toLowerCase() === trimmed.toLowerCase()
+          (c.name || '').toLowerCase() === trimmed.toLowerCase()
       )
       .first();
 
@@ -127,10 +209,24 @@ export async function updateCategory(
     updates.name = trimmed;
   }
 
-  await db.categories.update(id, {
-    ...updates,
+  const sanitizedChanges: Record<string, any> = {
     updatedAt: new Date().toISOString(),
-  });
+  };
+
+  // Only pass required fields to Dexie if they are defined, preventing accidental deletion
+  if (updates.name !== undefined) sanitizedChanges.name = updates.name;
+  if (updates.icon !== undefined) sanitizedChanges.icon = updates.icon;
+  if (updates.color !== undefined) sanitizedChanges.color = updates.color;
+  if (updates.type !== undefined) sanitizedChanges.type = updates.type;
+  if (updates.isArchived !== undefined) sanitizedChanges.isArchived = updates.isArchived;
+  if (updates.isDefault !== undefined) sanitizedChanges.isDefault = updates.isDefault;
+
+  // budgetLimit can be explicitly cleared by passing undefined or set to a number
+  if ('budgetLimit' in updates) {
+    sanitizedChanges.budgetLimit = updates.budgetLimit;
+  }
+
+  await db.categories.update(id, sanitizedChanges);
 }
 
 /**

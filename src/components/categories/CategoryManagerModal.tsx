@@ -50,11 +50,11 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const displayedList = useMemo(() => {
     switch (activeTab) {
       case 'expense':
-        return [...expenseCategories].sort((a, b) => a.name.localeCompare(b.name, 'en-PH'));
+        return [...expenseCategories].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'en-PH'));
       case 'income':
-        return [...incomeCategories].sort((a, b) => a.name.localeCompare(b.name, 'en-PH'));
+        return [...incomeCategories].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'en-PH'));
       case 'archived':
-        return [...archivedCategories].sort((a, b) => a.name.localeCompare(b.name, 'en-PH'));
+        return [...archivedCategories].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'en-PH'));
     }
   }, [activeTab, expenseCategories, incomeCategories, archivedCategories]);
 
@@ -239,7 +239,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-sm font-bold text-[#111111] truncate">
-                          {category.name}
+                          {category.name || 'Unnamed Category'}
                         </span>
                         {category.isDefault && (
                           <StickerBadge variant="butter">Default</StickerBadge>
@@ -266,7 +266,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                           type="button"
                           data-testid={`edit-${category.id}`}
                           title="Edit category"
-                          aria-label={`Edit ${category.name}`}
+                          aria-label={`Edit ${category.name || 'category'}`}
                           onClick={() => handleOpenEdit(category)}
                           className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 transition-all cursor-pointer"
                         >
@@ -276,7 +276,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                           type="button"
                           data-testid={`archive-${category.id}`}
                           title="Archive category"
-                          aria-label={`Archive ${category.name}`}
+                          aria-label={`Archive ${category.name || 'category'}`}
                           onClick={() => handleArchive(category.id)}
                           className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/60 transition-all cursor-pointer"
                         >
@@ -289,7 +289,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                           type="button"
                           data-testid={`restore-${category.id}`}
                           title="Restore category"
-                          aria-label={`Restore ${category.name}`}
+                          aria-label={`Restore ${category.name || 'category'}`}
                           onClick={() => handleRestore(category.id)}
                           className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/60 transition-all cursor-pointer"
                         >
@@ -300,7 +300,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             type="button"
                             data-testid={`delete-${category.id}`}
                             title="Delete category"
-                            aria-label={`Delete ${category.name}`}
+                            aria-label={`Delete ${category.name || 'category'}`}
                             onClick={() => handleDeletePermanent(category.id)}
                             className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/60 transition-all cursor-pointer"
                           >

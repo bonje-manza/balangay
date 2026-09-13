@@ -129,4 +129,35 @@ describe('CategoryManagerModal', () => {
 
     expect(screen.getByTestId('category-form-modal')).toBeInTheDocument();
   });
+
+  it('renders gracefully without crashing when a category has a missing name', () => {
+    const corruptedCategories: Category[] = [
+      {
+        id: 'cat-corrupted',
+        name: undefined as any,
+        type: 'expense',
+        icon: 'Utensils',
+        color: '#FFED9E',
+      },
+      {
+        id: 'cat-pet',
+        name: 'Pet Care',
+        type: 'expense',
+        icon: 'Dog',
+        color: '#DAE097',
+      },
+    ];
+
+    render(
+      <CategoryManagerModal
+        isOpen={true}
+        onClose={vi.fn()}
+        initialCategories={corruptedCategories}
+      />
+    );
+
+    expect(screen.getByTestId('category-manager-modal')).toBeInTheDocument();
+    expect(screen.getByText('Pet Care')).toBeInTheDocument();
+    expect(screen.getByText('Unnamed Category')).toBeInTheDocument();
+  });
 });

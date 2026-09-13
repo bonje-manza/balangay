@@ -191,12 +191,69 @@ describe('categoryRepository', () => {
         color: '#DAE097',
       });
 
-      const updated = await getCategoryById('cat-food-dining');
+      let updated = await getCategoryById('cat-food-dining');
       expect(updated?.budgetLimit).toBe(15000);
       expect(updated?.color).toBe('#DAE097');
       expect(updated?.name).toBe('Food & Dining');
+
+      // Removing budgetLimit (setting to undefined) should clear budgetLimit while keeping name and icon intact
+      await updateCategory('cat-food-dining', {
+        name: undefined,
+        icon: undefined,
+        budgetLimit: undefined,
+      });
+
+      updated = await getCategoryById('cat-food-dining');
+      expect(updated?.name).toBe('Food & Dining');
+      expect(updated?.icon).toBe('Utensils');
+      expect(updated?.budgetLimit).toBeUndefined();
+    });
+
+    it('sanitizes updates so undefined name/icon/color cannot delete required fields', async () => {
+      const cat = await createCategory({
+        name: 'Photography',
+        type: 'expense',
+        icon: 'Camera',
+        color: '#A6CFF2',
+        budgetLimit: 4000,
+      });
+
+      await updateCategory(cat.id, {
+        name: undefined,
+        icon: undefined,
+        color: undefined,
+        budgetLimit: undefined,
+      });
+
+      const fetched = await getCategoryById(cat.id);
+      expect(fetched?.name).toBe('Photography');
+      expect(fetched?.icon).toBe('Camera');
+      expect(fetched?.color).toBe('#A6CFF2');
+      expect(fetched?.budgetLimit).toBeUndefined();
+    });
+
+    it('automatically repairs corrupted categories that have missing names or icons', async () => {
+      // Simulate corrupted default category in database
+      await db.categories.put({
+        id: 'cat-groceries',
+        type: 'expense',
+        color: '#DAE097',
+        isDefault: true,
+      } as any);
+
+      // getCategories should safely sort without crashing and repair the record
+      const categories = await getCategories({ includeArchived: true });
+      const groceries = categories.find((c) => c.id === 'cat-groceries');
+      expect(groceries?.name).toBe('Groceries & Market');
+      expect(groceries?.icon).toBe('ShoppingCart');
+
+      // Also verify persisted back to db
+      const fromDb = await db.categories.get('cat-groceries');
+      expect(fromDb?.name).toBe('Groceries & Market');
+      expect(fromDb?.icon).toBe('ShoppingCart');
     });
   });
+
 
   describe('archiveCategory & deleteCategory', () => {
     it('archives and unarchives categories', async () => {
