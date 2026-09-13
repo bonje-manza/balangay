@@ -35,10 +35,14 @@ All records are stored directly in your browser using IndexedDB via Dexie.js. Th
 - **100% Offline Vault**: Instant reads and writes through IndexedDB using Dexie.js. The app functions without an internet connection.
 - **Philippine Peso Currency Engine**: Built specifically for the `en-PH` locale with half-up rounding (`roundMoney()`) to eliminate IEEE 754 floating-point inaccuracies.
 - **Bento Dashboard**: Net worth summary, cashflow breakdown (income vs. expense), daily spending velocity, and category budget gauges.
+- **Cash Flow Calendar and Day Inspector**: Interactive monthly calendar highlighting daily net inflows and outflows, a detailed day inspector, and quick transaction creation for any selected date.
+- **Cash Flow Visualizations**: Monthly comparison bar charts and yearly cashflow density grids for high-level pattern and savings analysis.
+- **Custom Category Management**: Create, edit, and organize custom income and expense categories with color accents, icons, and monthly spending caps. Safe category deletion with transaction reassignment.
+- **Category Budgets**: Monthly spending caps with proactive visual alerts at 80% threshold and over-budget states.
 - **Account Management**: Separate tracking for cash, bank accounts, e-wallets, credit lines, and savings goals, including cross-account transfers.
 - **Transaction Ledger**: Categorized records with date grouping, search filters, and contextual mood tags (Essential, Treat, Invest, Peaceful).
-- **Category Budgets**: Monthly spending caps with proactive visual alerts at 80% threshold and over-budget states.
 - **Local PIN Lock**: Optional 4 to 6 digit security PIN hashed via Web Crypto SHA-256 with 16-byte random salt and constant-time verification. Supports auto-lock timeouts (1, 5, or 15 minutes).
+- **Crash Resilience**: Global React error boundary isolating rendering issues while keeping local IndexedDB data intact.
 - **Data Portability**: Versioned atomic backup exports and restores in JSON format, alongside RFC 4180-compliant CSV export and import.
 - **Installable PWA**: Standalone installation support on desktop and mobile browsers.
 
@@ -49,28 +53,32 @@ Balangay enforces a strict separation of layers to maintain offline reliability:
 ```mermaid
 flowchart TD
     subgraph Client["Browser Environment (Client-Only PWA)"]
-        UI["React 18 UI (Views, Modals, Bento Cards)"]
+        UI["React 18 UI (Dashboard, Budgets, Cash Flow, Accounts, Settings)"]
+        Boundary["Error Boundary (Crash Isolation)"]
         State["Reactive Hooks (dexie-react-hooks useLiveQuery)"]
         Domain["Domain Logic (money.ts, calculations.ts)"]
         Services["Application Services (Backup, CSV, Security)"]
+        Repos["Repository Layer (Account, Category, Transaction, Settings)"]
         Store[("IndexedDB: FinanceTrackerDB")]
         Crypto["Web Crypto API (SubtleCrypto SHA-256)"]
     end
 
+    UI --> Boundary
     UI -->|Render and User Actions| State
     UI -->|Format and Compute| Domain
     UI -->|Lock, Backup, CSV Requests| Services
-    State -->|Reactive Table Queries| Store
+    State -->|Reactive Table Queries| Repos
+    Repos -->|IndexedDB Operations| Store
     Services -->|Atomic Transactions| Store
     Services -->|Salt and Hash PIN| Crypto
 ```
 
 ### Layer Responsibilities
 
-1. **Domain Layer (`src/domain/`)**: Pure TypeScript contracts and financial calculations. It does not import storage or UI modules. All currency operations use `formatPHP()` and `roundMoney()`.
-2. **Storage Layer (`src/storage/`)**: Dexie singleton database schema (`FinanceTrackerDB`), table indexing (`accounts`, `transactions`, `categories`, `settings`), and repository query methods.
+1. **Domain Layer (`src/domain/`)**: Pure TypeScript contracts and financial calculations (`money.ts`, `calculations.ts`). It does not import storage or UI modules. All currency operations use `formatPHP()` and `roundMoney()`.
+2. **Storage Layer (`src/storage/`)**: Dexie singleton database schema (`FinanceTrackerDB`), table indexing (`accounts`, `transactions`, `categories`, `settings`), and specialized repositories (`accountRepository`, `categoryRepository`, `transactionRepository`, `settingsRepository`).
 3. **Services Layer (`src/services/`)**: Stateless application services managing cryptographic PIN verification (`securityService.ts`), atomic JSON backup envelopes (`backupService.ts`), and RFC 4180 CSV parsing (`csvService.ts`).
-4. **Presentation Layer (`src/components/`, `src/context/`)**: Feature views (`dashboard`, `transactions`, `budgets`, `accounts`, `settings`), security context, and UI primitives styled via Tailwind CSS.
+4. **Presentation Layer (`src/components/`, `src/context/`)**: Feature views (`dashboard`, `transactions`, `budgets`, `cashflow`, `categories`, `accounts`, `settings`), security context, and UI primitives wrapped with crash isolation (`ErrorBoundary`).
 
 ## Getting Started
 
@@ -115,7 +123,7 @@ npm run preview
 
 ## Testing
 
-Balangay includes a comprehensive test suite covering domain logic, IndexedDB storage, security hashing, CSV conversion, and React components. Tests run in a `jsdom` environment backed by `fake-indexeddb`.
+Balangay includes a comprehensive test suite covering domain logic, IndexedDB storage, security hashing, CSV conversion, cashflow calculations, and React components. Tests run in a `jsdom` environment backed by `fake-indexeddb`.
 
 Run the full test suite once:
 
@@ -143,17 +151,19 @@ balangay/
 ├── src/
 │   ├── components/         # Feature modules and UI primitives
 │   │   ├── accounts/       # Account ledger and fund transfer modals
-│   │   ├── budgets/        # Category budget cards and progress bars
+│   │   ├── budgets/        # Category budget cards, progress bars, and donut breakdown
+│   │   ├── cashflow/       # Cash flow calendar, bar charts, day inspector, yearly grid
+│   │   ├── categories/     # Category manager and custom category creator modals
 │   │   ├── dashboard/      # Bento summary metrics, cashflow charts, velocity
-│   │   ├── navigation/     # Header bar and floating bottom navigation
+│   │   ├── navigation/     # Header bar and floating bottom navigation dock
 │   │   ├── onboarding/     # First-run setup and default account seeding
 │   │   ├── pwa/            # Progressive Web App installation prompt
 │   │   ├── security/       # PIN lock screen and credential entry dialogs
-│   │   ├── settings/       # Preferences, auto-lock timeout, and data wipe
+│   │   ├── settings/       # Preferences, auto-lock timeout, category manager, data wipe
 │   │   ├── transactions/   # Transaction list, filter bar, and record modal
-│   │   └── ui/             # Reusable Neo-Brutalist cards, buttons, and toasts
+│   │   └── ui/             # Reusable Neo-Brutalist cards, buttons, error boundary, toasts
 │   ├── context/            # React context providers (SecurityContext)
-│   ├── domain/             # Pure domain models, currency math, and invariants
+│   ├── domain/             # Pure domain models, currency math, and cashflow calculations
 │   ├── services/           # PIN hashing, atomic JSON backup, and CSV routines
 │   ├── storage/            # Dexie schema, repository functions, and seed data
 │   ├── test/               # Vitest environment setup and test utilities
