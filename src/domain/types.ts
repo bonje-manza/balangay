@@ -1,6 +1,8 @@
 export type AccountType = 'cash' | 'bank' | 'ewallet' | 'credit' | 'savings';
 
-export type TransactionType = 'income' | 'expense' | 'transfer';
+export type TransactionType = 'income' | 'expense' | 'transfer' | 'adjustment';
+
+export type AdjustmentDirection = 'increase' | 'decrease';
 
 export interface Account {
   id: string;
@@ -19,9 +21,11 @@ export interface Transaction {
   id: string;
   amount: number; // positive number
   type: TransactionType;
-  accountId: string; // source account for expense/transfer, destination for income
+  accountId: string; // source account for expense/transfer/adjustment, destination for income
   toAccountId?: string; // required if type === 'transfer'
   categoryId?: string; // required for expense/income, optional for transfer
+  adjustmentDirection?: AdjustmentDirection; // required if type === 'adjustment'
+  targetBalance?: number; // target physical balance when adjustment was recorded
   date: string; // YYYY-MM-DD or ISO
   notes?: string;
   tags?: string[];

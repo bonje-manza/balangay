@@ -1,5 +1,6 @@
 import { db } from './db';
-import type { Transaction, TransactionType } from '../domain/types';
+import type { Transaction, TransactionType, AdjustmentDirection } from '../domain/types';
+import { roundMoney } from '../domain/money';
 
 export interface TransactionFilter {
   accountId?: string;
@@ -105,6 +106,40 @@ export async function createTransfer(data: CreateTransferParams): Promise<Transa
   });
 
   return transferTx;
+}
+
+export interface CreateAdjustmentParams {
+  accountId: string;
+  targetBalance: number;
+  currentBalance: number;
+  date: string;
+  notes?: string;
+  tags?: string[];
+  mood?: string;
+}
+
+/**
+ * Creates and persists a balance adjustment transaction.
+ */
+export async function createAdjustment(data: CreateAdjustmentParams): Promise<Transaction> {
+  const diff = roundMoney(data.targetBalance - data.currentBalance);
+  if (diff === 0) {
+    throw new Error('Target balance matches current balance; no adjustment needed');
+  }
+  const direction: AdjustmentDirection = diff > 0 ? 'increase' : 'decrease';
+  const amount = roundMoney(Math.abs(diff));
+
+  return await createTransaction({
+    amount,
+    type: 'adjustment',
+    adjustmentDirection: direction,
+    targetBalance: roundMoney(data.targetBalance),
+    accountId: data.accountId,
+    date: data.date,
+    notes: data.notes,
+    tags: data.tags,
+    mood: data.mood,
+  });
 }
 
 /**

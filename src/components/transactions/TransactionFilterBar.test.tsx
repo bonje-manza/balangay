@@ -72,6 +72,7 @@ describe('TransactionFilterBar Component', () => {
     expect(screen.getByTestId('filter-type-expense')).toBeInTheDocument();
     expect(screen.getByTestId('filter-type-income')).toBeInTheDocument();
     expect(screen.getByTestId('filter-type-transfer')).toBeInTheDocument();
+    expect(screen.getByTestId('filter-type-adjustment')).toBeInTheDocument();
     expect(screen.getByTestId('filter-account-select')).toBeInTheDocument();
     expect(screen.getByTestId('filter-category-select')).toBeInTheDocument();
 
@@ -111,6 +112,11 @@ describe('TransactionFilterBar Component', () => {
     fireEvent.click(screen.getByTestId('filter-type-income'));
     expect(onFilterChange).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'income' })
+    );
+
+    fireEvent.click(screen.getByTestId('filter-type-adjustment'));
+    expect(onFilterChange).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'adjustment' })
     );
   });
 

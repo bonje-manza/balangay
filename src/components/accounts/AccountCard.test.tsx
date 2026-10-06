@@ -27,8 +27,9 @@ describe('AccountCard Component', () => {
     expect(screen.getByTestId('account-initial-balance-acc-gcash-test')).toHaveTextContent('₱2,500.00');
   });
 
-  it('fires onTransfer and onEdit callbacks when action buttons are clicked', () => {
+  it('fires onTransfer, onAdjust and onEdit callbacks when action buttons are clicked', () => {
     const onTransfer = vi.fn();
+    const onAdjust = vi.fn();
     const onEdit = vi.fn();
 
     render(
@@ -36,6 +37,7 @@ describe('AccountCard Component', () => {
         account={mockAccount}
         balance={4250.75}
         onTransfer={onTransfer}
+        onAdjust={onAdjust}
         onEdit={onEdit}
       />
     );
@@ -43,6 +45,10 @@ describe('AccountCard Component', () => {
     const transferBtn = screen.getByTestId('account-transfer-btn-acc-gcash-test');
     fireEvent.click(transferBtn);
     expect(onTransfer).toHaveBeenCalledWith(mockAccount);
+
+    const adjustBtn = screen.getByTestId('account-adjust-btn-acc-gcash-test');
+    fireEvent.click(adjustBtn);
+    expect(onAdjust).toHaveBeenCalledWith(mockAccount);
 
     const editBtn = screen.getByTestId('account-edit-btn-acc-gcash-test');
     fireEvent.click(editBtn);

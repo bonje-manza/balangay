@@ -8,6 +8,7 @@ import {
   calculateBudgetProgress,
   calculateDailyCashflow,
   calculateYearlyCashflow,
+  calculateAccountBalanceAsOf,
 } from './calculations';
 
 describe('calculateAccountBalances', () => {
@@ -789,6 +790,206 @@ describe('calculateYearlyCashflow', () => {
     expect(yearly.total.income).toBe(10000);
     expect(yearly.total.expense).toBe(7000);
     expect(yearly.total.net).toBe(3000);
+  });
+});
+
+describe('balance adjustment calculations (TDD)', () => {
+  const accounts: Account[] = [
+    {
+      id: 'acc-wallet',
+      name: 'Cash Wallet',
+      type: 'cash',
+      initialBalance: 1000,
+      currency: 'PHP',
+      color: '#FFED9E',
+      icon: 'wallet',
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'acc-bank',
+      name: 'BPI Bank',
+      type: 'bank',
+      initialBalance: 10000,
+      currency: 'PHP',
+      color: '#A6CFF2',
+      icon: 'landmark',
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    },
+  ];
+
+  it('correctly increases running balance for positive adjustment', () => {
+    const transactions: Transaction[] = [
+      {
+        id: 'tx-adj-1',
+        amount: 250,
+        type: 'adjustment',
+        adjustmentDirection: 'increase',
+        targetBalance: 1250,
+        accountId: 'acc-wallet',
+        date: '2026-09-05',
+        createdAt: '2026-09-05T08:00:00Z',
+        updatedAt: '2026-09-05T08:00:00Z',
+      },
+    ];
+
+    const balances = calculateAccountBalances(accounts, transactions);
+    expect(balances.get('acc-wallet')).toBe(1250);
+    expect(balances.get('acc-bank')).toBe(10000);
+  });
+
+  it('correctly decreases running balance for negative adjustment', () => {
+    const transactions: Transaction[] = [
+      {
+        id: 'tx-adj-2',
+        amount: 300,
+        type: 'adjustment',
+        adjustmentDirection: 'decrease',
+        targetBalance: 700,
+        accountId: 'acc-wallet',
+        date: '2026-09-05',
+        createdAt: '2026-09-05T08:00:00Z',
+        updatedAt: '2026-09-05T08:00:00Z',
+      },
+    ];
+
+    const balances = calculateAccountBalances(accounts, transactions);
+    expect(balances.get('acc-wallet')).toBe(700);
+  });
+
+  it('updates net worth to reflect adjustments', () => {
+    const transactions: Transaction[] = [
+      {
+        id: 'tx-adj-wallet',
+        amount: 500,
+        type: 'adjustment',
+        adjustmentDirection: 'increase',
+        accountId: 'acc-wallet',
+        date: '2026-09-05',
+        createdAt: '2026-09-05T08:00:00Z',
+        updatedAt: '2026-09-05T08:00:00Z',
+      },
+      {
+        id: 'tx-adj-bank',
+        amount: 2000,
+        type: 'adjustment',
+        adjustmentDirection: 'decrease',
+        accountId: 'acc-bank',
+        date: '2026-09-05',
+        createdAt: '2026-09-05T08:00:00Z',
+        updatedAt: '2026-09-05T08:00:00Z',
+      },
+    ];
+
+    // Net worth = (1000 + 500) + (10000 - 2000) = 1500 + 8000 = 9500
+    const netWorth = calculateNetWorth(accounts, transactions);
+    expect(netWorth).toBe(9500);
+  });
+
+  it('completely excludes adjustments from monthly cashflow', () => {
+    const transactions: Transaction[] = [
+      {
+        id: 'tx-inc',
+        amount: 5000,
+        type: 'income',
+        accountId: 'acc-bank',
+        date: '2026-09-01',
+        createdAt: '2026-09-01T00:00:00Z',
+        updatedAt: '2026-09-01T00:00:00Z',
+      },
+      {
+        id: 'tx-exp',
+        amount: 1500,
+        type: 'expense',
+        accountId: 'acc-wallet',
+        date: '2026-09-02',
+        createdAt: '2026-09-02T00:00:00Z',
+        updatedAt: '2026-09-02T00:00:00Z',
+      },
+      {
+        id: 'tx-adj-inc',
+        amount: 800,
+        type: 'adjustment',
+        adjustmentDirection: 'increase',
+        accountId: 'acc-wallet',
+        date: '2026-09-03',
+        createdAt: '2026-09-03T00:00:00Z',
+        updatedAt: '2026-09-03T00:00:00Z',
+      },
+      {
+        id: 'tx-adj-dec',
+        amount: 400,
+        type: 'adjustment',
+        adjustmentDirection: 'decrease',
+        accountId: 'acc-bank',
+        date: '2026-09-04',
+        createdAt: '2026-09-04T00:00:00Z',
+        updatedAt: '2026-09-04T00:00:00Z',
+      },
+    ];
+
+    const cashflow = calculateMonthlyCashflow(transactions, 2026, 9);
+    expect(cashflow.income).toBe(5000);
+    expect(cashflow.expense).toBe(1500);
+    expect(cashflow.net).toBe(3500);
+  });
+
+  it('completely excludes adjustments from daily cashflow', () => {
+    const transactions: Transaction[] = [
+      {
+        id: 'tx-adj',
+        amount: 1000,
+        type: 'adjustment',
+        adjustmentDirection: 'increase',
+        accountId: 'acc-wallet',
+        date: '2026-09-10',
+        createdAt: '2026-09-10T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z',
+      },
+    ];
+
+    const daily = calculateDailyCashflow(transactions, 2026, 9);
+    expect(daily.get('2026-09-10')).toBeUndefined();
+  });
+
+  it('calculates historical account balance as of a given date', () => {
+    const txs: Transaction[] = [
+      {
+        id: 'tx-1',
+        amount: 200,
+        type: 'income',
+        accountId: 'acc-wallet',
+        date: '2026-09-01',
+        createdAt: '2026-09-01T00:00:00Z',
+        updatedAt: '2026-09-01T00:00:00Z',
+      },
+      {
+        id: 'tx-2',
+        amount: 100,
+        type: 'expense',
+        accountId: 'acc-wallet',
+        date: '2026-09-05',
+        createdAt: '2026-09-05T00:00:00Z',
+        updatedAt: '2026-09-05T00:00:00Z',
+      },
+      {
+        id: 'tx-3',
+        amount: 500,
+        type: 'income',
+        accountId: 'acc-wallet',
+        date: '2026-09-10',
+        createdAt: '2026-09-10T00:00:00Z',
+        updatedAt: '2026-09-10T00:00:00Z',
+      },
+    ];
+
+    // As of Sept 4: initial (1000) + tx-1 (200) = 1200
+    expect(calculateAccountBalanceAsOf('acc-wallet', accounts, txs, '2026-09-04')).toBe(1200);
+    // As of Sept 5: initial (1000) + tx-1 (200) - tx-2 (100) = 1100
+    expect(calculateAccountBalanceAsOf('acc-wallet', accounts, txs, '2026-09-05')).toBe(1100);
+    // As of Sept 10: initial (1000) + tx-1 (200) - tx-2 (100) + tx-3 (500) = 1600
+    expect(calculateAccountBalanceAsOf('acc-wallet', accounts, txs, '2026-09-10')).toBe(1600);
   });
 });
 

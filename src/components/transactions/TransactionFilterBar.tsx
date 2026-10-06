@@ -3,7 +3,7 @@ import { Search, X, Calendar } from 'lucide-react';
 import type { Account, Category } from '../../domain/types';
 import { Button } from '../ui/Button';
 
-export type FilterType = 'all' | 'expense' | 'income' | 'transfer';
+export type FilterType = 'all' | 'expense' | 'income' | 'transfer' | 'adjustment';
 
 export interface TransactionFilterState {
   search: string;
@@ -28,6 +28,7 @@ const typeOptions: { label: string; value: FilterType }[] = [
   { label: 'Expense', value: 'expense' },
   { label: 'Income', value: 'income' },
   { label: 'Transfer', value: 'transfer' },
+  { label: 'Adjustment', value: 'adjustment' },
 ];
 
 /**

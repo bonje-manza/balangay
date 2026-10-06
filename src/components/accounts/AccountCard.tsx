@@ -8,6 +8,7 @@ import {
   PiggyBank,
   ArrowLeftRight,
   Pencil,
+  SlidersHorizontal,
 } from 'lucide-react';
 import type { Account, AccountType } from '../../domain/types';
 import { AmountDisplay } from '../ui/AmountDisplay';
@@ -18,6 +19,7 @@ export interface AccountCardProps {
   account: Account;
   balance: number;
   onTransfer?: (account: Account) => void;
+  onAdjust?: (account: Account) => void;
   onEdit?: (account: Account) => void;
   className?: string;
 }
@@ -77,6 +79,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
   account,
   balance,
   onTransfer,
+  onAdjust,
   onEdit,
   className = '',
 }) => {
@@ -145,17 +148,28 @@ export const AccountCard: React.FC<AccountCardProps> = ({
         </div>
       </div>
 
-      {/* Bottom Actions: Transfer and Edit */}
-      <div className="flex items-center gap-2 pt-3 border-t border-stone-800/10">
+      {/* Bottom Actions: Transfer, Adjust and Edit */}
+      <div className="flex items-center gap-1.5 pt-3 border-t border-stone-800/10">
         <Button
           variant="outline"
           size="sm"
           icon={<ArrowLeftRight className="w-3.5 h-3.5 stroke-[2]" />}
           onClick={() => onTransfer?.(account)}
           data-testid={`account-transfer-btn-${account.id}`}
-          className="flex-1 text-xs py-1.5"
+          className="flex-1 text-xs py-1.5 px-2"
         >
           Transfer
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          icon={<SlidersHorizontal className="w-3.5 h-3.5 stroke-[2]" />}
+          onClick={() => onAdjust?.(account)}
+          data-testid={`account-adjust-btn-${account.id}`}
+          className="flex-1 text-xs py-1.5 px-2"
+        >
+          Adjust
         </Button>
 
         <Button
@@ -164,7 +178,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
           icon={<Pencil className="w-3.5 h-3.5 stroke-[2]" />}
           onClick={() => onEdit?.(account)}
           data-testid={`account-edit-btn-${account.id}`}
-          className="text-xs py-1.5 px-3 border border-stone-800/15 hover:bg-stone-100"
+          className="text-xs py-1.5 px-2.5 border border-stone-800/15 hover:bg-stone-100"
         >
           Edit
         </Button>

@@ -2,7 +2,7 @@ import React from 'react';
 import type { Transaction, Account, Category } from '../../domain/types';
 import { AmountDisplay } from '../ui/AmountDisplay';
 import { renderCategoryIcon } from '../dashboard/iconHelpers';
-import { ArrowLeftRight } from 'lucide-react';
+import { ArrowLeftRight, SlidersHorizontal } from 'lucide-react';
 
 export interface TransactionListItemProps {
   transaction: Transaction;
@@ -52,6 +52,7 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
   className = '',
 }) => {
   const isTransfer = transaction.type === 'transfer';
+  const isAdjustment = transaction.type === 'adjustment';
 
   // Resolve accounts and category if not passed directly
   const fromAccount =
@@ -71,16 +72,20 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
   const primaryTitle =
     transaction.notes?.trim() ||
     resolvedCategory?.name ||
-    (isTransfer ? 'Transfer' : 'Transaction');
+    (isAdjustment ? 'Balance Adjustment' : isTransfer ? 'Transfer' : 'Transaction');
 
   const secondaryCategory =
-    transaction.notes?.trim() && resolvedCategory ? resolvedCategory.name : undefined;
+    transaction.notes?.trim()
+      ? resolvedCategory?.name || (isAdjustment ? 'Balance Adjustment' : undefined)
+      : undefined;
 
   const accountBadgeLabel = isTransfer
     ? `${fromAccount?.name || 'Account'} → ${destinationAccount?.name || 'Account'}`
+    : isAdjustment
+    ? `${fromAccount?.name || 'Account'} • Adjustment`
     : fromAccount?.name || 'Account';
 
-  const iconBg = isTransfer ? '#A6CFF2' : resolvedCategory?.color || '#FFED9E';
+  const iconBg = isTransfer ? '#A6CFF2' : isAdjustment ? '#FFED9E' : resolvedCategory?.color || '#FFED9E';
   const iconName = isTransfer ? 'ArrowLeftRight' : resolvedCategory?.icon;
 
   const handleClick = () => {
@@ -115,6 +120,8 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
         >
           {isTransfer ? (
             <ArrowLeftRight className="w-4 h-4 text-[#111111]" />
+          ) : isAdjustment ? (
+            <SlidersHorizontal className="w-4 h-4 text-[#111111]" />
           ) : (
             renderCategoryIcon(iconName, 'w-4 h-4 text-[#111111]')
           )}
@@ -181,9 +188,21 @@ export const TransactionListItem: React.FC<TransactionListItemProps> = ({
       {/* Right: Semantic Amount */}
       <div className="flex-shrink-0 text-right ml-2">
         <AmountDisplay
-          amount={transaction.type === 'expense' ? -transaction.amount : transaction.amount}
+          amount={
+            transaction.type === 'adjustment'
+              ? transaction.adjustmentDirection === 'decrease'
+                ? -transaction.amount
+                : transaction.amount
+              : transaction.type === 'expense'
+              ? -transaction.amount
+              : transaction.amount
+          }
           type={
-            transaction.type === 'income'
+            transaction.type === 'adjustment'
+              ? transaction.adjustmentDirection === 'decrease'
+                ? 'expense'
+                : 'income'
+              : transaction.type === 'income'
               ? 'income'
               : transaction.type === 'expense'
               ? 'expense'

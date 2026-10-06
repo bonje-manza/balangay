@@ -128,10 +128,11 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
         // Search filter (notes, category name, or tags)
         if (searchLower) {
           const noteMatch = tx.notes?.toLowerCase().includes(searchLower);
+          const isAdjMatch = tx.type === 'adjustment' && 'balance adjustment'.includes(searchLower);
           const catName = tx.categoryId ? categoryMap.get(tx.categoryId) : '';
           const catMatch = catName?.includes(searchLower);
           const tagMatch = tx.tags?.some((t) => t.toLowerCase().includes(searchLower));
-          if (!noteMatch && !catMatch && !tagMatch) {
+          if (!noteMatch && !isAdjMatch && !catMatch && !tagMatch) {
             return false;
           }
         }
@@ -410,6 +411,7 @@ export const TransactionsView: React.FC<TransactionsViewProps> = ({
           transactionToEdit={selectedTxToEdit}
           accounts={accounts}
           categories={categories}
+          transactions={transactions}
         />
       )}
     </div>

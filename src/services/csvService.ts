@@ -341,6 +341,7 @@ export async function importTransactionsFromCSV(
     // 2. Amount & Type
     let amount = 0;
     let type: TransactionType = 'expense';
+    let isNegativeAmount = false;
 
     const hasSeparateDebitCredit = debitIdx >= 0 || creditIdx >= 0;
 
@@ -357,6 +358,7 @@ export async function importTransactionsFromCSV(
       } else if (debitParsed && !isNaN(debitParsed.value) && debitParsed.value > 0) {
         amount = debitParsed.value;
         type = 'expense';
+        isNegativeAmount = true;
       } else {
         errors.push(`Row ${rowNum}: Invalid amount in debit/credit fields`);
         continue;
@@ -368,13 +370,14 @@ export async function importTransactionsFromCSV(
         continue;
       }
 
-      const { value, isNegative } = parseCurrencyString(rawAmount);
-      if (isNaN(value) || value <= 0) {
+      const parsedCurr = parseCurrencyString(rawAmount);
+      if (isNaN(parsedCurr.value) || parsedCurr.value <= 0) {
         errors.push(`Row ${rowNum}: Invalid amount "${rawAmount}"`);
         continue;
       }
 
-      amount = value;
+      amount = parsedCurr.value;
+      isNegativeAmount = parsedCurr.isNegative;
 
       const rawType = typeIdx >= 0 ? row[typeIdx]?.trim().toLowerCase() : '';
       if (rawType) {
@@ -382,11 +385,13 @@ export async function importTransactionsFromCSV(
           type = 'income';
         } else if (['transfer', 'fund transfer'].includes(rawType)) {
           type = 'transfer';
+        } else if (['adjustment', 'balance adjustment', 'reconciliation'].includes(rawType)) {
+          type = 'adjustment';
         } else {
           type = 'expense';
         }
       } else {
-        type = isNegative ? 'expense' : 'income';
+        type = isNegativeAmount ? 'expense' : 'income';
       }
     }
 
@@ -452,6 +457,9 @@ export async function importTransactionsFromCSV(
       amount: roundMoney(amount),
       type,
       accountId,
+      ...(type === 'adjustment'
+        ? { adjustmentDirection: (isNegativeAmount ? 'decrease' : 'increase') as 'increase' | 'decrease' }
+        : {}),
       ...(toAccountId ? { toAccountId } : {}),
       ...(categoryId ? { categoryId } : {}),
       date: parsedDate,

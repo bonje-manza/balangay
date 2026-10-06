@@ -11,6 +11,7 @@ import {
   getTransactions,
   createTransaction,
   createTransfer,
+  createAdjustment,
   updateTransaction,
   deleteTransaction,
 } from './transactionRepository';
@@ -287,6 +288,59 @@ describe('Repositories Integration', () => {
       // Filter by account (includes both source and destination)
       const accBTxs = await getTransactions({ accountId: accB.id });
       expect(accBTxs).toHaveLength(2); // income into accB and transfer to accB
+    });
+
+    it('creates a balance adjustment transaction with direction and targetBalance', async () => {
+      const acc = await createAccount({
+        name: 'Coins.ph',
+        type: 'ewallet',
+        initialBalance: 500,
+        currency: 'PHP',
+        color: '#A6CFF2',
+        icon: 'Coins',
+      });
+
+      // Increase adjustment: current 500 -> target 750 (diff +250)
+      const incAdj = await createAdjustment({
+        accountId: acc.id,
+        currentBalance: 500,
+        targetBalance: 750,
+        date: '2026-09-12',
+        notes: 'Reconciled missing cash',
+      });
+
+      expect(incAdj.type).toBe('adjustment');
+      expect(incAdj.amount).toBe(250);
+      expect(incAdj.adjustmentDirection).toBe('increase');
+      expect(incAdj.targetBalance).toBe(750);
+      expect(incAdj.notes).toBe('Reconciled missing cash');
+
+      // Decrease adjustment: current 750 -> target 600 (diff -150)
+      const decAdj = await createAdjustment({
+        accountId: acc.id,
+        currentBalance: 750,
+        targetBalance: 600,
+        date: '2026-09-13',
+      });
+
+      expect(decAdj.type).toBe('adjustment');
+      expect(decAdj.amount).toBe(150);
+      expect(decAdj.adjustmentDirection).toBe('decrease');
+      expect(decAdj.targetBalance).toBe(600);
+
+      // Filtering by type 'adjustment'
+      const adjustments = await getTransactions({ type: 'adjustment' });
+      expect(adjustments).toHaveLength(2);
+
+      // Error on zero discrepancy
+      await expect(
+        createAdjustment({
+          accountId: acc.id,
+          currentBalance: 600,
+          targetBalance: 600,
+          date: '2026-09-13',
+        })
+      ).rejects.toThrow();
     });
   });
 

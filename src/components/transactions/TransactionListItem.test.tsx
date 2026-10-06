@@ -122,6 +122,57 @@ describe('TransactionListItem Component', () => {
     expect(screen.getByTestId('tx-amount-tx-3')).toHaveTextContent(/\+₱25,000\.00/);
   });
 
+  it('renders positive balance adjustment with adjustment badge and positive amount', () => {
+    const adjTx: Transaction = {
+      id: 'tx-adj-inc',
+      amount: 450,
+      type: 'adjustment',
+      adjustmentDirection: 'increase',
+      targetBalance: 2950,
+      accountId: 'acc-gcash',
+      date: '2026-09-12',
+      notes: 'Found cash in jacket',
+      createdAt: '2026-09-12T14:00:00.000Z',
+      updatedAt: '2026-09-12T14:00:00.000Z',
+    };
+
+    render(
+      <TransactionListItem
+        transaction={adjTx}
+        account={mockAccount}
+      />
+    );
+
+    expect(screen.getByText('Found cash in jacket')).toBeInTheDocument();
+    expect(screen.getByText('GCash • Adjustment')).toBeInTheDocument();
+    expect(screen.getByTestId('tx-amount-tx-adj-inc')).toHaveTextContent(/\+₱450\.00/);
+  });
+
+  it('renders negative balance adjustment with default title and negative amount', () => {
+    const adjTx: Transaction = {
+      id: 'tx-adj-dec',
+      amount: 200,
+      type: 'adjustment',
+      adjustmentDirection: 'decrease',
+      targetBalance: 2300,
+      accountId: 'acc-gcash',
+      date: '2026-09-12',
+      createdAt: '2026-09-12T15:00:00.000Z',
+      updatedAt: '2026-09-12T15:00:00.000Z',
+    };
+
+    render(
+      <TransactionListItem
+        transaction={adjTx}
+        account={mockAccount}
+      />
+    );
+
+    expect(screen.getByText('Balance Adjustment')).toBeInTheDocument();
+    expect(screen.getByText('GCash • Adjustment')).toBeInTheDocument();
+    expect(screen.getByTestId('tx-amount-tx-adj-dec')).toHaveTextContent(/-₱200\.00/);
+  });
+
   it('triggers onClick callback when clicked', () => {
     const onClick = vi.fn();
     render(

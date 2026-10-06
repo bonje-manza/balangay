@@ -10,6 +10,7 @@ import { AmountDisplay } from '../ui/AmountDisplay';
 import { AccountCard } from './AccountCard';
 import { AccountFormModal } from './AccountFormModal';
 import { TransferModal } from './TransferModal';
+import { TransactionFormModal } from '../transactions/TransactionFormModal';
 
 export interface AccountsVaultViewProps {
   initialAccounts?: Account[];
@@ -47,6 +48,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
   // Dexie live queries (fallback to test props when provided)
   const liveAccounts = useLiveQuery(() => db.accounts.toArray(), []) ?? [];
   const liveTransactions = useLiveQuery(() => db.transactions.toArray(), []) ?? [];
+  const liveCategories = useLiveQuery(() => db.categories.toArray(), []) ?? [];
 
   const accounts = initialAccounts || liveAccounts;
   const transactions = initialTransactions || liveTransactions;
@@ -59,6 +61,8 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState<boolean>(false);
   const [transferSourceAccountId, setTransferSourceAccountId] = useState<string | undefined>(undefined);
+  const [isAdjustModalOpen, setIsAdjustModalOpen] = useState<boolean>(false);
+  const [adjustAccountId, setAdjustAccountId] = useState<string | undefined>(undefined);
   const [isSeedingPresets, setIsSeedingPresets] = useState<boolean>(false);
 
   // Calculate live running balances and net worth
@@ -92,6 +96,11 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
   const handleOpenTransfer = (sourceAcc?: Account) => {
     setTransferSourceAccountId(sourceAcc ? sourceAcc.id : undefined);
     setIsTransferModalOpen(true);
+  };
+
+  const handleOpenAdjust = (sourceAcc: Account) => {
+    setAdjustAccountId(sourceAcc.id);
+    setIsAdjustModalOpen(true);
   };
 
   const handleLoadPresets = async () => {
@@ -265,6 +274,7 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
               account={acc}
               balance={accountBalances.get(acc.id) ?? acc.initialBalance}
               onTransfer={handleOpenTransfer}
+              onAdjust={handleOpenAdjust}
               onEdit={handleEditAccount}
             />
           ))}
@@ -293,6 +303,22 @@ export const AccountsVaultView: React.FC<AccountsVaultViewProps> = ({
           }}
           accounts={accounts}
           sourceAccountId={transferSourceAccountId}
+        />
+      )}
+
+      {/* Adjust Balance Modal */}
+      {isAdjustModalOpen && (
+        <TransactionFormModal
+          isOpen={isAdjustModalOpen}
+          initialType="adjustment"
+          initialAccountId={adjustAccountId}
+          accounts={accounts}
+          categories={liveCategories}
+          transactions={transactions}
+          onClose={() => {
+            setIsAdjustModalOpen(false);
+            setAdjustAccountId(undefined);
+          }}
         />
       )}
     </div>

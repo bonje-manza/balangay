@@ -66,6 +66,15 @@ export function calculateAccountBalances(
         const current = balances.get(tx.toAccountId)!;
         balances.set(tx.toAccountId, roundMoney(current + amount));
       }
+    } else if (tx.type === 'adjustment') {
+      if (balances.has(tx.accountId)) {
+        const current = balances.get(tx.accountId)!;
+        if (tx.adjustmentDirection === 'increase') {
+          balances.set(tx.accountId, roundMoney(current + amount));
+        } else if (tx.adjustmentDirection === 'decrease') {
+          balances.set(tx.accountId, roundMoney(current - amount));
+        }
+      }
     }
   }
 
@@ -300,3 +309,66 @@ export function calculateYearlyCashflow(
     },
   };
 }
+
+/**
+ * Calculates running balance of a specific account as of a given date (inclusive),
+ * optionally excluding a specific transaction (useful when editing an adjustment).
+ *
+ * @param accountId - The target account ID.
+ * @param accounts - Array of account definitions.
+ * @param transactions - Complete ledger of transactions.
+ * @param asOfDate - Date threshold string (YYYY-MM-DD or ISO).
+ * @param excludeTransactionId - Optional transaction ID to ignore.
+ * @returns Rounded balance as of the given date.
+ */
+export function calculateAccountBalanceAsOf(
+  accountId: string,
+  accounts: Account[],
+  transactions: Transaction[],
+  asOfDate: string,
+  excludeTransactionId?: string
+): number {
+  const targetAcc = accounts.find((a) => a.id === accountId);
+  if (!targetAcc) return 0;
+
+  let balance = roundMoney(targetAcc.initialBalance);
+  const targetDateKey = toDateKey(asOfDate) || asOfDate.slice(0, 10);
+
+  for (const tx of transactions) {
+    if (excludeTransactionId && tx.id === excludeTransactionId) {
+      continue;
+    }
+
+    const txDateKey = toDateKey(tx.date) || tx.date.slice(0, 10);
+    if (txDateKey > targetDateKey) {
+      continue;
+    }
+
+    const amount = roundMoney(tx.amount);
+
+    if (tx.type === 'income' && tx.accountId === accountId) {
+      balance = roundMoney(balance + amount);
+    } else if (tx.type === 'expense' && tx.accountId === accountId) {
+      balance = roundMoney(balance - amount);
+    } else if (tx.type === 'transfer') {
+      if (tx.accountId === tx.toAccountId) {
+        continue;
+      }
+      if (tx.accountId === accountId) {
+        balance = roundMoney(balance - amount);
+      }
+      if (tx.toAccountId === accountId) {
+        balance = roundMoney(balance + amount);
+      }
+    } else if (tx.type === 'adjustment' && tx.accountId === accountId) {
+      if (tx.adjustmentDirection === 'increase') {
+        balance = roundMoney(balance + amount);
+      } else if (tx.adjustmentDirection === 'decrease') {
+        balance = roundMoney(balance - amount);
+      }
+    }
+  }
+
+  return balance;
+}
+

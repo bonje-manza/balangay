@@ -213,4 +213,22 @@ describe('AccountsVaultView Component (TDD)', () => {
     expect(screen.getByTestId('accounts-vault-empty-state')).toBeInTheDocument();
     expect(screen.getByText(/No accounts found/i)).toBeInTheDocument();
   });
+
+  it('clicking "Adjust" on an account card opens transaction modal in adjustment mode with account pre-selected', async () => {
+    render(
+      <AccountsVaultView
+        initialAccounts={testAccounts}
+        initialTransactions={testTransactions}
+      />
+    );
+
+    const cardAdjustBtn = screen.getByTestId('account-adjust-btn-acc-bpi');
+    fireEvent.click(cardAdjustBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('type-tab-adjustment')).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByTestId('transaction-account-select')).toHaveValue('acc-bpi');
+      expect(screen.getByTestId('adjustment-target-balance-input')).toBeInTheDocument();
+    });
+  });
 });

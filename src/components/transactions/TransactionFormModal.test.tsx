@@ -582,5 +582,92 @@ describe('TransactionFormModal Component (TDD)', () => {
       const dateInput = screen.getByTestId('transaction-date-input') as HTMLInputElement;
       expect(dateInput.value).toBe('2026-09-22');
     });
+
+    it('switches to Adjust tab, displays tracked balance, previews diff, and saves adjustment', async () => {
+      // GCash has initialBalance 2500
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          onSuccess={onSuccess}
+        />
+      );
+
+      // Switch to Adjust tab
+      const adjustTab = screen.getByTestId('type-tab-adjustment');
+      expect(adjustTab).toHaveTextContent('Adjust');
+      fireEvent.click(adjustTab);
+
+      // Category select should be hidden
+      expect(screen.queryByTestId('transaction-category-select')).not.toBeInTheDocument();
+
+      // Current tracked balance should display ₱2,500.00 for GCash
+      expect(screen.getByTestId('current-tracked-balance')).toHaveTextContent(/₱2,500\.00/);
+
+      // Target balance input
+      const targetInput = screen.getByTestId('adjustment-target-balance-input');
+      expect(targetInput).toBeInTheDocument();
+
+      // If target matches current (2500), preview shows zero diff and submit is disabled
+      fireEvent.change(targetInput, { target: { value: '2500' } });
+      expect(screen.getByTestId('adjustment-zero-diff')).toHaveTextContent(/already matches/i);
+      expect(screen.getByTestId('transaction-submit-btn')).toBeDisabled();
+
+      // Type 3200 (increase by 700)
+      fireEvent.change(targetInput, { target: { value: '3200' } });
+      expect(screen.getByTestId('adjustment-diff-preview')).toHaveTextContent(/\+₱700\.00/);
+      expect(screen.getByTestId('transaction-submit-btn')).not.toBeDisabled();
+
+      // Type notes
+      const notesInput = screen.getByTestId('transaction-notes-input');
+      fireEvent.change(notesInput, { target: { value: 'Untracked pocket money' } });
+
+      // Submit
+      fireEvent.click(screen.getByTestId('transaction-submit-btn'));
+
+      await waitFor(() => {
+        expect(onSuccess).toHaveBeenCalled();
+      });
+
+      const txs = await db.transactions.toArray();
+      expect(txs).toHaveLength(1);
+      expect(txs[0].type).toBe('adjustment');
+      expect(txs[0].amount).toBe(700);
+      expect(txs[0].adjustmentDirection).toBe('increase');
+      expect(txs[0].targetBalance).toBe(3200);
+      expect(txs[0].notes).toBe('Untracked pocket money');
+    });
+
+    it('pre-populates when editing an existing adjustment transaction', () => {
+      const existingAdj: Transaction = {
+        id: 'tx-adj-edit',
+        amount: 300,
+        type: 'adjustment',
+        adjustmentDirection: 'decrease',
+        targetBalance: 2200,
+        accountId: 'acc-gcash',
+        date: '2026-09-15',
+        notes: 'Forgot cash payment',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          transactionToEdit={existingAdj}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const targetInput = screen.getByTestId('adjustment-target-balance-input') as HTMLInputElement;
+      expect(targetInput.value).toBe('2200');
+      expect(screen.getByTestId('transaction-notes-input')).toHaveValue('Forgot cash payment');
+    });
   });
 });

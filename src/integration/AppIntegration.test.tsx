@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import App from '../App';
-import { resetDatabase } from '../storage/db';
+import { db, resetDatabase } from '../storage/db';
 import { loadSampleDemoData, seedDefaultCategories } from '../storage/seedData';
 import { saveUserSettings } from '../storage/settingsRepository';
 
@@ -338,5 +338,46 @@ describe('Offline-First PWA Finance Tracker Integration Tests (E2E)', () => {
     expect(
       screen.getByRole('heading', { name: /Settings & Vault Tools/i })
     ).toBeInTheDocument();
+  });
+
+  it('Test 8: Adjusting an account balance from Accounts Vault updates running balance and creates an adjustment transaction', async () => {
+    await seedDefaultCategories();
+    await loadSampleDemoData();
+    await saveUserSettings({ hasCompletedOnboarding: true });
+
+    render(<App />);
+
+    // Navigate to Accounts Vault
+    const accountsTab = await screen.findByTestId('nav-tab-accounts');
+    fireEvent.click(accountsTab);
+
+    expect(await screen.findByTestId('accounts-vault-view')).toBeInTheDocument();
+
+    // Click Adjust on GCash card
+    const adjustBtn = screen.getByTestId('account-adjust-btn-acc-gcash');
+    fireEvent.click(adjustBtn);
+
+    // Form modal should open with Adjust tab active
+    const targetInput = await screen.findByTestId('adjustment-target-balance-input');
+    expect(targetInput).toBeInTheDocument();
+
+    // Set actual balance to 10000
+    fireEvent.change(targetInput, { target: { value: '10000' } });
+
+    // Submit adjustment
+    const submitBtn = screen.getByTestId('transaction-submit-btn');
+    fireEvent.click(submitBtn);
+
+    // Modal should close and GCash balance should update to ₱10,000.00
+    await waitFor(() => {
+      expect(screen.queryByTestId('adjustment-target-balance-input')).not.toBeInTheDocument();
+      expect(screen.getByTestId('account-balance-acc-gcash')).toHaveTextContent(/₱10,000\.00/);
+    });
+
+    // Verify transaction in DB has type 'adjustment' and targetBalance 10000
+    const txs = await db.transactions.where('type').equals('adjustment').toArray();
+    expect(txs).toHaveLength(1);
+    expect(txs[0].targetBalance).toBe(10000);
+    expect(txs[0].accountId).toBe('acc-gcash');
   });
 });

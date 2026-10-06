@@ -516,5 +516,37 @@ not-a-date,expense,200.00
       expect(txs[0].date).toBe('2026-09-22');
       expect(txs[0].toAccountId).toBe('acc-bpi');
     });
+
+    it('exports and imports balance adjustment transactions correctly', async () => {
+      const adjustmentTx: Transaction = {
+        id: 'tx-adj-csv',
+        amount: 350,
+        type: 'adjustment',
+        adjustmentDirection: 'increase',
+        targetBalance: 5350,
+        accountId: 'acc-gcash',
+        date: '2026-09-23',
+        notes: 'Untracked cash added',
+        createdAt: '2026-09-23T00:00:00.000Z',
+        updatedAt: '2026-09-23T00:00:00.000Z',
+      };
+
+      const csv = exportTransactionsToCSV([adjustmentTx], sampleAccounts, sampleCategories);
+      expect(csv).toContain('adjustment');
+      expect(csv).toContain('350.00');
+      expect(csv).toContain('Untracked cash added');
+
+      await db.transactions.clear();
+
+      const result = await importTransactionsFromCSV(csv, {
+        defaultAccountId: 'acc-gcash',
+      });
+
+      expect(result.imported).toBe(1);
+      const importedTxs = await db.transactions.toArray();
+      expect(importedTxs[0].type).toBe('adjustment');
+      expect(importedTxs[0].amount).toBe(350);
+      expect(importedTxs[0].adjustmentDirection).toBe('increase');
+    });
   });
 });
