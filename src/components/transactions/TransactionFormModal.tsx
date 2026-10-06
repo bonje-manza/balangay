@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../storage/db';
 import type { Transaction, Account, Category, TransactionType } from '../../domain/types';
 import { calculateAccountBalanceAsOf } from '../../domain/calculations';
 import { formatPHP, roundMoney } from '../../domain/money';
+import { getNoteSuggestions, splitByMatch } from '../../domain/notes';
 import {
   createTransaction,
   createTransfer,
@@ -64,11 +65,23 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const noteContainerRef = useRef<HTMLDivElement>(null);
+  const noteInputRef = useRef<HTMLInputElement>(null);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState<boolean>(false);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+
   const liveTransactions = useLiveQuery(() => db.transactions.toArray(), []) ?? [];
   const allTransactions = transactions || liveTransactions;
 
+  const noteSuggestions = useMemo(
+    () => getNoteSuggestions(allTransactions, notes, 5),
+    [allTransactions, notes]
+  );
+
   // Sync state with props when modal opens or transactionToEdit changes
   useEffect(() => {
+    setIsSuggestionsOpen(false);
+    setHighlightedIndex(-1);
     if (transactionToEdit) {
       setType(transactionToEdit.type);
       setAmount(transactionToEdit.amount.toString());
@@ -111,6 +124,70 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
     setErrors({});
     setShowDeleteConfirm(false);
   }, [transactionToEdit, initialType, initialAccountId, initialDate, accounts, categories, isOpen]);
+
+  // Dismiss autocomplete on clicks outside the note container
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (noteContainerRef.current && !noteContainerRef.current.contains(e.target as Node)) {
+        setIsSuggestionsOpen(false);
+        setHighlightedIndex(-1);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
+
+  const handleSelectSuggestion = (suggestion: string) => {
+    setNotes(suggestion);
+    setIsSuggestionsOpen(false);
+    setHighlightedIndex(-1);
+    noteInputRef.current?.focus();
+  };
+
+  const handleNoteKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (noteSuggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!isSuggestionsOpen) {
+          setIsSuggestionsOpen(true);
+          setHighlightedIndex(0);
+        } else {
+          setHighlightedIndex((prev) => (prev < noteSuggestions.length - 1 ? prev + 1 : 0));
+        }
+        return;
+      }
+      if (isSuggestionsOpen) {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : noteSuggestions.length - 1));
+          return;
+        }
+        if (e.key === 'Enter') {
+          if (highlightedIndex >= 0 && highlightedIndex < noteSuggestions.length) {
+            e.preventDefault();
+            handleSelectSuggestion(noteSuggestions[highlightedIndex]);
+            return;
+          }
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsSuggestionsOpen(false);
+          setHighlightedIndex(-1);
+          return;
+        }
+        if (e.key === 'Tab') {
+          if (highlightedIndex >= 0 && highlightedIndex < noteSuggestions.length) {
+            handleSelectSuggestion(noteSuggestions[highlightedIndex]);
+          }
+        }
+      }
+    }
+  };
 
   const baselineBalance = useMemo(() => {
     if (!accountId) return 0;
@@ -624,19 +701,86 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
               />
             </div>
 
-            {/* Notes / Memo Input */}
-            <div>
-              <label className="block text-xs font-bold text-stone-800 mb-1">
-                Notes / Memo
-              </label>
+            {/* Note Input with Autocomplete */}
+            <div ref={noteContainerRef} className="relative">
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="transaction-notes-input" className="block text-xs font-bold text-stone-800">
+                  Note
+                </label>
+                {isSuggestionsOpen && noteSuggestions.length > 0 && (
+                  <span className="text-[10px] font-semibold text-stone-500">
+                    Past suggestions
+                  </span>
+                )}
+              </div>
               <input
+                ref={noteInputRef}
+                id="transaction-notes-input"
                 type="text"
                 placeholder="e.g. Ramen Nagi with team"
                 data-testid="transaction-notes-input"
+                role="combobox"
+                aria-expanded={isSuggestionsOpen && noteSuggestions.length > 0}
+                aria-autocomplete="list"
+                aria-controls="note-suggestions-list"
                 value={notes}
-                onChange={(e) => setNotes(e.target.value)}
+                onChange={(e) => {
+                  setNotes(e.target.value);
+                  setIsSuggestionsOpen(e.target.value.trim().length >= 1);
+                  setHighlightedIndex(-1);
+                }}
+                onKeyDown={handleNoteKeyDown}
                 className="w-full px-3.5 py-2 bg-white rounded-xl border border-stone-800/20 text-xs font-medium text-stone-900 placeholder:text-stone-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#124224] focus:border-transparent"
               />
+
+              {/* Suggestions Popover */}
+              {isSuggestionsOpen && noteSuggestions.length > 0 && (
+                <ul
+                  id="note-suggestions-list"
+                  role="listbox"
+                  data-testid="note-suggestions-dropdown"
+                  className="absolute top-full left-0 right-0 mt-1 z-30 bg-[#FFFDF9] border border-stone-800/20 rounded-xl shadow-lg overflow-hidden py-1 max-h-48 overflow-y-auto divide-y divide-stone-100"
+                >
+                  {noteSuggestions.map((suggestion, idx) => {
+                    const isHighlighted = idx === highlightedIndex;
+                    const chunks = splitByMatch(suggestion, notes);
+                    return (
+                      <li
+                        key={idx}
+                        id={`note-suggestion-item-${idx}`}
+                        role="option"
+                        aria-selected={isHighlighted}
+                        data-testid={`note-suggestion-${idx}`}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleSelectSuggestion(suggestion)}
+                        className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                          isHighlighted
+                            ? 'bg-[#FFED9E] text-stone-900 font-semibold'
+                            : 'hover:bg-stone-100/90 text-stone-800'
+                        }`}
+                      >
+                        <span className="truncate pr-2">
+                          {chunks.map((chunk, cIdx) => (
+                            <span
+                              key={cIdx}
+                              className={
+                                chunk.isMatch
+                                  ? 'font-bold text-[#111111] underline decoration-[#DAE097] decoration-2 underline-offset-2'
+                                  : 'text-stone-700'
+                              }
+                            >
+                              {chunk.text}
+                            </span>
+                          ))}
+                        </span>
+                        <span className="text-[10px] text-stone-500 font-normal shrink-0">
+                          Past note
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
 
             {/* Tags Input */}

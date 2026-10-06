@@ -670,4 +670,128 @@ describe('TransactionFormModal Component (TDD)', () => {
       expect(screen.getByTestId('transaction-notes-input')).toHaveValue('Forgot cash payment');
     });
   });
+
+  describe('Note Autocomplete Suggestions', () => {
+    const historicalTransactions: Transaction[] = [
+      {
+        id: 'hist-1',
+        amount: 450,
+        type: 'expense',
+        accountId: 'acc-gcash',
+        date: '2026-10-01',
+        notes: 'Ramen Nagi with team',
+        createdAt: '2026-10-01T12:00:00Z',
+        updatedAt: '2026-10-01T12:00:00Z',
+      },
+      {
+        id: 'hist-2',
+        amount: 150,
+        type: 'expense',
+        accountId: 'acc-gcash',
+        date: '2026-10-02',
+        notes: 'Ramen Kuroda quick lunch',
+        createdAt: '2026-10-02T12:00:00Z',
+        updatedAt: '2026-10-02T12:00:00Z',
+      },
+      {
+        id: 'hist-3',
+        amount: 300,
+        type: 'expense',
+        accountId: 'acc-gcash',
+        date: '2026-10-03',
+        notes: 'Grab car to office',
+        createdAt: '2026-10-03T12:00:00Z',
+        updatedAt: '2026-10-03T12:00:00Z',
+      },
+    ];
+
+    it('shows matching note suggestions when user types in Note field', async () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          transactions={historicalTransactions}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const notesInput = screen.getByTestId('transaction-notes-input');
+      fireEvent.change(notesInput, { target: { value: 'ramen' } });
+
+      expect(screen.getByTestId('note-suggestions-dropdown')).toBeInTheDocument();
+      expect(screen.getByTestId('note-suggestion-0')).toHaveTextContent(/Ramen Kuroda quick lunch/i);
+      expect(screen.getByTestId('note-suggestion-1')).toHaveTextContent(/Ramen Nagi with team/i);
+      expect(screen.queryByText(/Grab car to office/i)).not.toBeInTheDocument();
+    });
+
+    it('populates note input and closes dropdown when suggestion is clicked', async () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          transactions={historicalTransactions}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const notesInput = screen.getByTestId('transaction-notes-input');
+      fireEvent.change(notesInput, { target: { value: 'nagi' } });
+
+      const suggestionItem = screen.getByTestId('note-suggestion-0');
+      fireEvent.click(suggestionItem);
+
+      expect(notesInput).toHaveValue('Ramen Nagi with team');
+      expect(screen.queryByTestId('note-suggestions-dropdown')).not.toBeInTheDocument();
+    });
+
+    it('supports keyboard navigation with ArrowDown and Enter to select suggestion', async () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          transactions={historicalTransactions}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const notesInput = screen.getByTestId('transaction-notes-input');
+      fireEvent.change(notesInput, { target: { value: 'ramen' } });
+
+      // hist-2 is from 2026-10-02 (more recent than hist-1 2026-10-01), so index 0 is Kuroda
+      fireEvent.keyDown(notesInput, { key: 'ArrowDown' });
+      fireEvent.keyDown(notesInput, { key: 'Enter' });
+
+      expect(notesInput).toHaveValue('Ramen Kuroda quick lunch');
+      expect(screen.queryByTestId('note-suggestions-dropdown')).not.toBeInTheDocument();
+      expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it('closes suggestions when Escape key is pressed without closing modal', async () => {
+      render(
+        <TransactionFormModal
+          isOpen={true}
+          onClose={onClose}
+          accounts={testAccounts}
+          categories={testCategories}
+          transactions={historicalTransactions}
+          onSuccess={onSuccess}
+        />
+      );
+
+      const notesInput = screen.getByTestId('transaction-notes-input');
+      fireEvent.change(notesInput, { target: { value: 'ram' } });
+      expect(screen.getByTestId('note-suggestions-dropdown')).toBeInTheDocument();
+
+      fireEvent.keyDown(notesInput, { key: 'Escape' });
+      expect(screen.queryByTestId('note-suggestions-dropdown')).not.toBeInTheDocument();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+  });
 });
+

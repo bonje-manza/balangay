@@ -27,3 +27,11 @@ _Avoid_: Sign, adjustment type, plus/minus
 **Target Balance**:
 The physical or statement balance entered by the user representing the actual verified funds in an account during reconciliation.
 _Avoid_: New balance, ending balance, override amount
+
+**Transaction Note**:
+A freeform text description attached to a transaction providing merchant, location, or situational context.
+_Avoid_: Memo, remark, description, comment
+
+**Note Suggestion**:
+A deduplicated historical transaction note presented as an autocomplete option to accelerate transaction entry.
+_Avoid_: Memo autofill, note prediction, history prompt
